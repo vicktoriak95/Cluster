@@ -8,10 +8,12 @@
 #ifndef NETWORK_H_
 #define NETWORK_H_
 
+#include "SparseMatrix.h"
+
 typedef struct _network{
 
 	/* Adjacency matrix */
-	struct spmat* A;
+	spmat* A;
 
 	/* Degrees vector */
 	int* deg_vector;
@@ -24,7 +26,13 @@ typedef struct _network{
 
 } Network;
 
+/* Allocating a new network with n vertices*/
+Network* allocate_network(int n);
+
 /* Creating new network from input file */
 Network* create_network(FILE* input);
+
+/* Free all allocated space of a network */
+void* free_network(Network*);
 
 #endif /* NETWORK_H_ */
