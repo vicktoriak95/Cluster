@@ -48,9 +48,8 @@ int sum_of_vector(int* vec, int length){
 
 /* Multiplication of B\hat[g] with vector */
 double* Bhat_multiplication(Network* N, double* x, Node* g, int n_g){
-	double* result;
-
-
+	/* TODO: This is crap*/
+	double* result = NULL;
 	return result;
 }
 
@@ -83,7 +82,9 @@ void Bhat_shift(double* dot_product, double* x, double norm, int length){
 
 /* Calculating dot product of B\hat[g] */
 double Bhat_norm(Network* N, int n_g){
-
+	/* TODO: This is crap*/
+	double result = 0;
+	return result;
 }
 
 /* Calculates the eigenvalue corresponding to largest eigen_vector */

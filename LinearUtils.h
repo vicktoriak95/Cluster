@@ -5,6 +5,8 @@
  *      Author: User
  */
 
+#include "Network.h"
+
 #ifndef LINEARUTILS_H_
 #define LINEARUTILS_H_
 
@@ -35,6 +37,6 @@ double Bhat_norm(Network* N, int n_g);
 
 /* Calculates the eigenvalue corresponding to largest eigen_vector */
 /* Shifts result by norm */
-double Bhat_largest_eigenvalue(struct Network* N, double norm, double* eigen_vector, int n_g);
+double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, int n_g);
 
 #endif /* LINEARUTILS_H_ */
