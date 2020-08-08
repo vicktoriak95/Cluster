@@ -20,20 +20,20 @@ typedef struct _spmat {
 } spmat;
 
 /* Allocates a new linked-lists sparse matrix of size n */
-spmat* spmat_allocate_list(int n);
+spmat* spmat_allocate(int n);
 
 /* TODO: make sure is fine with double */
 /* Sums row values of A, according to g values */
-int  spmat_row_sum(struct _spmat *A, int row_num, Node* g, int n_g);
+int spmat_row_sum(struct _spmat *A, int row_num, Node* g, int n_g);
 
 /* Adds row i the matrix. Called before any other call, */
 /* exactly n times in order (i = 0 to n-1) */
-void add_row(struct _spmat *A, const double *row, int i);
+void spmat_add_row(struct _spmat *A, const double *row, int i);
 
 /* Frees all resources used by A */
-void free(struct _spmat *A);
+void spmat_free(spmat *A);
 
 /* Multiplies matrix A by vector v, into result (result is pre-allocated) */
-void mult(const struct _spmat *A, const double *v, double *result, Node* g, int n_g);
+void spmat_mult(const struct _spmat *A, const double *v, double *result, Node* g, int n_g);
 
 #endif /* SPARSEMATRIX_H_ */
