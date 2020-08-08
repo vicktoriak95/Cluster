@@ -8,6 +8,7 @@
 #ifndef LINEARUTILS_H_
 #define LINEARUTILS_H_
 
+
 /* Dot product between two vectors */
 double dot_product(double* vector1, double* vector2, int vector_size);
 
