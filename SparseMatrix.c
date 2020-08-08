@@ -10,7 +10,7 @@
 #include "SparseMatrix.h"
 #include "NodeUtils.h"
 #include "LinearUtils.h"
-
+#include "LibFuncsHandler.h"
 
 /* Definition of node struct representing entries in sparse matrix*/
 typedef struct {
