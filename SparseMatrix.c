@@ -97,7 +97,7 @@ void spmat_add_row(spmat *A, const double *row, int i){
 	}
 }
 
-void spmat_add_row_from_file(spmat* A ,FILE* input, int i){
+int spmat_add_row_from_file(spmat* A ,FILE* input, int i){
 	int j;
 	int nnz_row, col_index;
 	Node_matrix* node = NULL;
@@ -121,6 +121,7 @@ void spmat_add_row_from_file(spmat* A ,FILE* input, int i){
 		}
 		tail = node;
 	}
+	return nnz_row;
 }
 
 /* Free lists of all rows, array of rows and spmat itself */
