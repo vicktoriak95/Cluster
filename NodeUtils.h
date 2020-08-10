@@ -27,6 +27,8 @@ void delete_node_list(Node** head_ref, int n);
 /* Printing list */
 void print_node_list(Node* list);
 
+/* Iterating over g and returns k'th value */
+int get_node_value(Node* g, int k);
 
 /*list of lists*/
 typedef struct _LinkedGroup {

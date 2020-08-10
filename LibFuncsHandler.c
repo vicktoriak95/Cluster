@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+/* Read an integer from an open file descriptor */
 int int_fread(FILE* f){
 	int n = 0;
 	int return_value = 0;
@@ -22,6 +23,7 @@ int int_fread(FILE* f){
 	return n;
 }
 
+/* Allocate n bytes and return a pointer to the allocated space */
 void* allocate(size_t n){
 	void* p = NULL;
 	p = malloc(n);
@@ -30,4 +32,12 @@ void* allocate(size_t n){
 		exit(1);
 	}
 	return p;
+}
+
+/* Detects infinite loops and exits */
+infinite_loop_detection(int counter, int max_counter){
+	if(counter >= max_counter){
+		printf("Infinite loop error");
+		exit(1);
+	}
 }
