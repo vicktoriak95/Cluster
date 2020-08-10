@@ -34,9 +34,6 @@ void spmat_add_row_from_vector(struct _spmat *A, const int *row, int i);
 /* Returns num of non-zero entries in row*/
 int spmat_add_row_from_file(spmat* A ,FILE* input, int i);
 
-/* TODO: comment*/
-int spmat_add_row_from_file(spmat* A ,FILE* input, int i);
-
 /* Frees all resources used by A */
 void spmat_free(spmat *A);
 
