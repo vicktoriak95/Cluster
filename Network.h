@@ -33,7 +33,7 @@ Network* allocate_network(int n);
 Network* create_network(FILE* input);
 
 /* Free all allocated space of a network */
-void* free_network(Network*);
+void free_network(Network* net);
 
 /* Creates network from args */
 Network* network_from_args(spmat* matrix, int* deg_vector, int n, int M);

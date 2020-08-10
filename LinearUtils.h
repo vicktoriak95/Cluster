@@ -21,7 +21,10 @@ int sum_of_vector(int* vec, int length);
 
 /* Multiplication of B\hat[g] with vector */
 /* Not shifting */
-double* Bhat_multiplication(Network* N, double* x, Node* g, int n_g);
+void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g);
+
+/* Calculating auxiliary sum for B\hat[g] dot product */
+double dot_product_auxiliary_sum(double* deg_vector, int M, double* x, Node* g, int n_g, int indicator);
 
 /* Adding vector2 to vector1 */
 void vectors_sum(double* vector1, double* vector2, int length);
