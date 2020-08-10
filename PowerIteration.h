@@ -7,15 +7,17 @@
 
 #ifndef POWERITERATION_H_
 #define POWERITERATION_H_
+#define epsilon 0.00001
+#include "Network.h"
 
 /* Finds eigen-vector with biggest eigen-value */
-double* power_iteration(struct Network* N);
+double* power_iteration(Network* N, Node* g, int n_g);
 
 /* Creates random vector */
 void create_random_vector(double * vector, int vector_size);
 
 /* Checks if difference between two vectors is bigger than epsilon */
 /* returns -1 if difference is bigger than epsilon, 0 otherwise. */
-int close_vectors(double* vector_a, double* vector_b, double epsilon, int n);
+int close_vectors(double* vector_a, double* vector_b, int n);
 
 #endif /* POWERITERATION_H_ */

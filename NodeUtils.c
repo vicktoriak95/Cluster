@@ -43,11 +43,11 @@ void delete_node_list(Node** head_ref, int n){
 void print_node_list(Node* list){
 	if(list == NULL)
 	{
-		printf("NULL\n");
+		printf(" \n");
 	}
 	else
 	{
-		printf("%d", list->index);
+		printf("%d ", list->index);
 		print_node_list((Node*)(list->next));
 	}
 }
@@ -61,6 +61,20 @@ int get_node_value(Node* g, int k){
 		head = head->next;
 	}
 	return head->index;
+}
+
+/* Creating node list out of vector */
+Node* node_list_from_vector(int* v, int n){
+	Node* head = NULL;
+	Node* node;
+	int i;
+
+	for(i=n-1; i>=0; i--){
+		node = create_node(v[i]);
+		push_node(&head, node);
+	}
+	return head;
+
 }
 
 Group* create_group(Node* node){
@@ -115,6 +129,23 @@ void print_group(Group* group){
 	}
 }
 
+void test_node_utils(){
+	Node* g = NULL;
+	int v[4] = {1,2,3,4};
+	int n = 4;
 
+	/* Test list from vector */
+	g = node_list_from_vector(v, n);
+	printf("g is made \n");
+	print_node_list(g);
+
+}
+
+/*
+int main(int argc, char* argv[]){
+	test_node_utils();
+
+}
+*/
 
 

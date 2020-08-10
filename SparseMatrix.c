@@ -222,9 +222,23 @@ int spmat_row_sum(struct _spmat *A, int row_num, Node* g, int n_g){
 	return sum;
 }
 
+/* Creates spmat from matrix */
+/* TODO: DEBUG CAUSE NOT WORKING */
+spmat* spmat_from_matrix(int** matrix, int n){
+	spmat* A;
+	int i;
+
+	A = spmat_allocate(n);
+	for(i = 0; i < n; i++){
+		spmat_add_row_from_vector(A, matrix[i], i);
+	}
+	printf("created A \n");
+	return A;
+}
+
 /* TODO: erase */
-void test(){
-spmat* A;
+void test_sparse(){
+	spmat* A;
 	Node* g;
 	Node* node;
 	int row_sum;
@@ -273,9 +287,9 @@ spmat* A;
 }
 
 /* TODO: erase */
-
+/*
 int main(int argc, char* argv[]){
 	test();
 
 }
-
+*/

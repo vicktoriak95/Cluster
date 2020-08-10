@@ -43,6 +43,9 @@ void spmat_mult(const struct _spmat *A, const double *v, double *result, Node* g
 /* Sums row values of A, according to g values */
 int spmat_row_sum(struct _spmat *A, int row_num, Node* g, int n_g);
 
+/* Creates sparse matrix from matrix */
+spmat* spmat_from_matrix(int** matrix, int n);
+
 /* Definition of node struct representing entries in sparse matrix*/
 typedef struct {
     double value;
