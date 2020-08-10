@@ -30,7 +30,7 @@ void print_vector(double* vector, int vector_size){
 	int i;
 
 	for (i = 0; i < vector_size; i++){
-		printf("%f + , ", vector[i]);
+		printf("%f ", vector[i]);
 	}
 	printf("\n");
 
