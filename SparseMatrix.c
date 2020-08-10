@@ -12,23 +12,15 @@
 #include "LinearUtils.h"
 #include "LibFuncsHandler.h"
 
-/* Definition of node struct representing entries in sparse matrix*/
-typedef struct {
-    double value;
-    int col_index;
-    struct Node_matrix* next;
-} Node_matrix;
-
 
 /* Create node in a list representing row */
-Node_matrix* nodemat_create_node(double value, int col_index){
+Node_matrix* nodemat_create_node(int value, int col_index){
 	Node_matrix* node;
 	node = (Node_matrix *)malloc(sizeof(Node_matrix));
 	if(node == NULL){
 		printf("Memory allocation failed - list_create_node");
 		exit(1);
 	}
-
 	node->value = value;
 	node->col_index = col_index;
 	node->next = NULL;
@@ -46,6 +38,7 @@ void nodemat_free_list(Node_matrix* list){
 }
 
 
+/* Allocates a new linked-lists sparse matrix of size n */
 spmat* spmat_allocate(int n){
 	spmat* A;
 	Node** private;
@@ -69,16 +62,16 @@ spmat* spmat_allocate(int n){
 	return A;
 }
 
-
-/* Add a single row */
-void spmat_add_row(spmat *A, const double *row, int i){
+/* TODO: erase if only used in tests */
+/* Add a single row from vector*/
+void spmat_add_row_from_vector(struct _spmat *A, const int *row, int i){
 	/* Tail Pointing on last node added */
 	Node_matrix* tail = NULL;
 	/* Node pointing on current added node */
 	Node_matrix* node = NULL;
 	int j;
 
-	/* Iterating over A values */
+	/* Iterating over row values */
 	for(j = 0; j < A->n; j++){
 		if(row[j] != 0){
 			/* Creating node for non zero value */
@@ -97,6 +90,8 @@ void spmat_add_row(spmat *A, const double *row, int i){
 	}
 }
 
+/* Adds row i the matrix from file*/
+/* Returns num of non-zero entries in row*/
 int spmat_add_row_from_file(spmat* A ,FILE* input, int i){
 	int j;
 	int nnz_row, col_index;
@@ -107,8 +102,9 @@ int spmat_add_row_from_file(spmat* A ,FILE* input, int i){
 	nnz_row = int_fread(input);
 	for(j=0; j<nnz_row; j++){
 		col_index = int_fread(input);
-		/* TODO: change 1 to const / change func */
-		node = nodemat_create_node(1, col_index);
+		/* Node is always pointing on current added node */
+		/* entry_val is const and equals 1 */
+		node = nodemat_create_node(entry_val, col_index);
 
 		/* Inserting node to spmat */
 		/* List is empty - first node appended */
@@ -119,6 +115,7 @@ int spmat_add_row_from_file(spmat* A ,FILE* input, int i){
 		else {
 			tail->next = (struct Node_matrix*)node;
 		}
+		/* Tail always Pointing on last node added */
 		tail = node;
 	}
 	return nnz_row;
@@ -138,39 +135,50 @@ void spmat_free(struct _spmat *A){
 
 /* Multiplies matrix A by vector v, into result (result is pre-allocated) */
 void spmat_mult(const struct _spmat *A, const double *v, double *result, Node* g, int n_g){
-	int i;
+	int i, g_index, mat_index;
+	int cnt = 0;
+	int v_index = 0;
+	int result_index = 0;
 	double dot_product;
-	Node_matrix* head = NULL;
+	Node_matrix* mat_col = NULL;
 	Node* g_rows = g;
 	Node* g_cols = g;
-	int cnt = 0;
 
 	/* Iterating over A rows */
 	for(i = 0; i < A->n; i++){
-
 		/* If row is in g */
 		if((g_rows != NULL) && (i == g_rows->index)){
 			dot_product = 0;
-			head = ((Node_matrix** )A->private)[i];
+			mat_col = ((Node_matrix** )A->private)[i];
 			g_cols = g;
+			cnt = 0;
+			v_index = 0;
 
 			/* Iterating over list of a row, multiplying only items in g*/
-			while((head != NULL) && (g_cols != NULL)){
-
+			while((mat_col != NULL) && (g_cols != NULL)){
 				/* Infinite loop Detection */
-				if(cnt >= n_g){
-					printf("Infinite loop - spmat_mult");
-					exit(1);
-				}
-				if(head->col_index == g_cols->index){
-					dot_product += (head->value) * (v[head->col_index]);
-					g_cols = g_cols->next;
-				}
-				head = (Node_matrix*)head->next;
-				cnt ++;
-			}
+				infinite_loop_detection(cnt, A->n);
 
-			result[i] = dot_product;
+				/* Promoting pointers in g and in row */
+				g_index = g_cols->index;
+				mat_index = mat_col->col_index;
+				if(mat_index == g_index){
+					dot_product += (mat_col->value) * (v[v_index]);
+					g_cols = g_cols->next;
+					v_index += 1;
+					mat_col = (Node_matrix*)mat_col->next;
+				}
+				else if(mat_index > g_index){
+					g_cols = g_cols->next;
+					v_index += 1;
+				}
+				else{
+					mat_col = (Node_matrix*)mat_col->next;
+				}
+			}
+			/* Updating result vector */
+			result[result_index] = dot_product;
+			result_index += 1;
 			g_rows = g_rows->next;
 		}
 
@@ -178,65 +186,96 @@ void spmat_mult(const struct _spmat *A, const double *v, double *result, Node* g
 }
 
 
+
 /* Sums row values of A, according to g values */
 int spmat_row_sum(struct _spmat *A, int row_num, Node* g, int n_g){
-	Node_matrix* row_head = ((Node_matrix** )A->private)[row_num];
+	Node_matrix* row_head;
 	Node* g_head = g;
 	int sum = 0;
 	int cnt = 0;
+	int mat_row_index, mat_col_index, g_col_index;
+
+	/* find row index in A*/
+	mat_row_index = get_node_value(g, row_num);
+
+	row_head = ((Node_matrix** )A->private)[mat_row_index];
 
 	/* Iterating over row, summing only entries in g */
 	while((row_head != NULL) && (g_head != NULL)){
-		/* Infinite loop Detection */
-		if(cnt >= n_g){
-			printf("Infinite loop - spmat_row_sum");
-			exit(1);
-		}
-		if(row_head->col_index == g_head->index){
+		infinite_loop_detection(cnt, A->n);
+
+		/* Comparing indices and promoting g_head, mat_head respectively */
+		mat_col_index = row_head->col_index;
+		g_col_index = g_head->index;
+		if(mat_col_index == g_col_index){
 			sum += row_head->value;
+			g_head = g_head->next;
+			row_head = (Node_matrix*)row_head->next;
+		}
+		else if(mat_col_index > g_col_index){
+			g_head = g_head->next;
+		}
+		else{
+			row_head = (Node_matrix*)row_head->next;
 		}
 	}
-
 	return sum;
 }
 
+/* TODO: erase */
 void test(){
 spmat* A;
 	Node* g;
 	Node* node;
 	int row_sum;
-	double matrix[4][4] = {{0,0,0,0},{0,0,1,5},{0,0,0,0},{4,0,2,0}};
+	int matrix[4][4] = {{0,0,0,0},{1,300,8,500},{0,0,0,0},{4,1,2,0}};
 	int i;
-	double v[4] = {1,1,1,1};
-	double result[4];
+	double v[2] = {1,1};
+	double result[2];
+	int row_num;
+	int n;
 
 	/* Creating g */
 	g = create_node(3);
 	node = create_node(1);
 	push_node(&g, node);
+	row_num = 2;
 	printf("created g \n");
 
 	/* Creating A */
-	A = spmat_allocate(4);
-	for(i = 0; i < 4; i++){
-		spmat_add_row(A, matrix[i], i);
+	n = 4;
+	A = spmat_allocate(n);
+	for(i = 0; i < n; i++){
+		spmat_add_row_from_vector(A, matrix[i], i);
 	}
 	printf("created A \n");
 
 	/* Multiplying A by v */
-	spmat_mult(A, v, result, g, 2);
+	spmat_mult(A, v, result, g, row_num);
 	printf("Mult result: \n");
-	print_vector(v, 4);
+	print_vector(result, row_num);
 
 	/* Summing first row */
+	/*
 	row_sum = spmat_row_sum(A, 0, g, 2);
-	printf("First row sum %d", row_sum);
+	printf("First row sum %d \n", row_sum);
+	*/
+
+	/* Summing all rows */
+	for(i=0; i<row_num; i++){
+		row_sum = spmat_row_sum(A, i, g, row_num);
+		printf("%d row sum %d \n", i, row_sum);
+	}
+
 	free(A);
 
 	printf("Vicki is the Best");
 }
 
+/* TODO: erase */
+
 int main(int argc, char* argv[]){
 	test();
 
 }
+

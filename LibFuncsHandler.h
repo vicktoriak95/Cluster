@@ -8,10 +8,13 @@
 #ifndef LIBFUNCSHANDLER_H_
 #define LIBFUNCSHANDLER_H_
 
-/* read an integer from an open file descriptor */
+/* Read an integer from an open file descriptor */
 int int_fread(FILE* f);
 
-/* allocate n bytes and return a pointer to the allocated space */
+/* Allocate n bytes and return a pointer to the allocated space */
 void* allocate(size_t n);
+
+/* Detects infinite loops and exits */
+void infinite_loop_detection(int counter, int max_counter);
 
 #endif /* LIBFUNCSHANDLER_H_ */

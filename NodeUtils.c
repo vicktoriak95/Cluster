@@ -52,6 +52,17 @@ void print_node_list(Node* list){
 	}
 }
 
+/* Iterating over g and returns k'th value */
+int get_node_value(Node* g, int k){
+	Node* head = g;
+	int i;
+
+	for(i=0; i<k; i++){
+		head = head->next;
+	}
+	return head->index;
+}
+
 Group* create_group(Node* node){
 	Group* group;
 	group = (Group*)malloc(sizeof(Group));
@@ -103,4 +114,7 @@ void print_group(Group* group){
 		print_node_list((Node*)(group->next));
 	}
 }
+
+
+
 
