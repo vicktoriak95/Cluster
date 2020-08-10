@@ -4,6 +4,7 @@
 #include "Network.h"
 #include "SparseMatrix.h"
 #include "LibFuncsHandler.h"
+#include "LinearUtils.h"
 
 Network* allocate_network(int n){
 	Network* net = NULL;
@@ -25,12 +26,9 @@ Network* allocate_network(int n){
 }
 
 Network* create_network(FILE* input){
-	Network* net;
+	Network* net = NULL;
 	int n = 0;
-	int M = 0;
-	int* row = NULL;
 	int i = 0;
-	int j = 0;
 
 	/* Read n from the file */
 	n = int_fread(input);
@@ -39,16 +37,13 @@ Network* create_network(FILE* input){
 	net = allocate_network(n);
 	net->n = n;
 
-	/* Allocate space for a row of the adjacency matrix */
-	row = (int*)malloc(sizeof(int) * net->n);
-
 	/* Update the degrees vector and adjacency matrix from the file*/
 	for(i = 0; i < net->n; i++){
 		net->deg_vector[i] = spmat_add_row_from_file(net->A, input, i);
 	}
 
 	/* Calculate the sum of all degrees in network */
-	M = sum_of_vector(net->deg_vector, net->n);
+	net->M = sum_of_vector(net->deg_vector, net->n);
 
 	return net;
 }

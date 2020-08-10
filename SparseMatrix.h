@@ -30,6 +30,9 @@ int spmat_row_sum(struct _spmat *A, int row_num, Node* g, int n_g);
 /* exactly n times in order (i = 0 to n-1) */
 void spmat_add_row(struct _spmat *A, const double *row, int i);
 
+/* TODO: comment*/
+int spmat_add_row_from_file(spmat* A ,FILE* input, int i);
+
 /* Frees all resources used by A */
 void spmat_free(spmat *A);
 
