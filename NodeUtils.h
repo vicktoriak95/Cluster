@@ -30,6 +30,9 @@ void print_node_list(Node* list);
 /* Iterating over g and returns k'th value */
 int get_node_value(Node* g, int k);
 
+/* Creating node list out of vector */
+Node* node_list_from_vector(int* v, int n);
+
 /*list of lists*/
 typedef struct _LinkedGroup {
 	Node* value;
