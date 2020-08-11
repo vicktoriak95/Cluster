@@ -107,9 +107,10 @@ void test_power_iteration(){
 
 }
 
-
+/*
 int main(int argc, char* argv[]){
 	test_power_iteration();
 
 }
+*/
 
