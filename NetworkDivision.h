@@ -26,7 +26,7 @@ void calculate_s(double* eigen_vector, double* s, int n);
 
 /* Dividing g according to s */
 /* Editing group g into group g1 ,and returns group g2 */
-Node* divide_group(Node* g1, int* s, int n);
+Node* divide_group(Node** g1_p, int* s, int n);
 
 /* Improving modularity */
 void modularity_maximization(int* s, Node* g, int n_g);
