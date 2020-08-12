@@ -14,12 +14,36 @@ Node* create_node(int x){
 	return node;
 }
 
-void push_node(Node** head_ref, Node* new_node)
-{
+void push_node(Node** head_ref, Node* new_node){
     /* Make next of new node as head */
     new_node->next = (*head_ref);
     /* move the head to point to the new node */
     (*head_ref) = new_node;
+}
+
+void delete_node(Node **head_ref, int key){
+	Node* temp = *head_ref, *prev;
+
+	/* If head node holds the key to be deleted */
+	if (temp != NULL && temp->index == key){
+		*head_ref = temp->next;
+		free(temp);
+		return;
+	}
+
+	/* Search for the key to be deleted, keep track of the
+	previous node */
+	while (temp != NULL && temp->index != key){
+		prev = temp;
+		temp = temp->next;
+	}
+
+	/* If key was not present in linked list */
+	if (temp == NULL) return;
+
+	/* Remove the node from linked list */
+	prev->next = temp->next;
+	free(temp);
 }
 
 /* Receives the head of the list and the number of nodes in the entire graph*/
@@ -75,6 +99,27 @@ Node* node_list_from_vector(int* v, int n){
 	}
 	return head;
 
+}
+
+void copy_node_list(Node* original, Node* copy){
+	Node* curr_orig;
+	Node* curr_copy;
+	Node* temp;
+
+	/* validate input */
+	if (original == NULL){
+		printf("original vector is NULL - copy_node_list");
+		return;
+	}
+
+	curr_copy = create_node(original->index);
+	curr_orig = original->next;
+
+	while(curr_orig != NULL){
+		temp = create_node(curr_orig->index);
+		curr_copy->next = temp;
+		curr_copy = temp;
+	}
 }
 
 Group* create_group(Node* node){

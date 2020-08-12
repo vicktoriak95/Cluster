@@ -35,7 +35,7 @@ void* allocate(size_t n){
 }
 
 /* Detects infinite loops and exits */
-infinite_loop_detection(int counter, int max_counter){
+void infinite_loop_detection(int counter, int max_counter){
 	if(counter >= max_counter){
 		printf("Infinite loop error");
 		exit(1);

@@ -29,7 +29,10 @@ int* calculate_s(double* eigen_vector);
 /* Editing group g into group g1 ,and returns group g2 */
 Node* divide_group(Node* g, int* s);
 
+/* Calculates s^t * b_hat[g] * s */
+double calc_Qk(Network* N, double* s, Node* g, int n_g);
+
 /* Improving modularity */
-void modularity_maximization(int* s, Node* g, int n_g);
+void modularity_maximization(Network* N, double* s, Node* g, int n_g);
 
 #endif /* NETWORKDIVISION_H_ */
