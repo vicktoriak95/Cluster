@@ -19,7 +19,6 @@ int int_fread(FILE* f){
 		printf("File reading failed");
 		exit(1);
 	}
-
 	return n;
 }
 
