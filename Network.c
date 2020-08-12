@@ -43,7 +43,7 @@ Network* create_network(FILE* input){
 	}
 
 	/* Calculate the sum of all degrees in network */
-	net->M = sum_of_vector(net->deg_vector, net->n);
+	net->M = sum_of_integer_vector(net->deg_vector, net->n);
 
 	return net;
 }

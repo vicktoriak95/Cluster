@@ -41,7 +41,7 @@ void nodemat_free_list(Node_matrix* list){
 /* Allocates a new linked-lists sparse matrix of size n */
 spmat* spmat_allocate(int n){
 	spmat* A;
-	Node** private;
+	Node_matrix** private;
 
 	/* Allocating mem for A */
 	A = (spmat*)malloc(sizeof(spmat));
@@ -51,7 +51,7 @@ spmat* spmat_allocate(int n){
 	}
 
 	/* Using calloc to assure all pointers are NULL */
-	private = (Node**)calloc(n, sizeof(Node*));
+	private = (Node_matrix**)calloc(n, sizeof(Node_matrix**));
 	if(private == NULL){
 		printf("Memory allocation failed - spmat_allocate_list 1");
 	}
@@ -235,6 +235,7 @@ spmat* spmat_from_matrix(int** matrix, int n){
 	printf("created A \n");
 	return A;
 }
+
 
 /* TODO: erase */
 void test_sparse(){
