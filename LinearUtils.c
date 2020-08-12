@@ -12,6 +12,8 @@
 #include "Network.h"
 #include "SparseMatrix.h"
 #include <assert.h>
+#include <math.h>
+#include "LibFuncsHandler.h"
 
 
 /* Dot product between two vectors */
@@ -38,7 +40,17 @@ void print_vector(double* vector, int vector_size){
 }
 
 /* Sums all entries of a given integer vector*/
-int sum_of_vector(int* vec, int length){
+double sum_of_double_vector(double* vec, int length){
+	int i;
+	double sum = 0;
+	for (i = 0; i < length; i++){
+		sum = sum + vec[i];
+	}
+	return sum;
+}
+
+/* Sum all entries of a given integer vector*/
+double sum_of_integer_vector(int* vec, int length){
 	int i;
 	int sum = 0;
 	for (i = 0; i < length; i++){
@@ -131,12 +143,42 @@ void Bhat_shift(double* dot_product, double* x, double norm, int length){
 	}
 }
 
-/* Calculating dot product of B\hat[g] */
-double Bhat_norm(Network* N, int n_g){
-	/* TODO: This is crap*/
-	double result = 0;
-	return result;
+/* Updates v such that entry j is 1 and every other entry is 0*/
+void unit_vector_j(double* v, int n, int j){
+	int i;
+
+	for(i=0; i<n; i++){
+		if(i == j){
+			v[i] = 1;
+		}
+		else{
+			v[i] = 0;
+		}
+	}
 }
+
+/* Calculating dot product of B\hat[g] */
+double Bhat_norm(Network* N, Node* g, int n_g){
+	double norm = -INFINITY;
+	int j;
+	double* ej;
+	double* B_col;
+	double col_sum;
+
+	ej = (double*)allocate(n_g * sizeof(double));
+	B_col = (double*)allocate(n_g * sizeof(double));
+
+	for(j=0; j<n_g; j++){
+		unit_vector_j(ej, n_g, j);
+		Bhat_multiplication(N, ej, B_col, g, n_g);
+		col_sum = sum_of_double_vector(B_col, n_g);
+		if(col_sum > norm){
+			norm = col_sum;
+		}
+	}
+	return norm;
+}
+
 
 /* Calculates the eigenvalue corresponding to largest eigen_vector */
 /* Shifts result by norm */
@@ -162,7 +204,6 @@ double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, in
 	free(mul);
 
 	return eigen_value;
-
 }
 
 void Bhat_tests(){

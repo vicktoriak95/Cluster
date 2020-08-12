@@ -11,7 +11,6 @@
 #include "NodeUtils.h"
 #include "Network.h"
 
-
 /* Main - dividing network into clusters */
 int main(FILE* input, FILE* output);
 
