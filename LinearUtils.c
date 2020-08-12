@@ -12,6 +12,8 @@
 #include "Network.h"
 #include "SparseMatrix.h"
 #include <assert.h>
+#include <math.h>
+#include "LibFuncsHandler.h"
 
 
 /* Dot product between two vectors */
@@ -38,7 +40,17 @@ void print_vector(double* vector, int vector_size){
 }
 
 /* Sums all entries of a given integer vector*/
-int sum_of_vector(int* vec, int length){
+double abs_sum_of_double_vector(double* vec, int length){
+	int i;
+	double sum = 0;
+	for (i = 0; i < length; i++){
+		sum = sum + fabs(vec[i]);
+	}
+	return sum;
+}
+
+/* Sum all entries of a given integer vector*/
+double sum_of_integer_vector(int* vec, int length){
 	int i;
 	int sum = 0;
 	for (i = 0; i < length; i++){
@@ -131,12 +143,44 @@ void Bhat_shift(double* dot_product, double* x, double norm, int length){
 	}
 }
 
-/* Calculating dot product of B\hat[g] */
-double Bhat_norm(Network* N, int n_g){
-	/* TODO: This is crap*/
-	double result = 0;
-	return result;
+/* Updates v such that entry j is 1 and every other entry is 0*/
+void unit_vector_j(double* v, int n, int j){
+	int i;
+
+	for(i=0; i<n; i++){
+		if(i == j){
+			v[i] = 1;
+		}
+		else{
+			v[i] = 0;
+		}
+	}
 }
+
+/* Calculating dot product of B\hat[g] */
+double Bhat_norm(Network* N, Node* g, int n_g){
+	double norm = -INFINITY;
+	int j;
+	double* ej;
+	double* B_col;
+	double col_sum;
+
+	ej = (double*)allocate(n_g * sizeof(double));
+	B_col = (double*)allocate(n_g * sizeof(double));
+
+	for(j=0; j<n_g; j++){
+		unit_vector_j(ej, n_g, j);
+		Bhat_multiplication(N, ej, B_col, g, n_g);
+		col_sum = abs_sum_of_double_vector(B_col, n_g);
+		if(col_sum > norm){
+			norm = col_sum;
+		}
+	}
+	free(ej);
+	free(B_col);
+	return norm;
+}
+
 
 /* Calculates the eigenvalue corresponding to largest eigen_vector */
 /* Shifts result by norm */
@@ -162,7 +206,6 @@ double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, in
 	free(mul);
 
 	return eigen_value;
-
 }
 
 void Bhat_tests(){
@@ -178,6 +221,7 @@ void Bhat_tests(){
 	double s[3] = {1, -1, 1};
 	int M = 8;
 	double* result;
+	double norm = 0;
 
 
 	g = node_list_from_vector(g_vector, n_g);
@@ -195,12 +239,30 @@ void Bhat_tests(){
 	result = (double*)malloc(n_g*sizeof(double));
 	assert(result != NULL);
 
+	/* ************* TESTING DOT PRODUCT ******************* */
+
 	Bhat_multiplication(net, (double*)s, (double*)result, g, n_g);
+	printf("dot product is: ");
 	print_vector(result, n_g);
+
+
+	/* ************* TESTING NORM ******************* */
+
+	norm = Bhat_norm(net, g, n_g);
+	printf("norm: %f \n", norm);
+
+	/* ********* TESTING SHIFTED DOT PRODUCT *************** */
+	Bhat_shift(result, s, norm, n_g);
+	printf("shifted dot product: ");
+	print_vector(result, n_g);
+
 	free(result);
 }
 
+/*
 int main(int argc, char* argv[]){
 	Bhat_tests();
 
 }
+*/
+

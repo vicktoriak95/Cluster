@@ -17,25 +17,91 @@ int main(FILE* input, FILE* output){
 	return 0;
 }
 */
-/*
-void write_clusters_to_output(Group* O){
+
+void write_clusters_to_output(Group* O, FILE* f){
+	Group* group_head = O;
+	Node* node_head = NULL;
+	int group_length = 0;
+	int node_length = 0;
+
+	group_length = get_group_length(group_head);
+	int_fwrite(group_length, f);
+
+	while (group_head->next != NULL){
+		node_length = get_node_length(group_head->value);
+		int_fwrite(node_length, f);
+
+		node_head = group_head->value;
+		while (node_head != NULL){
+			int_fwrite(node_head->index, f);
+			node_head = node_head->next;
+		}
+
+		group_head = group_head->next;
+	}
 }
-*/
+
 /*
 int* devide_into_two(Network* N, Node* g){
 
 }
 */
-/*
-int* calculate_s(double* eigen_vector){
 
+void calculate_s(double* eigen_vector, double* s, int n){
+	int i = 0;
+	for (i = 0; i < n; i ++){
+		if (eigen_vector[i] >= 0){
+			s[i] = 1;
+		}
+		else {
+			s[i] = -1;
+		}
+	}
 }
-*/
-/*
-Node* divide_group(Node* g, int* s){
 
+
+Node* divide_group(Node** g1_p, int* s, int n){
+	Node* g2 = NULL;
+	Node* g1_head = *g1_p;
+	Node* g1_head_prev = NULL;
+	Node* g2_head = g2;
+	Node* to_be_g2_head = NULL;
+	int i = 0;
+
+	/* Iterating over s */
+	for (i = 0; i < n; i ++){
+		/* If we do not move the node from g1 */
+		if (s[i] > 0){
+			g1_head_prev = g1_head;
+			g1_head = g1_head->next;
+		}
+		/* If we move the node to g2 */
+		else {
+			to_be_g2_head = g1_head;
+			if (g1_head_prev == NULL) {
+				*g1_p = g1_head->next;
+				g1_head = g1_head->next;
+			}
+			else {
+				g1_head_prev->next = g1_head->next;
+				g1_head = g1_head_prev->next;
+			}
+
+			if (g2_head == NULL){
+				g2 = to_be_g2_head;
+				g2_head = to_be_g2_head;
+			}
+			else {
+				g2_head->next = to_be_g2_head;
+				g2_head = g2_head->next;
+			}
+			g2_head->next = NULL;
+		}
+	}
+	return g2;
 }
-*/
+
+
 
 double calc_Qk(Network* N, double* s, Node* g, int n_g){
 	double res;
@@ -62,7 +128,6 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	int* indices;
 	int* unmoved;
 	Node* g_p = g;
-
 
 
 	/* Initiate unmoved with all the vertices' indexes corresponding to g */

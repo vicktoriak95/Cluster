@@ -34,6 +34,9 @@ void print_node_list(Node* list);
 /* Iterating over g and returns k'th value */
 int get_node_value(Node* g, int k);
 
+/* Iterating over g and count the length of the list */
+int get_node_length(Node* g);
+
 /* Creating node list out of vector */
 Node* node_list_from_vector(int* v, int n);
 
@@ -59,6 +62,9 @@ void delete_group(Group** head_ref, int n);
 
 /* Prints group */
 void print_group(Group* group);
+
+/* Iterating over the group list and count the length of the list */
+int get_group_length(Group* group);
 
 
 #endif /* NODEUTILS_H_ */
