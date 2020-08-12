@@ -11,7 +11,7 @@
 #include "Network.h"
 
 /* Finds eigen-vector with biggest eigen-value */
-double* power_iteration(Network* N, Node* g, int n_g);
+double* power_iteration(Network* N, double norm, Node* g, int n_g);
 
 /* Creates random vector */
 void create_random_vector(double * vector, int vector_size);

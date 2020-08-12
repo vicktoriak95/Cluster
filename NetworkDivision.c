@@ -66,11 +66,14 @@ Node* divide_group(Node** g1_p, int* s, int n){
 	Node* to_be_g2_head = NULL;
 	int i = 0;
 
+	/* Iterating over s */
 	for (i = 0; i < n; i ++){
+		/* If we do not move the node from g1 */
 		if (s[i] > 0){
 			g1_head_prev = g1_head;
 			g1_head = g1_head->next;
 		}
+		/* If we move the node to g2 */
 		else {
 			to_be_g2_head = g1_head;
 			if (g1_head_prev == NULL) {
