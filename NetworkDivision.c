@@ -45,7 +45,7 @@ int* devide_into_two(Network* N, Node* g){
 }
 */
 
-void calculate_s(double* eigen_vector, int* s, int n){
+void calculate_s(double* eigen_vector, double* s, int n){
 	int i = 0;
 	for (i = 0; i < n; i ++){
 		if (eigen_vector[i] >= 0){
@@ -57,7 +57,7 @@ void calculate_s(double* eigen_vector, int* s, int n){
 	}
 }
 
-
+/*
 Node* divide_group(Node** g1_p, int* s, int n){
 	Node* g2 = NULL;
 	Node* g1_head = *g1_p;
@@ -71,7 +71,7 @@ Node* divide_group(Node** g1_p, int* s, int n){
 
 	return g2;
 }
-
+*/
 /*
 void modularity_maximization(int* s, Node* g, int n_g){
 
