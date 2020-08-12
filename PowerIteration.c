@@ -16,16 +16,18 @@
 
 /* Finds eigen-vector with biggest eigen-value */
 double* power_iteration(Network* N, double norm, Node* g, int n_g){
-	double* b_prev;
-	double* b_next;
+	double b_prev_const[3] = {0.36283495, 0.56467796, 0.66505637};
+	double b_next_const[3] = {0.11767303, 0.5011049, 0.89936061};
 	double* temp;
 	int i;
+	double* b_prev = b_prev_const;
+	double* b_next = b_next_const;
 
 
 	/* Initiating b_prev to be random b_0 */
-	b_prev = (double*)allocate(n_g * sizeof(double));
-	create_random_vector(b_prev, n_g);
-	b_next =(double*)allocate(n_g * sizeof(double));
+	/*b_prev = (double*)allocate(n_g * sizeof(double));*/
+	/*create_random_vector(b_prev, n_g);*/
+	/*b_next =(double*)allocate(n_g * sizeof(double));*/
 
 	/* TODO: How to assure loop is not infinite */
 	/* While vectors diff bigger than epsilon */
@@ -37,15 +39,19 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 		Bhat_multiplication(N, b_prev, b_next, g, n_g);
 		/* Shifting b_next by b_prev and norm*/
 		Bhat_shift(b_next, b_prev, norm, n_g);
+		printf("before norm vector is: \n");
+		print_vector(b_next, n_g);
 
-
-		/* TODO: change to Bhat_mult */
 		/*
 		spmat_mult(N->A, b_prev, b_next, g, n_g);*/
+
 		norm = sqrt(dot_product(b_next, b_next, n_g));
 		for(i = 0; i < n_g; i++){
 			b_next[i] /= norm;
 		}
+		printf("after norm vector is: \n");
+		/*print_vector(b_next, n_g);*/
+
 		temp = b_prev;
 		b_prev = b_next;
 		b_next = temp;
@@ -78,15 +84,17 @@ int close_vectors(double* vector_a, double* vector_b, int n){
 void test_power_iteration(){
 	Node* g;
 	int n = 4;
-	int n_g = 2;
+	int n_g = 3;
 	int i;
 	spmat* A;
 	double* eigen_vector;
 	Network* net;
-	int deg_vector[4] = {0, 4, 0, 3};
-	int matrix[4][4] = {{0,0,0,0},{1,2,3,5},{0,0,0,0},{4,1,2,0}};
-	int g_vector[2] = {1,3};
+	int deg_vector[4] = {1, 3, 2, 2};
+	int matrix[4][4] = {{0, 1, 0, 0}, {1, 0, 1, 1}, {0, 1, 0, 1}, {0, 1, 1, 0}};
+	int g_vector[3] = {0, 2, 3};
+	/*int s[3] = {1, -1, 1};*/
 	double norm = 0;
+	int M = 8;
 
 
 	g = node_list_from_vector(g_vector, n_g);
@@ -100,7 +108,7 @@ void test_power_iteration(){
 	/*
 	A = spmat_from_matrix((int**)(&matrix), n);
 	*/
-	net = network_from_args(A, deg_vector, 4, 7);
+	net = network_from_args(A, deg_vector, 4, M);
 	norm = Bhat_norm(net, g, n_g);
 	eigen_vector = power_iteration(net, norm, g, n_g);
 	print_vector(eigen_vector, n_g);
@@ -109,10 +117,10 @@ void test_power_iteration(){
 
 }
 
-/*
+
 int main(int argc, char* argv[]){
 	test_power_iteration();
 
 }
-*/
+
 
