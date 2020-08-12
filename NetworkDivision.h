@@ -22,7 +22,7 @@ void write_clusters_to_output(Group* O, FILE* f);
 int* devide_into_two(Network* N, Node* g);
 
 /* Calculating vector s matching to given eigen-vector*/
-void calculate_s(double* eigen_vector, int* s, int n);
+void calculate_s(double* eigen_vector, double* s, int n);
 
 /* Dividing g according to s */
 /* Editing group g into group g1 ,and returns group g2 */
