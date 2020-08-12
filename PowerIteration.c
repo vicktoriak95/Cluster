@@ -15,11 +15,10 @@
 # include "LinearUtils.h"
 
 /* Finds eigen-vector with biggest eigen-value */
-double* power_iteration(Network* N, Node* g, int n_g){
+double* power_iteration(Network* N, double norm, Node* g, int n_g){
 	double* b_prev;
 	double* b_next;
 	double* temp;
-	double norm = 0;
 	int i;
 
 
@@ -33,15 +32,16 @@ double* power_iteration(Network* N, Node* g, int n_g){
 	while(close_vectors(b_prev, b_next, n_g) != 0){
 		/* Dot product between B\hat[g]_shifted and b_k */
 		/* TODO: add result in multiplication */
-		/*
-		 * Multiplying B\hat by b_prev and saving result in b_next
+
+		/* Multiplying B\hat by b_prev and saving result in b_next */
 		Bhat_multiplication(N, b_prev, b_next, g, n_g);
-		 * Shifting b_next by b_prev and norm
-		Bhat_shift(b_next, b_prev, double norm, n_g);
-		*/
+		/* Shifting b_next by b_prev and norm*/
+		Bhat_shift(b_next, b_prev, norm, n_g);
+
 
 		/* TODO: change to Bhat_mult */
-		spmat_mult(N->A, b_prev, b_next, g, n_g);
+		/*
+		spmat_mult(N->A, b_prev, b_next, g, n_g);*/
 		norm = sqrt(dot_product(b_next, b_next, n_g));
 		for(i = 0; i < n_g; i++){
 			b_next[i] /= norm;
@@ -86,6 +86,7 @@ void test_power_iteration(){
 	int deg_vector[4] = {0, 4, 0, 3};
 	int matrix[4][4] = {{0,0,0,0},{1,2,3,5},{0,0,0,0},{4,1,2,0}};
 	int g_vector[2] = {1,3};
+	double norm = 0;
 
 
 	g = node_list_from_vector(g_vector, n_g);
@@ -100,7 +101,8 @@ void test_power_iteration(){
 	A = spmat_from_matrix((int**)(&matrix), n);
 	*/
 	net = network_from_args(A, deg_vector, 4, 7);
-	eigen_vector = power_iteration(net, g, n_g);
+	norm = Bhat_norm(net, g, n_g);
+	eigen_vector = power_iteration(net, norm, g, n_g);
 	print_vector(eigen_vector, n_g);
 
 	/* TODO: Free things */
