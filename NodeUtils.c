@@ -63,6 +63,18 @@ int get_node_value(Node* g, int k){
 	return head->index;
 }
 
+/* Iterating over g and count the length of the list */
+int get_node_length(Node* g){
+	Node* head = g;
+	int length = 0;
+
+	while (head->next != NULL){
+		length += 1;
+		head = head->next;
+	}
+	return length;
+}
+
 /* Creating node list out of vector */
 Node* node_list_from_vector(int* v, int n){
 	Node* head = NULL;
@@ -127,6 +139,18 @@ void print_group(Group* group){
 		printf("NULL\n");
 		print_node_list((Node*)(group->next));
 	}
+}
+
+/* Iterating over the group list and count the length of the list */
+int get_group_length(Group* group){
+	Group* head = group;
+	int length = 0;
+
+	while (head->next != NULL){
+		length += 1;
+		head = head->next;
+	}
+	return length;
 }
 
 void test_node_utils(){
