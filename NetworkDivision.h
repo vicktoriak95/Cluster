@@ -7,6 +7,10 @@
 
 #ifndef NETWORKDIVISION_H_
 #define NETWORKDIVISION_H_
+#include <stdio.h>
+#include "NodeUtils.h"
+#include "Network.h"
+
 
 /* Main - dividing network into clusters */
 int main(FILE* input, FILE* output);

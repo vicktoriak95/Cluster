@@ -31,7 +31,7 @@ int spmat_row_sum(struct _spmat *A, int row_num, Node* g, int n_g);
 void spmat_add_row_from_vector(struct _spmat *A, const int *row, int i);
 
 /* Adds row i the matrix from file*/
-/* Returns num of non-zero entries in row*/
+/* Returns num of non-zero entries in row */
 int spmat_add_row_from_file(spmat* A ,FILE* input, int i);
 
 /* Frees all resources used by A */
