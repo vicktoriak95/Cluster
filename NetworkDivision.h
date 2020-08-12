@@ -16,7 +16,7 @@
 int main(FILE* input, FILE* output);
 
 /* Writes clusters in O to output file */
-void write_clusters_to_output(Group* O);
+void write_clusters_to_output(Group* O, FILE* f);
 
 /* Divides g into two groups */
 /* Returns vector s which represents the division of g */

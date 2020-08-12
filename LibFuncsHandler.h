@@ -11,6 +11,9 @@
 /* Read an integer from an open file descriptor */
 int int_fread(FILE* f);
 
+/* Write an integer to an open file descriptor */
+void int_fwrite(int n, FILE* f);
+
 /* Allocate n bytes and return a pointer to the allocated space */
 void* allocate(size_t n);
 
