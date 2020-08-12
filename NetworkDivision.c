@@ -57,21 +57,45 @@ void calculate_s(double* eigen_vector, double* s, int n){
 	}
 }
 
-/*
+
 Node* divide_group(Node** g1_p, int* s, int n){
 	Node* g2 = NULL;
 	Node* g1_head = *g1_p;
+	Node* g1_head_prev = NULL;
 	Node* g2_head = g2;
+	Node* to_be_g2_head = NULL;
 	int i = 0;
 
-	while (i < n && s[i] > 0) {
-		g1_head = g1_head->next;
-		i ++;
-	}
+	for (i = 0; i < n; i ++){
+		if (s[i] > 0){
+			g1_head_prev = g1_head;
+			g1_head = g1_head->next;
+		}
+		else {
+			to_be_g2_head = g1_head;
+			if (g1_head_prev == NULL) {
+				*g1_p = g1_head->next;
+				g1_head = g1_head->next;
+			}
+			else {
+				g1_head_prev->next = g1_head->next;
+				g1_head = g1_head_prev->next;
+			}
 
+			if (g2_head == NULL){
+				g2 = to_be_g2_head;
+				g2_head = to_be_g2_head;
+			}
+			else {
+				g2_head->next = to_be_g2_head;
+				g2_head = g2_head->next;
+			}
+			g2_head->next = NULL;
+		}
+	}
 	return g2;
 }
-*/
+
 /*
 void modularity_maximization(int* s, Node* g, int n_g){
 
