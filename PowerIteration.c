@@ -16,41 +16,44 @@
 
 /* Finds eigen-vector with biggest eigen-value */
 double* power_iteration(Network* N, double norm, Node* g, int n_g){
-	double b_prev_const[3] = {0.36283495, 0.56467796, 0.66505637};
-	double b_next_const[3] = {0.11767303, 0.5011049, 0.89936061};
+	/*double b_prev_const[3] = {0.36283495, 0.56467796, 0.66505637};
+	double b_next_const[3] = {0.11767303, 0.5011049, 0.89936061};*/
 	double* temp;
-	int i;
-	double* b_prev = b_prev_const;
-	double* b_next = b_next_const;
+	double* b_prev;
+	double* b_next;
+	double vector_norm = 0;
 
 
 	/* Initiating b_prev to be random b_0 */
-	/*b_prev = (double*)allocate(n_g * sizeof(double));*/
-	/*create_random_vector(b_prev, n_g);*/
-	/*b_next =(double*)allocate(n_g * sizeof(double));*/
+	b_prev = (double*)allocate(n_g * sizeof(double));
+	create_random_vector(b_prev, n_g);
+	b_next =(double*)allocate(n_g * sizeof(double));
 
 	/* TODO: How to assure loop is not infinite */
 	/* While vectors diff bigger than epsilon */
 	while(close_vectors(b_prev, b_next, n_g) != 0){
+
 		/* Dot product between B\hat[g]_shifted and b_k */
-		/* TODO: add result in multiplication */
 
 		/* Multiplying B\hat by b_prev and saving result in b_next */
 		Bhat_multiplication(N, b_prev, b_next, g, n_g);
 		/* Shifting b_next by b_prev and norm*/
 		Bhat_shift(b_next, b_prev, norm, n_g);
+
 		printf("before norm vector is: \n");
 		print_vector(b_next, n_g);
 
 		/*
 		spmat_mult(N->A, b_prev, b_next, g, n_g);*/
 
-		norm = sqrt(dot_product(b_next, b_next, n_g));
-		for(i = 0; i < n_g; i++){
-			b_next[i] /= norm;
-		}
+		/* Normalizing over norm */
+		vector_norm = sqrt(dot_product(b_next, b_next, n_g));
+		printf("norm: %f \n", vector_norm);
+		mult_vector_by_scalar(b_next, 1 / vector_norm, n_g);
+
+
 		printf("after norm vector is: \n");
-		/*print_vector(b_next, n_g);*/
+		print_vector(b_next, n_g);
 
 		temp = b_prev;
 		b_prev = b_next;
@@ -110,17 +113,24 @@ void test_power_iteration(){
 	*/
 	net = network_from_args(A, deg_vector, 4, M);
 	norm = Bhat_norm(net, g, n_g);
+	printf("norm is: %f \n", norm);
 	eigen_vector = power_iteration(net, norm, g, n_g);
+	printf("eigen_vector is: \n");
 	print_vector(eigen_vector, n_g);
 
-	/* TODO: Free things */
+	/* TODO: free stuff */
+	/*
+	delete_node_list(&g, n_g);
+	free_network(net);*/
 
 }
 
-
+/*
 int main(int argc, char* argv[]){
 	test_power_iteration();
+	printf("vicki is the best");
 
 }
+*/
 
 
