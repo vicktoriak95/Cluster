@@ -40,11 +40,11 @@ void print_vector(double* vector, int vector_size){
 }
 
 /* Sums all entries of a given integer vector*/
-double sum_of_double_vector(double* vec, int length){
+double abs_sum_of_double_vector(double* vec, int length){
 	int i;
 	double sum = 0;
 	for (i = 0; i < length; i++){
-		sum = sum + vec[i];
+		sum = sum + fabs(vec[i]);
 	}
 	return sum;
 }
@@ -171,11 +171,13 @@ double Bhat_norm(Network* N, Node* g, int n_g){
 	for(j=0; j<n_g; j++){
 		unit_vector_j(ej, n_g, j);
 		Bhat_multiplication(N, ej, B_col, g, n_g);
-		col_sum = sum_of_double_vector(B_col, n_g);
+		col_sum = abs_sum_of_double_vector(B_col, n_g);
 		if(col_sum > norm){
 			norm = col_sum;
 		}
 	}
+	free(ej);
+	free(B_col);
 	return norm;
 }
 
@@ -219,6 +221,7 @@ void Bhat_tests(){
 	double s[3] = {1, -1, 1};
 	int M = 8;
 	double* result;
+	double norm = 0;
 
 
 	g = node_list_from_vector(g_vector, n_g);
@@ -236,12 +239,30 @@ void Bhat_tests(){
 	result = (double*)malloc(n_g*sizeof(double));
 	assert(result != NULL);
 
+	/* ************* TESTING DOT PRODUCT ******************* */
+
 	Bhat_multiplication(net, (double*)s, (double*)result, g, n_g);
+	printf("dot product is: ");
 	print_vector(result, n_g);
+
+
+	/* ************* TESTING NORM ******************* */
+
+	norm = Bhat_norm(net, g, n_g);
+	printf("norm: %f \n", norm);
+
+	/* ********* TESTING SHIFTED DOT PRODUCT *************** */
+	Bhat_shift(result, s, norm, n_g);
+	printf("shifted dot product: ");
+	print_vector(result, n_g);
+
 	free(result);
 }
 
+/*
 int main(int argc, char* argv[]){
 	Bhat_tests();
 
 }
+*/
+

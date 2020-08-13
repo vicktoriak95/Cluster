@@ -17,7 +17,7 @@ double dot_product(double* vector1, double* vector2, int vector_size);
 void print_vector(double* vector, int vector_size);
 
 /* Sum all entries of a given double vector*/
-double sum_of_double_vector(double* vec, int length);
+double abs_sum_of_double_vector(double* vec, int length);
 
 /* Sum all entries of a given integer vector*/
 double sum_of_integer_vector(int* vec, int length);
