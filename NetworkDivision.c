@@ -11,6 +11,7 @@
 #include "NodeUtils.h"
 #include "LinearUtils.h"
 #include "LibFuncsHandler.h"
+#include "PowerIteration.h"
 
 /*
 int main(FILE* input, FILE* output){
@@ -41,11 +42,44 @@ void write_clusters_to_output(Group* O, FILE* f){
 	}
 }
 
-/*
-int* devide_into_two(Network* N, Node* g){
+
+void indivisable(double* s, int n_g){
+	int i;
+	for (i = 0; i < n_g; i++){
+		s[i] = 1.0;
+	}
+}
+
+void devide_into_two(Network* N, Node* g, double* s, int n_g){
+	double Q;
+	double norm;
+	double eigen_value;
+	double* eigen_vector;
+
+	norm = Bhat_norm(N, g, n_g);
+
+	eigen_vector = (double*)allocate(n_g * sizeof(double));
+	eigen_vector = power_iteration(N, norm, g, n_g);
+	eigen_value = Bhat_largest_eigenvalue(N, norm, eigen_vector, n_g, g);
+
+	/* Calculate S - In case of non-positive eigenvalues do not divide */
+	if (eigen_value <= 0){
+		indivisable(s, n_g);
+		return;
+	}
+	else{
+		calculate_s(eigen_vector, s, n_g);
+		Q = calc_Qk(N, s, g, n_g);
+			if (Q <= 0){
+				indivisable(s, n_g);
+				return;
+			}
+	}
+
+	free(eigen_vector);
 
 }
-*/
+
 
 void calculate_s(double* eigen_vector, double* s, int n){
 	int i = 0;
@@ -105,7 +139,7 @@ Node* divide_group(Node** g1_p, int* s, int n){
 
 double calc_Qk(Network* N, double* s, Node* g, int n_g){
 	double res;
-	double * result;
+	double* result;
 
 	result = (double*)allocate(n_g * sizeof(double));
 	Bhat_multiplication(N, s, result, g, n_g);
@@ -174,7 +208,6 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 
 			/* Remove max_score_index from unmoved */
 			unmoved[max_score_index] = -1;
-
 		}
 
 		/* Find the largest improvement index */
@@ -200,6 +233,11 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 
 
 	}while(delta_Q > 0);
+
+	free(unmoved);
+	free(improve);
+	free(indices);
+
 
 }
 

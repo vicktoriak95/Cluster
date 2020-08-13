@@ -17,9 +17,12 @@ int main(FILE* input, FILE* output); */
 /* Writes clusters in O to output file */
 void write_clusters_to_output(Group* O, FILE* f);
 
+/* Fills s with 1.0 - meaning all vertices are in the same group */
+void indivisable(double* s, int n_g);
+
 /* Divides g into two groups */
 /* Returns vector s which represents the division of g */
-int* devide_into_two(Network* N, Node* g);
+void devide_into_two(Network* N, Node* g, double* s, int n_g);
 
 /* Calculating vector s matching to given eigen-vector*/
 void calculate_s(double* eigen_vector, double* s, int n);

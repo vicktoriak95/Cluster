@@ -43,7 +43,7 @@ double Bhat_norm(Network* N, Node* g, int n_g);
 
 /* Calculates the eigenvalue corresponding to largest eigen_vector */
 /* Shifts result by norm */
-double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, int n_g);
+double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, int n_g, Node* g);
 
 /* Updates v such that entry j is 1 and every other entry is 0*/
 void unit_vector_j(double* v, int n, int j);
