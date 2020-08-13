@@ -14,6 +14,9 @@
 /* Main - dividing network into clusters */
 int main(FILE* input, FILE* output);
 
+/* Fills s with 1.0 - meaning all vertices are in the same group */
+void indivisable(double* s, int n_g);
+
 /* Divides g into two groups */
 /* Returns vector s which represents the division of g */
 void devide_into_two(Network* N, Node* g, double* s, int n_g);
