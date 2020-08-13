@@ -25,8 +25,6 @@ int main(int argc, char* argv[]){
 	Node* g2 = NULL;
 	double* s = NULL;
 	Group* old_P = NULL;
-	Group* tmp_O = NULL;
-	Group* tmp_P = NULL;
 	Node* head = NULL;
 	int i = 0;
 	int n_g = 0;
@@ -65,7 +63,12 @@ int main(int argc, char* argv[]){
 		/* One of the groups is empty */
 		if (g1 == NULL || g2 == NULL){
 			// set g as the non emply list
-			g1 != NULL ? g = g1 : g = g2;
+			if (g1 != NULL){
+				g = g1;
+			}
+			else {
+				g = g2;
+			}
 			/* Insert g into O */
 			push_group(&O, g);
 		}
@@ -332,13 +335,13 @@ void test_modularity_maximization(){
 
 }
 
-
+/*
 int main(int argc, char* argv[]){
 	test_modularity_maximization();
 	printf("finished - Adi is the best");
 
 }
-
+*/
 
 
 

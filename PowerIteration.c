@@ -95,7 +95,7 @@ void test_power_iteration(){
 	int deg_vector[4] = {1, 3, 2, 2};
 	int matrix[4][4] = {{0, 1, 0, 0}, {1, 0, 1, 1}, {0, 1, 0, 1}, {0, 1, 1, 0}};
 	int g_vector[3] = {0, 2, 3};
-	int s[3] = {1, -1, 1};
+	/*int s[3] = {1, -1, 1};*/
 
 	double norm = 0;
 	int M = 8;
