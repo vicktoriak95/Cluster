@@ -11,35 +11,94 @@
 #include "NodeUtils.h"
 #include "LinearUtils.h"
 #include "LibFuncsHandler.h"
+#include "Network.h"
 #include "PowerIteration.h"
 
-/*
-int main(FILE* input, FILE* output){
-	return 0;
-}
-*/
+int main(int argc, char* argv[]){
+	FILE* input;
+	FILE* output;
+	Network* net = NULL;
+	Group* P = NULL;
+	Group* O = NULL;
+	Node* g = NULL;
+	Node* g1 = NULL;
+	Node* g2 = NULL;
+	double* s = NULL;
+	Group* old_P = NULL;
+	Node* head = NULL;
+	int i = 0;
+	int n_g = 0;
 
-void write_clusters_to_output(Group* O, FILE* f){
-	Group* group_head = O;
-	Node* node_head = NULL;
-	int group_length = 0;
-	int node_length = 0;
 
-	group_length = get_group_length(group_head);
-	int_fwrite(group_length, f);
+	/* Read the input file into the net struct */
+	input = open_file(argv[1], "rb");
+	net = create_network(input);
+	close_file(input);
 
-	while (group_head->next != NULL){
-		node_length = get_node_length(group_head->value);
-		int_fwrite(node_length, f);
-
-		node_head = group_head->value;
-		while (node_head != NULL){
-			int_fwrite(node_head->index, f);
-			node_head = node_head->next;
-		}
-
-		group_head = group_head->next;
+	/*  Create the group P with the first node */
+	head = create_node(0);
+	P = create_group(head);
+	/* Create the other n-1 nodes and add them to the group P */
+	for (i = 1; i < net->n; i ++){
+		head->next = create_node(i);
+		head = head->next;
 	}
+
+	while (P != NULL){
+		/* Pop g out of P */
+		g = P->value;
+		old_P = P;
+		P = P->next;
+		free(old_P);
+
+		/* Divide g into two groups */
+		n_g = get_node_length(g);
+		s = (double*)allocate(n_g * sizeof(double));
+		devide_into_two(net, g, s, n_g);
+		modularity_maximization(net, s, g, n_g);
+		g1 = g;
+		g2 = divide_group(&g1, s, n_g);
+		free(s);
+
+		/* One of the groups is empty */
+		if (g1 == NULL || g2 == NULL){
+			// set g as the non emply list
+			if (g1 != NULL){
+				g = g1;
+			}
+			else {
+				g = g2;
+			}
+			/* Insert g into O */
+			push_group(&O, g);
+		}
+		else {
+			/* For each group in {g1, g2} push them into O iff size == 1 */
+			if (g1->next == NULL){
+				push_group(&O, g1);
+			}
+			else {
+				push_group(&P, g1);
+			}
+			if (g2->next == NULL){
+				push_group(&O, g2);
+			}
+			else {
+				push_group(&P, g2);
+			}
+		}
+	}
+
+	/* Write the devision to output file */
+	output = open_file(argv[2], "wb");
+	write_clusters_to_output(O, output);
+	close_file(output);
+
+	/* Free all  */
+	delete_group(&O, net->n);
+	free_network(net);
+
+	return 0;
 }
 
 
@@ -77,13 +136,12 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g){
 	}
 
 	free(eigen_vector);
-
 }
 
 
-void calculate_s(double* eigen_vector, double* s, int n){
+void calculate_s(double* eigen_vector, double* s, int n_g){
 	int i = 0;
-	for (i = 0; i < n; i ++){
+	for (i = 0; i < n_g; i ++){
 		if (eigen_vector[i] >= 0){
 			s[i] = 1;
 		}
@@ -94,7 +152,7 @@ void calculate_s(double* eigen_vector, double* s, int n){
 }
 
 
-Node* divide_group(Node** g1_p, int* s, int n){
+Node* divide_group(Node** g1_p, double* s, int n_g){
 	Node* g2 = NULL;
 	Node* g1_head = *g1_p;
 	Node* g1_head_prev = NULL;
@@ -103,7 +161,7 @@ Node* divide_group(Node** g1_p, int* s, int n){
 	int i = 0;
 
 	/* Iterating over s */
-	for (i = 0; i < n; i ++){
+	for (i = 0; i < n_g; i ++){
 		/* If we do not move the node from g1 */
 		if (s[i] > 0){
 			g1_head_prev = g1_head;
@@ -277,13 +335,13 @@ void test_modularity_maximization(){
 
 }
 
-
+/*
 int main(int argc, char* argv[]){
 	test_modularity_maximization();
 	printf("finished - Adi is the best");
 
 }
-
+*/
 
 
 

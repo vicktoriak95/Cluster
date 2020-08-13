@@ -109,10 +109,8 @@ void test_power_iteration(){
 	}
 	printf("created A \n");
 
-	/*
-	A = spmat_from_matrix((int**)(&matrix), n);
-	*/
 
+	A = spmat_from_matrix((int**)(&matrix), n);
 	net = network_from_args(A, deg_vector, 4, M);
 	norm = Bhat_norm(net, g, n_g);
 	printf("norm is: %f \n", norm);
