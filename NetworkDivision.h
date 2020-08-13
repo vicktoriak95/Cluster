@@ -11,8 +11,8 @@
 #include "NodeUtils.h"
 #include "Network.h"
 
-/* Main - dividing network into clusters */
-int main(FILE* input, FILE* output);
+/* Main - dividing network into clusters
+int main(FILE* input, FILE* output); */
 
 /* Writes clusters in O to output file */
 void write_clusters_to_output(Group* O, FILE* f);
@@ -28,7 +28,14 @@ void calculate_s(double* eigen_vector, double* s, int n);
 /* Editing group g into group g1 ,and returns group g2 */
 Node* divide_group(Node** g1_p, int* s, int n);
 
+/* Calculates s^t * b_hat[g] * s */
+double calc_Qk(Network* N, double* s, Node* g, int n_g);
+
 /* Improving modularity */
-void modularity_maximization(int* s, Node* g, int n_g);
+void modularity_maximization(Network* N, double* s, Node* g, int n_g);
+
+void test_modularity_maximization();
+
+int main(int argc, char* argv[]);
 
 #endif /* NETWORKDIVISION_H_ */

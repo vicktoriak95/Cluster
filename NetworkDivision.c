@@ -5,11 +5,13 @@
  *      Author: User
  */
 
+#include <math.h>
+#include <stdlib.h>
 #include "NetworkDivision.h"
 #include "NodeUtils.h"
+#include "LinearUtils.h"
 #include "LibFuncsHandler.h"
 
-#include <stdlib.h>
 /*
 int main(FILE* input, FILE* output){
 	return 0;
@@ -99,8 +101,158 @@ Node* divide_group(Node** g1_p, int* s, int n){
 	return g2;
 }
 
-/*
-void modularity_maximization(int* s, Node* g, int n_g){
+
+
+double calc_Qk(Network* N, double* s, Node* g, int n_g){
+	double res;
+	double * result;
+
+	result = (double*)allocate(n_g * sizeof(double));
+	Bhat_multiplication(N, s, result, g, n_g);
+	res = dot_product(s, result, n_g);
+	free(result);
+
+	return res;
+}
+
+void modularity_maximization(Network* N, double* s, Node* g, int n_g){
+	int i;
+	int k;
+	int max_score_index = -1;
+	int improve_index = 0;
+	double Q0, Qk;
+	double delta_Q;
+	double Q_diff = - INFINITY;
+	double max_score = - INFINITY;
+	double* improve;
+	int* indices;
+	int* unmoved;
+	Node* g_p = g;
+
+
+	/* Initiate unmoved with all the vertices' indexes corresponding to g */
+	unmoved = (int*)allocate(n_g * sizeof(int));
+	for(i = 0; i < n_g; i++){
+		unmoved[i] = g_p->index;
+		g_p = g_p->next;
+	}
+
+	improve = (double*)allocate(n_g * sizeof(double));
+	indices = (int*)allocate(n_g * sizeof(int));
+
+	do{
+		for (i = 0; i < n_g; i++){
+			Q0 = calc_Qk(N, s, g, n_g);
+
+			for(k = 0; k < n_g; k++){
+
+				if(unmoved[k] != (-1)){
+					s[k] = s[k]*(-1);
+					Qk = calc_Qk(N, s, g, n_g);
+					Q_diff = Qk - Q0;
+					if (Q_diff > max_score){
+						max_score = Q_diff;
+						max_score_index = k;
+					}
+					s[k] = s[k]*(-1);
+				}
+			}
+
+			/* Move max_score_index to the other group */
+			s[max_score_index] = s[max_score_index]*(-1);
+
+			/* Add max_score_index to indices, which keeps the vertices transferring order */
+			indices[i] = max_score_index;
+
+			/* Update improve */
+			if (i == 0){
+				improve[i] = max_score;
+			}
+			else{
+				improve[i] = improve[i-1] + max_score;
+			}
+
+			/* Remove max_score_index from unmoved */
+			unmoved[max_score_index] = -1;
+
+		}
+
+		/* Find the largest improvement index */
+		for (k = 0; k < n_g; k++){
+			if (improve[k] > improve[improve_index]){
+				improve_index = k;
+			}
+		}
+
+		/* Move back all the remaining vertices that do not improve the modularity */
+		for(i = n_g - 1; i > improve_index; i--){
+			k = indices[i];
+			s[k] = s[k]*(-1);
+		}
+
+		/* If the best separation occurs when all the vertices switched groups, then nothing actually changed */
+		if (improve_index == n_g - 1){
+			delta_Q = 0;
+		}
+		else{
+			delta_Q = improve[improve_index];
+		}
+
+
+	}while(delta_Q > 0);
 
 }
-*/
+
+
+
+void test_modularity_maximization(){
+	Node* g;
+	int n = 4;
+	int n_g = 3;
+	int i;
+	spmat* A;
+	/*double* eigen_vector;*/
+	Network* net;
+	int M = 8;
+	int deg_vector[4] = {1, 3, 2, 2};
+	int matrix[4][4] = {{0, 1, 0, 0}, {1, 0, 1, 1}, {0, 1, 0, 1}, {0, 1, 1, 0}};
+	int g_vector[4] = {0, 1, 2, 3};
+	double s[3] = {1, -1, 1};
+	/* double norm = 0; */
+
+
+	g = node_list_from_vector(g_vector, n_g);
+
+	A = spmat_allocate(n);
+	for(i = 0; i < n; i++){
+		spmat_add_row_from_vector(A, matrix[i], i);
+	}
+	printf("created A \n");
+
+	net = network_from_args(A, deg_vector, 4, M);
+	modularity_maximization(net, s, g, n_g);
+	/* norm = Bhat_norm(net, g, n_g); */
+	/* eigen_vector = power_iteration(net, norm, g, n_g); */
+	/* print_vector(eigen_vector, n_g); */
+
+	/* TODO: Free things */
+
+}
+
+
+int main(int argc, char* argv[]){
+	test_modularity_maximization();
+	printf("finished - Adi is the best");
+
+}
+
+
+
+
+
+
+
+
+
+
+
