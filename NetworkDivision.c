@@ -205,6 +205,46 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 
 
 
+void test_modularity_maximization(){
+	Node* g;
+	int n = 4;
+	int n_g = 3;
+	int i;
+	spmat* A;
+	/*double* eigen_vector;*/
+	Network* net;
+	int M = 8;
+	int deg_vector[4] = {1, 3, 2, 2};
+	int matrix[4][4] = {{0, 1, 0, 0}, {1, 0, 1, 1}, {0, 1, 0, 1}, {0, 1, 1, 0}};
+	int g_vector[4] = {0, 1, 2, 3};
+	double s[3] = {1, -1, 1};
+	/* double norm = 0; */
+
+
+	g = node_list_from_vector(g_vector, n_g);
+
+	A = spmat_allocate(n);
+	for(i = 0; i < n; i++){
+		spmat_add_row_from_vector(A, matrix[i], i);
+	}
+	printf("created A \n");
+
+	net = network_from_args(A, deg_vector, 4, M);
+	modularity_maximization(net, s, g, n_g);
+	/* norm = Bhat_norm(net, g, n_g); */
+	/* eigen_vector = power_iteration(net, norm, g, n_g); */
+	/* print_vector(eigen_vector, n_g); */
+
+	/* TODO: Free things */
+
+}
+
+
+int main(int argc, char* argv[]){
+	test_modularity_maximization();
+	printf("finished - Adi is the best");
+
+}
 
 
 
