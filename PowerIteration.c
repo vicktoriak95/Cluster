@@ -80,7 +80,7 @@ int close_vectors(double* vector_a, double* vector_b, int n){
 	}
 	return 0;
 }
-
+/*
 void test_power_iteration(){
 	Node* g;
 	int n = 4;
@@ -93,6 +93,7 @@ void test_power_iteration(){
 	int matrix[4][4] = {{0, 1, 0, 0}, {1, 0, 1, 1}, {0, 1, 0, 1}, {0, 1, 1, 0}};
 	int g_vector[3] = {0, 2, 3};
 	/*int s[3] = {1, -1, 1};*/
+	/*
 	double norm = 0;
 	int M = 8;
 
@@ -108,19 +109,22 @@ void test_power_iteration(){
 	/*
 	A = spmat_from_matrix((int**)(&matrix), n);
 	*/
+/*
 	net = network_from_args(A, deg_vector, 4, M);
 	norm = Bhat_norm(net, g, n_g);
 	eigen_vector = power_iteration(net, norm, g, n_g);
 	print_vector(eigen_vector, n_g);
 
 	/* TODO: Free things */
-
+/*
 }
 
-
+*/
+/*
 int main(int argc, char* argv[]){
 	test_power_iteration();
 
 }
+*/
 
 
