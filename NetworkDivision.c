@@ -14,7 +14,9 @@
 #include "Network.h"
 #include "PowerIteration.h"
 
-int main(FILE* input, FILE* output){
+int main(int argc, char* argv[]){
+	FILE* input;
+	FILE* output;
 	Network* net = NULL;
 	Group* P = NULL;
 	Group* O = NULL;
@@ -31,7 +33,9 @@ int main(FILE* input, FILE* output){
 
 
 	/* Read the input file into the net struct */
+	input = open_file(argv[1], "rb");
 	net = create_network(input);
+	close_file(input);
 
 	/*  Create the group P with the first node */
 	head = create_node(0);
@@ -83,7 +87,9 @@ int main(FILE* input, FILE* output){
 	}
 
 	/* Write the devision to output file */
+	output = open_file(argv[2], "wb");
 	write_clusters_to_output(O, output);
+	close_file(output);
 
 	/* Free all  */
 	delete_group(&O, net->n);

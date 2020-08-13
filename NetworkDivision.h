@@ -11,9 +11,6 @@
 #include "NodeUtils.h"
 #include "Network.h"
 
-/* Main - dividing network into clusters */
-int main(FILE* input, FILE* output);
-
 /* Fills s with 1.0 - meaning all vertices are in the same group */
 void indivisable(double* s, int n_g);
 
@@ -36,6 +33,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g);
 
 void test_modularity_maximization();
 
+/* Main - dividing network into clusters */
 int main(int argc, char* argv[]);
 
 #endif /* NETWORKDIVISION_H_ */
