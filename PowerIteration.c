@@ -92,8 +92,8 @@ void test_power_iteration(){
 	int deg_vector[4] = {1, 3, 2, 2};
 	int matrix[4][4] = {{0, 1, 0, 0}, {1, 0, 1, 1}, {0, 1, 0, 1}, {0, 1, 1, 0}};
 	int g_vector[3] = {0, 2, 3};
-	/*int s[3] = {1, -1, 1};*/
-	/*
+	int s[3] = {1, -1, 1};
+
 	double norm = 0;
 	int M = 8;
 
@@ -106,17 +106,17 @@ void test_power_iteration(){
 	}
 	printf("created A \n");
 
-	/*
+
 	A = spmat_from_matrix((int**)(&matrix), n);
-	*/
-/*
+
+
 	net = network_from_args(A, deg_vector, 4, M);
 	norm = Bhat_norm(net, g, n_g);
 	eigen_vector = power_iteration(net, norm, g, n_g);
 	print_vector(eigen_vector, n_g);
 
-	/* TODO: Free things */
-/*
+	TODO: Free things
+
 }
 
 */

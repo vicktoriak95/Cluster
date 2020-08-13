@@ -48,6 +48,29 @@ Network* create_network(FILE* input){
 	return net;
 }
 
+void write_clusters_to_output(Group* O, FILE* f){
+	Group* group_head = O;
+	Node* node_head = NULL;
+	int group_length = 0;
+	int node_length = 0;
+
+	group_length = get_group_length(group_head);
+	int_fwrite(group_length, f);
+
+	while (group_head->next != NULL){
+		node_length = get_node_length(group_head->value);
+		int_fwrite(node_length, f);
+
+		node_head = group_head->value;
+		while (node_head != NULL){
+			int_fwrite(node_head->index, f);
+			node_head = node_head->next;
+		}
+
+		group_head = group_head->next;
+	}
+}
+
 /* Free all allocated space of a network */
 void free_network(Network* net){
 	spmat_free(net->A);

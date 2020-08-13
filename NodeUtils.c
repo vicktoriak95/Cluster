@@ -53,10 +53,11 @@ void delete_node_list(Node** head_ref, int n){
 	Node* next;
 
 	while ((cnt < n) && (current != NULL)){
-		if (cnt >= n){
+		/* TODO: check infinite loop in a different way */
+		/*if (cnt >= n){
 			printf("Infinite loop - delete_node_list");
 			exit(1);
-		}
+		}*/
 		next = current->next;
 		free(current);
 		current = next;
@@ -149,10 +150,16 @@ Group* create_group(Node* node){
 void push_group(Group** head_ref, Node* new_node){
 	/* Create new List */
 	Group* curr_group = create_group(new_node);
-	/* Make next of new list as head */
-	curr_group->next = (*head_ref);
-	/* Move the head to point to the new list*/
-	(*head_ref) = curr_group;
+
+	if ((*head_ref) == NULL) {
+		(*head_ref) = curr_group;
+	}
+	else {
+		/* Make next of new list as head */
+		curr_group->next = (*head_ref);
+		/* Move the head to point to the new list*/
+		(*head_ref) = curr_group;
+	}
 }
 
 void delete_group(Group** head_ref, int n){
@@ -161,10 +168,11 @@ void delete_group(Group** head_ref, int n){
 	Group* next;
 
 	while ((cnt < n) && (current != NULL)){
-		if (cnt >= n){
+		/* TODO: check infinite loop in a different way */
+		/*if (cnt >= n){
 			printf("Infinite loop - delete_node_list");
 			exit(1);
-		}
+		}*/
 		next = current->next;
 		delete_node_list(&(current->value), n);
 		free(current);
