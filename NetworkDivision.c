@@ -201,6 +201,9 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 
 	}while(delta_Q > 0);
 
+	free(unmoved);
+	free(improve);
+	free(indices);
 }
 
 
@@ -241,10 +244,11 @@ void test_modularity_maximization(){
 
 
 int main(int argc, char* argv[]){
-	test_modularity_maximization();
-	printf("finished - Adi is the best");
+	return(1);
 
 }
+
+
 
 
 

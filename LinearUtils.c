@@ -116,14 +116,6 @@ void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g
 }
 
 
-/* Adding vector2 to vector1 */
-void vectors_sum(double* vector1, double* vector2, int length){
-	int i;
-	for (i = 0; i < length; i++){
-		vector1[i] = vector1[i] + vector2[i];
-	}
-}
-
 /* Multiplying all entries of a given vector by a scalar */
 void mult_vector_by_scalar(double* vector, double scalar, int length){
 	int i;
@@ -219,7 +211,9 @@ void Bhat_tests(){
 	int matrix[4][4] = {{0, 1, 0, 0}, {1, 0, 1, 1}, {0, 1, 0, 1}, {0, 1, 1, 0}};
 	int g_vector[3] = {0, 2, 3};
 	double s[3] = {1, -1, 1};
+	double eigen_vector[3] = {-0.81647692, 0.40826795, 0.40826795};
 	int M = 8;
+	double eigen_value;
 	double* result;
 	double norm = 0;
 
@@ -256,7 +250,13 @@ void Bhat_tests(){
 	printf("shifted dot product: ");
 	print_vector(result, n_g);
 
+	/* ************* TESTING BIGGEST EIGEN-VECTOR *********** */
+	eigen_value = Bhat_largest_eigenvalue(net, norm, eigen_vector, n_g, g);
+	printf("eigen_value: %f \n", eigen_value);
+
+	/*TODO: free g */
 	free(result);
+	free(net);
 }
 
 /*
