@@ -8,6 +8,28 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+FILE* open_file(const char *pathname, const char *mode){
+	FILE* f = NULL;
+
+	f = fopen(pathname, mode);
+	if (f == NULL){
+		printf("File opening failed");
+		exit(1);
+	}
+	return f;
+}
+
+int close_file(FILE *stream){
+	int result = 0;
+
+	result = fclose(stream);
+	if (result == EOF){
+		printf("File closing failed");
+		exit(1);
+	}
+	return result;
+}
+
 /* Read an integer from an open file descriptor */
 int int_fread(FILE* f){
 	int n = 0;

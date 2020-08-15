@@ -8,6 +8,10 @@
 #ifndef LIBFUNCSHANDLER_H_
 #define LIBFUNCSHANDLER_H_
 
+FILE* open_file(const char *pathname, const char *mode);
+
+int close_file(FILE *stream);
+
 /* Read an integer from an open file descriptor */
 int int_fread(FILE* f);
 
