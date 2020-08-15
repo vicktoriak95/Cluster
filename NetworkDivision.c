@@ -29,7 +29,6 @@ int main(int argc, char* argv[]){
 	int i = 0;
 	int n_g = 0;
 
-
 	/* Read the input file into the net struct */
 	input = open_file(argv[1], "rb");
 	net = create_network(input);
@@ -62,7 +61,7 @@ int main(int argc, char* argv[]){
 
 		/* One of the groups is empty */
 		if (g1 == NULL || g2 == NULL){
-			// set g as the non emply list
+			/* set g as the non emply list */
 			if (g1 != NULL){
 				g = g1;
 			}
@@ -94,13 +93,14 @@ int main(int argc, char* argv[]){
 	write_clusters_to_output(O, output);
 	close_file(output);
 
+	print_output_file(argv[2]);
+
 	/* Free all  */
 	delete_group(&O, net->n);
 	free_network(net);
 
 	return 0;
 }
-
 
 void indivisable(double* s, int n_g){
 	int i;
@@ -109,19 +109,22 @@ void indivisable(double* s, int n_g){
 	}
 }
 
+
 void devide_into_two(Network* N, Node* g, double* s, int n_g){
 	double Q;
 	double norm;
 	double eigen_value;
 	double* eigen_vector;
 
+	/* Calculating matrix norm */
 	norm = Bhat_norm(N, g, n_g);
 
+	/* Finding biggest eigen_vector */
 	eigen_vector = (double*)allocate(n_g * sizeof(double));
 	eigen_vector = power_iteration(N, norm, g, n_g);
 	eigen_value = Bhat_largest_eigenvalue(N, norm, eigen_vector, n_g, g);
 
-	/* Calculate S - In case of non-positive eigenvalues do not divide */
+	/* Calculate s - In case of non-positive eigenvalues do not divide */
 	if (eigen_value <= 0){
 		indivisable(s, n_g);
 		return;
@@ -134,7 +137,6 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g){
 				return;
 			}
 	}
-
 	free(eigen_vector);
 }
 
@@ -219,25 +221,24 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	double* improve;
 	int* indices;
 	int* unmoved;
-	Node* g_p = g;
-
 
 	/* Initiate unmoved with all the vertices' indexes corresponding to g */
 	unmoved = (int*)allocate(n_g * sizeof(int));
-	for(i = 0; i < n_g; i++){
-		unmoved[i] = g_p->index;
-		g_p = g_p->next;
-	}
-
 	improve = (double*)allocate(n_g * sizeof(double));
 	indices = (int*)allocate(n_g * sizeof(int));
 
+	/* Keep improving while Q > 0 */
 	do{
+		/* Initiating unmoved with g values */
+		vector_from_list(unmoved, g, n_g);
+
+		/* Making n_g transitions of vertices to improve Q*/
 		for (i = 0; i < n_g; i++){
 			Q0 = calc_Qk(N, s, g, n_g);
-
+			max_score = - INFINITY;
+			max_score_index = -1;
+			/* Searching for the best node to move among unmoved */
 			for(k = 0; k < n_g; k++){
-
 				if(unmoved[k] != (-1)){
 					s[k] = s[k]*(-1);
 					Qk = calc_Qk(N, s, g, n_g);
@@ -298,23 +299,49 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 
 }
 
+void print_output_file(char *pathname){
+	FILE* output_file = NULL;
+	int num_of_groups = -1;
+	int i = -1;
+	int j = -1;
+	int num_of_nodes_in_group = -1;
+	int node_index = -1;
+
+	output_file = open_file(pathname, "rb");
+	num_of_groups = int_fread(output_file);
+	/* Reading num of groups */
+	printf("Num of groups: %d \n", num_of_groups);
+	/* Reading num of nodes in every group, and nodes in group  */
+	for(i=0; i < num_of_groups; i++){
+		num_of_nodes_in_group = int_fread(output_file);
+		printf("Num of nodes in group %d is %d \n", i, num_of_nodes_in_group);
+		/* Reading nodes in group */
+		printf("The nodes are:");
+		for(j=0; j < num_of_nodes_in_group; j++){
+			node_index = int_fread(output_file);
+			printf(" %d", node_index);
+		}
+		printf(" \n");
+	}
+	close_file(output_file);
+
+}
 
 
 void test_modularity_maximization(){
 	Node* g;
 	int n = 4;
-	int n_g = 3;
+	int n_g = 4;
 	int i;
 	spmat* A;
 	/*double* eigen_vector;*/
 	Network* net;
-	int M = 8;
-	int deg_vector[4] = {1, 3, 2, 2};
-	int matrix[4][4] = {{0, 1, 0, 0}, {1, 0, 1, 1}, {0, 1, 0, 1}, {0, 1, 1, 0}};
+	int M = 10;
+	int deg_vector[4] = {2, 3, 2, 3};
+	int matrix[4][4] = {{0, 1, 0, 1}, {1, 0, 1, 1}, {0, 1, 0, 1}, {1, 1, 1, 0}};
 	int g_vector[4] = {0, 1, 2, 3};
-	double s[3] = {1, -1, 1};
+	double s[4] = {0, 0, 0, 0};
 	/* double norm = 0; */
-
 
 	g = node_list_from_vector(g_vector, n_g);
 
@@ -323,23 +350,35 @@ void test_modularity_maximization(){
 		spmat_add_row_from_vector(A, matrix[i], i);
 	}
 	printf("created A \n");
-
 	net = network_from_args(A, deg_vector, 4, M);
-	modularity_maximization(net, s, g, n_g);
+
+	/* ******** Checking norm, eigenvector, eigenvalue ************ */
 	/* norm = Bhat_norm(net, g, n_g); */
 	/* eigen_vector = power_iteration(net, norm, g, n_g); */
 	/* print_vector(eigen_vector, n_g); */
 
+	/* ******* Checking mod max ********* */
+	/*
+	modularity_maximization(net, s, g, n_g);
+	printf("vector s is: ");
+	print_vector(s, n_g);
+	*/
+
+	/* ****** Checking algo 2 *********** */
+	devide_into_two(net, g, s, n_g);
+	printf("vector s is: ");
+	print_vector(s, n_g);
 	/* TODO: Free things */
 
 }
 
 /*
 int main(int argc, char* argv[]){
-	return(1);
+	test_modularity_maximization();
 
 }
 */
+
 
 
 

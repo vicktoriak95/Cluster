@@ -61,7 +61,7 @@ void write_clusters_to_output(Group* O, FILE* f){
 	group_length = get_group_length(group_head);
 	int_fwrite(group_length, f);
 
-	while (group_head->next != NULL){
+	while (group_head != NULL){
 		node_length = get_node_length(group_head->value);
 		int_fwrite(node_length, f);
 

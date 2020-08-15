@@ -176,7 +176,6 @@ void spmat_mult(const spmat* A, const double *v, double *result, Node* g, int n_
 }
 
 
-
 /* Sums row values of A, according to g values */
 int spmat_row_sum(spmat* A, int row_num, Node* g, int n_g){
 	Node_matrix* row_head;

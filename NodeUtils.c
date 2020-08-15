@@ -84,7 +84,7 @@ int get_node_length(Node* g){
 	Node* head = g;
 	int length = 0;
 
-	while (head->next != NULL){
+	while (head != NULL){
 		length += 1;
 		head = head->next;
 	}
@@ -124,6 +124,15 @@ void copy_node_list(Node* original, Node* copy){
 		curr_copy->next = temp;
 		curr_copy = temp;
 	}
+}
+
+void vector_from_list(int* vector, Node* g ,int n){
+	int i;
+	Node* g_p = g;
+	for(i = 0; i < n; i++){
+			vector[i] = g_p->index;
+			g_p = g_p->next;
+		}
 }
 
 Group* create_group(Node* node){
@@ -183,7 +192,7 @@ int get_group_length(Group* group){
 	Group* head = group;
 	int length = 0;
 
-	while (head->next != NULL){
+	while (head != NULL){
 		length += 1;
 		head = head->next;
 	}

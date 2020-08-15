@@ -8,7 +8,7 @@
 #ifndef LIBFUNCSHANDLER_H_
 #define LIBFUNCSHANDLER_H_
 
-FILE* open_file(const char *pathname, const char *mode);
+FILE* open_file(char *pathname, const char *mode);
 
 int close_file(FILE *stream);
 
