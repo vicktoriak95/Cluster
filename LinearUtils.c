@@ -184,8 +184,7 @@ double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, in
 	double eigen_value;
 
 	/* Calculating numerator */
-	mul = (double*)malloc(n_g*sizeof(double));
-	/* TODO: add assert from libfunchanler */
+	mul = (double*)allocate(n_g * sizeof(double));
 	Bhat_multiplication(N, eigen_vector, mul, g, n_g);
 	/* Shifting mul */
 	Bhat_shift(mul, eigen_vector, norm, n_g);
@@ -230,8 +229,7 @@ void Bhat_tests(){
 	A = spmat_from_matrix((int**)(&matrix), n);
 	*/
 	net = network_from_args(A, deg_vector, 4, M);
-	result = (double*)malloc(n_g*sizeof(double));
-	assert(result != NULL);
+	result = (double*)allocate(n_g * sizeof(double));
 
 	/* ************* TESTING DOT PRODUCT ******************* */
 
