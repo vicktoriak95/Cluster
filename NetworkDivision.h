@@ -33,7 +33,6 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g);
 
 void test_modularity_maximization();
 
-/* Main - dividing network into clusters */
 int main(int argc, char* argv[]);
 
 #endif /* NETWORKDIVISION_H_ */
