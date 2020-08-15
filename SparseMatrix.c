@@ -83,7 +83,7 @@ void spmat_add_row_from_vector(struct _spmat *A, const int *row, int i){
 			}
 			/* List is not empty */
 			else {
-				tail->next = (struct Node_matrix*)node;
+				tail->next = node;
 			}
 			tail = node;
 		}
@@ -113,7 +113,7 @@ int spmat_add_row_from_file(spmat* A ,FILE* input, int i){
 		}
 		/* List is not empty */
 		else {
-			tail->next = (struct Node_matrix*)node;
+			tail->next = node;
 		}
 		/* Tail always Pointing on last node added */
 		tail = node;

@@ -47,10 +47,10 @@ int spmat_row_sum(struct _spmat *A, int row_num, Node* g, int n_g);
 spmat* spmat_from_matrix(int** matrix, int n);
 
 /* Definition of node struct representing entries in sparse matrix*/
-typedef struct {
+typedef struct _Node_matrix {
     double value;
     int col_index;
-    struct Node_matrix* next;
+    struct _Node_matrix* next;
 } Node_matrix;
 
 /* Create node in a list representing row */
