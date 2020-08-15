@@ -16,11 +16,8 @@
 /* Create node in a list representing row */
 Node_matrix* nodemat_create_node(int value, int col_index){
 	Node_matrix* node;
-	node = (Node_matrix *)malloc(sizeof(Node_matrix));
-	if(node == NULL){
-		printf("Memory allocation failed - list_create_node");
-		exit(1);
-	}
+
+	node = (Node_matrix*)allocate(sizeof(Node_matrix));
 	node->value = value;
 	node->col_index = col_index;
 	node->next = NULL;
@@ -44,17 +41,10 @@ spmat* spmat_allocate(int n){
 	Node_matrix** private;
 
 	/* Allocating mem for A */
-	A = (spmat*)malloc(sizeof(spmat));
-	if(A == NULL){
-		printf("Memory allocation failed - spmat_allocate_list 1");
-		exit(1);
-	}
+	A = (spmat*)allocate(sizeof(spmat));
 
 	/* Using calloc to assure all pointers are NULL */
-	private = (Node_matrix**)calloc(n, sizeof(Node_matrix**));
-	if(private == NULL){
-		printf("Memory allocation failed - spmat_allocate_list 1");
-	}
+	private = (Node_matrix**)allocate(n * sizeof(Node_matrix**));
 
 	A->n = n;
 	A->private = private;
@@ -64,7 +54,7 @@ spmat* spmat_allocate(int n){
 
 /* TODO: erase if only used in tests */
 /* Add a single row from vector*/
-void spmat_add_row_from_vector(struct _spmat *A, const int *row, int i){
+void spmat_add_row_from_vector(spmat* A, const int *row, int i){
 	/* Tail Pointing on last node added */
 	Node_matrix* tail = NULL;
 	/* Node pointing on current added node */
@@ -83,7 +73,7 @@ void spmat_add_row_from_vector(struct _spmat *A, const int *row, int i){
 			}
 			/* List is not empty */
 			else {
-				tail->next = (struct Node_matrix*)node;
+				tail->next = node;
 			}
 			tail = node;
 		}
@@ -113,7 +103,7 @@ int spmat_add_row_from_file(spmat* A ,FILE* input, int i){
 		}
 		/* List is not empty */
 		else {
-			tail->next = (struct Node_matrix*)node;
+			tail->next = node;
 		}
 		/* Tail always Pointing on last node added */
 		tail = node;
@@ -122,7 +112,7 @@ int spmat_add_row_from_file(spmat* A ,FILE* input, int i){
 }
 
 /* Free lists of all rows, array of rows and spmat itself */
-void spmat_free(struct _spmat *A){
+void spmat_free(spmat* A){
 	int i;
 
 	for(i = 0; i< A->n; i++){
@@ -134,7 +124,7 @@ void spmat_free(struct _spmat *A){
 
 
 /* Multiplies matrix A by vector v, into result (result is pre-allocated) */
-void spmat_mult(const struct _spmat *A, const double *v, double *result, Node* g, int n_g){
+void spmat_mult(const spmat* A, const double *v, double *result, Node* g, int n_g){
 	int i, g_index, mat_index;
 	int cnt = 0;
 	int v_index = 0;
@@ -187,7 +177,7 @@ void spmat_mult(const struct _spmat *A, const double *v, double *result, Node* g
 
 
 /* Sums row values of A, according to g values */
-int spmat_row_sum(struct _spmat *A, int row_num, Node* g, int n_g){
+int spmat_row_sum(spmat* A, int row_num, Node* g, int n_g){
 	Node_matrix* row_head;
 	Node* g_head = g;
 	int sum = 0;
@@ -293,3 +283,35 @@ int main(int argc, char* argv[]){
 
 }
 */
+
+/* TODO: erase? */
+void print_sparse_matrix(spmat* sp_mat){
+	int i;
+
+	/* Iterating over spmat private  i.e. over rows*/
+	for(i=0; i < sp_mat->n; i++){
+		print_node_matrix_list(sp_mat, i);
+		printf("\n");
+	}
+}
+
+/* TODO: erase? */
+void print_node_matrix_list(spmat* sp_mat, int i){
+
+	int j;
+	Node_matrix* sparse_node;
+
+	/* Getting the list that represents row i*/
+	sparse_node = ((Node_matrix**)sp_mat->private)[i];
+
+	for(j = 0; j < sp_mat->n; j++){
+		if((sparse_node != NULL) && (sparse_node->col_index == j)){
+			printf("1 ");
+			sparse_node = sparse_node->next;
+		}
+		else{
+			printf("0 ");
+		}
+	}
+
+}

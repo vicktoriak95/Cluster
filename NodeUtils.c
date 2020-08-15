@@ -4,11 +4,7 @@
 
 Node* create_node(int x){
 	Node* node;
-	node = (Node*)malloc(sizeof(node));
-	if (node == NULL){
-		printf("Memory allocation failed");
-		exit(1);
-	}
+	node = (Node*)allocate(sizeof(node));
 	node->index = x;
 	node->next = NULL;
 	return node;
@@ -33,6 +29,7 @@ void delete_node(Node **head_ref, int key){
 
 	/* Search for the key to be deleted, keep track of the
 	previous node */
+	/* TODO: add infinite loop detection */
 	while (temp != NULL && temp->index != key){
 		prev = temp;
 		temp = temp->next;
@@ -52,12 +49,8 @@ void delete_node_list(Node** head_ref, int n){
 	Node* current = *head_ref;
 	Node* next;
 
-	while ((cnt < n) && (current != NULL)){
-		/* TODO: check infinite loop in a different way */
-		/*if (cnt >= n){
-			printf("Infinite loop - delete_node_list");
-			exit(1);
-		}*/
+	while (current != NULL){
+		infinite_loop_detection(cnt, n);
 		next = current->next;
 		free(current);
 		current = next;
@@ -66,12 +59,10 @@ void delete_node_list(Node** head_ref, int n){
 }
 
 void print_node_list(Node* list){
-	if(list == NULL)
-	{
+	if(list == NULL){
 		printf(" \n");
 	}
-	else
-	{
+	else{
 		printf("%d ", list->index);
 		print_node_list((Node*)(list->next));
 	}
@@ -82,7 +73,7 @@ int get_node_value(Node* g, int k){
 	Node* head = g;
 	int i;
 
-	for(i=0; i<k; i++){
+	for(i = 0; i < k; i++){
 		head = head->next;
 	}
 	return head->index;
@@ -106,7 +97,7 @@ Node* node_list_from_vector(int* v, int n){
 	Node* node;
 	int i;
 
-	for(i=n-1; i>=0; i--){
+	for(i = n-1; i >= 0; i--){
 		node = create_node(v[i]);
 		push_node(&head, node);
 	}
@@ -146,11 +137,8 @@ void vector_from_list(int* vector, Node* g ,int n){
 
 Group* create_group(Node* node){
 	Group* group;
-	group = (Group*)malloc(sizeof(Group));
-	if (group == NULL){
-		printf("Memory allocation failed - create_group");
-		exit(1);
-	}
+
+	group = (Group*)allocate(sizeof(Group));
 	group->value = node;
 	group->next = NULL;
 	return group;
@@ -176,12 +164,8 @@ void delete_group(Group** head_ref, int n){
 	Group* current = *head_ref;
 	Group* next;
 
-	while ((cnt < n) && (current != NULL)){
-		/* TODO: check infinite loop in a different way */
-		/*if (cnt >= n){
-			printf("Infinite loop - delete_node_list");
-			exit(1);
-		}*/
+	while (current != NULL){
+		infinite_loop_detection(cnt, n);
 		next = current->next;
 		delete_node_list(&(current->value), n);
 		free(current);
@@ -215,6 +199,7 @@ int get_group_length(Group* group){
 	return length;
 }
 
+/* TODO: delete? */
 void test_node_utils(){
 	Node* g = NULL;
 	int v[4] = {1,2,3,4};
