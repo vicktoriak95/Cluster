@@ -33,6 +33,9 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g);
 
 void test_modularity_maximization();
 
-int main(int argc, char* argv[]);
+/*int main(int argc, char* argv[]);*/
+
+/* TODO: maybe erase, Test func */
+void print_output_file(char *pathname);
 
 #endif /* NETWORKDIVISION_H_ */

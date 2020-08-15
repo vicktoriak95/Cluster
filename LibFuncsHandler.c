@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-FILE* open_file(const char *pathname, const char *mode){
+FILE* open_file(char *pathname, const char *mode){
 	FILE* f = NULL;
 
 	f = fopen(pathname, mode);
