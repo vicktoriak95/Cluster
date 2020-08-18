@@ -21,10 +21,6 @@ Node* create_node(int x);
 /* Insert a new node to the beginning of list */
 void push_node(Node** head_ref, Node* new_node);
 
-/* Given a reference to the head of a list
-   and a key, deletes the first occurrence of key in linked list */
-void delete_node(Node **head_ref, int key);
-
 /* Delete the entire list */
 void delete_node_list(Node** head_ref, int n);
 

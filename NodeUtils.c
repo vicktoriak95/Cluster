@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "NodeUtils.h"
+#include "LibFuncsHandler.h"
 
 Node* create_node(int x){
 	Node* node;
@@ -15,32 +16,6 @@ void push_node(Node** head_ref, Node* new_node){
     new_node->next = (*head_ref);
     /* move the head to point to the new node */
     (*head_ref) = new_node;
-}
-
-void delete_node(Node **head_ref, int key){
-	Node* temp = *head_ref, *prev;
-
-	/* If head node holds the key to be deleted */
-	if (temp != NULL && temp->index == key){
-		*head_ref = temp->next;
-		free(temp);
-		return;
-	}
-
-	/* Search for the key to be deleted, keep track of the
-	previous node */
-	/* TODO: add infinite loop detection */
-	while (temp != NULL && temp->index != key){
-		prev = temp;
-		temp = temp->next;
-	}
-
-	/* If key was not present in linked list */
-	if (temp == NULL) return;
-
-	/* Remove the node from linked list */
-	prev->next = temp->next;
-	free(temp);
 }
 
 /* Receives the head of the list and the number of nodes in the entire graph*/
