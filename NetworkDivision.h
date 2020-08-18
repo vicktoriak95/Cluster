@@ -7,8 +7,8 @@
 
 #ifndef NETWORKDIVISION_H_
 #define NETWORKDIVISION_H_
+
 #include <stdio.h>
-#include "NodeUtils.h"
 #include "Network.h"
 
 /* Fills s with 1.0 - meaning all vertices are in the same group */
@@ -31,11 +31,6 @@ double calc_Qk(Network* N, double* s, Node* g, int n_g);
 /* Improving modularity */
 void modularity_maximization(Network* N, double* s, Node* g, int n_g);
 
-void test_modularity_maximization();
-
-/*int main(int argc, char* argv[]);*/
-
-/* TODO: maybe erase, Test func */
 void print_output_file(char *pathname);
 
 #endif /* NETWORKDIVISION_H_ */

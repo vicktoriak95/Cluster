@@ -1,3 +1,10 @@
+/*
+ * NodeUtils.c
+ *
+ *  Created on: Aug 10, 2020
+ *      Author: User
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include "NodeUtils.h"
@@ -18,7 +25,6 @@ void push_node(Node** head_ref, Node* new_node){
     (*head_ref) = new_node;
 }
 
-/* Receives the head of the list and the number of nodes in the entire graph*/
 void delete_node_list(Node* head_ref, int n){
 	int cnt = 0;
 	Node* current = head_ref;
@@ -43,7 +49,6 @@ void print_node_list(Node* list){
 	}
 }
 
-/* Iterating over g and returns k'th value */
 int get_node_value(Node* g, int k){
 	Node* head = g;
 	int i;
@@ -54,7 +59,6 @@ int get_node_value(Node* g, int k){
 	return head->index;
 }
 
-/* Iterating over g and count the length of the list */
 int get_node_length(Node* g){
 	Node* head = g;
 	int length = 0;
@@ -66,7 +70,6 @@ int get_node_length(Node* g){
 	return length;
 }
 
-/* Creating node list out of vector */
 Node* node_list_from_vector(int* v, int n){
 	Node* head = NULL;
 	Node* node;
@@ -141,7 +144,6 @@ void print_group(Group* group){
 	}
 }
 
-/* Iterating over the group list and count the length of the list */
 int get_group_length(Group* group){
 	Group* head = group;
 	int length = 0;
@@ -152,25 +154,3 @@ int get_group_length(Group* group){
 	}
 	return length;
 }
-
-/* TODO: delete? */
-void test_node_utils(){
-	Node* g = NULL;
-	int v[4] = {1,2,3,4};
-	int n = 4;
-
-	/* Test list from vector */
-	g = node_list_from_vector(v, n);
-	printf("g is made \n");
-	print_node_list(g);
-
-}
-
-/*
-int main(int argc, char* argv[]){
-	test_node_utils();
-
-}
-*/
-
-

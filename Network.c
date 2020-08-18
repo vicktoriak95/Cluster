@@ -1,8 +1,12 @@
+/*
+ * Network.c
+ *
+ *  Created on: Aug 8, 2020
+ *      Author: User
+ */
+
 #include <stdlib.h>
 #include <stdio.h>
-
-#include "Network.h"
-#include "SparseMatrix.h"
 #include "LibFuncsHandler.h"
 #include "LinearUtils.h"
 
@@ -75,14 +79,12 @@ void write_clusters_to_output(Group* O, FILE* f){
 	}
 }
 
-/* Free all allocated space of a network */
 void free_network(Network* net){
 	spmat_free(net->A);
 	free(net->deg_vector);
 	free(net);
 }
 
-/* Creates network from args */
 Network* network_from_args(spmat* matrix, int* deg_vector, int n, int M){
 	Network* net = NULL;
 	net = allocate_network(n);

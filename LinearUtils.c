@@ -5,18 +5,14 @@
  *      Author: adi
  */
 
-
 #include <stdlib.h>
 #include <stdio.h>
-#include "NodeUtils.h"
-#include "Network.h"
-#include "SparseMatrix.h"
 #include <assert.h>
 #include <math.h>
+#include "Network.h"
+#include "SparseMatrix.h"
 #include "LibFuncsHandler.h"
 
-
-/* Dot product between two vectors */
 double dot_product(double* vector1, double* vector2, int vector_size){
 	double sum = 0;
 	double product;
@@ -28,7 +24,6 @@ double dot_product(double* vector1, double* vector2, int vector_size){
 	return sum;
 }
 
-/* Prints vector */
 void print_vector(double* vector, int vector_size){
 	int i;
 
@@ -39,7 +34,6 @@ void print_vector(double* vector, int vector_size){
 
 }
 
-/* Sums all entries of a given integer vector*/
 double abs_sum_of_double_vector(double* vec, int length){
 	int i;
 	double sum = 0;
@@ -49,7 +43,6 @@ double abs_sum_of_double_vector(double* vec, int length){
 	return sum;
 }
 
-/* Sum all entries of a given integer vector*/
 double sum_of_integer_vector(int* vec, int length){
 	int i;
 	int sum = 0;
@@ -59,7 +52,6 @@ double sum_of_integer_vector(int* vec, int length){
 	return sum;
 }
 
-/* Calculating auxiliary sum for B\hat[g] dot product */
 double dot_product_auxiliary_sum(Network* N, double* x, Node* g, int n_g, int indicator){
 	double result = 0;
 	int g_index;
@@ -88,8 +80,6 @@ double dot_product_auxiliary_sum(Network* N, double* x, Node* g, int n_g, int in
 	return result;
 }
 
-/* Multiplication of B\hat[g] with vector */
-/* TODO: erase prints */
 void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g){
 	double first_sum = 0;
 	double second_sum = 0;
@@ -101,13 +91,9 @@ void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g
 
 	/* Multiplying A*x, saving result in result vector */
 	spmat_mult(N->A, x, result, g);
-	/* printf("A @ s: \n");
-	print_vector(result, n_g); */
 	/* Calculating needed sums for rest of the multiplication */
 	first_sum = dot_product_auxiliary_sum(N,  x, g, n_g, 1);
-	/* printf("sum1= %f \n", first_sum);*/
 	second_sum = dot_product_auxiliary_sum(N, x, g, n_g, 2);
-	/* printf("sum2= %f \n", second_sum); */
 	/* Calculating final result vector */
 	for(i=0; i<n_g; i++){
 		A_row_sum = spmat_row_sum(N->A, i, g);
@@ -118,8 +104,6 @@ void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g
 	}
 }
 
-
-/* Multiplying all entries of a given vector by a scalar */
 void mult_vector_by_scalar(double* vector, double scalar, int length){
 	int i;
 	for (i = 0; i < length; i++){
@@ -127,7 +111,6 @@ void mult_vector_by_scalar(double* vector, double scalar, int length){
 	}
 }
 
-/* Shifting dot product B\hat[g] by B\hat[g] norm */
 void Bhat_shift(double* dot_product, double* x, double norm, int length){
 	int i;
 	double prod;
@@ -138,7 +121,6 @@ void Bhat_shift(double* dot_product, double* x, double norm, int length){
 	}
 }
 
-/* Updates v such that entry j is 1 and every other entry is 0*/
 void unit_vector_j(double* v, int n, int j){
 	int i;
 
@@ -152,7 +134,6 @@ void unit_vector_j(double* v, int n, int j){
 	}
 }
 
-/* Calculating dot product of B\hat[g] */
 double Bhat_norm(Network* N, Node* g, int n_g){
 	double norm = -INFINITY;
 	int j;
@@ -176,9 +157,6 @@ double Bhat_norm(Network* N, Node* g, int n_g){
 	return norm;
 }
 
-
-/* Calculates the eigenvalue corresponding to largest eigen_vector */
-/* Shifts result by norm */
 double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, int n_g, Node* g){
 	double numerator;
 	double denominator;
@@ -201,69 +179,3 @@ double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, in
 
 	return eigen_value;
 }
-
-void Bhat_tests(){
-	Node* g;
-	int n = 4;
-	int n_g = 3;
-	int i;
-	spmat* A;
-	Network* net;
-	int deg_vector[4] = {1, 3, 2, 2};
-	int matrix[4][4] = {{0, 1, 0, 0}, {1, 0, 1, 1}, {0, 1, 0, 1}, {0, 1, 1, 0}};
-	int g_vector[3] = {0, 2, 3};
-	double s[3] = {1, -1, 1};
-	double eigen_vector[3] = {-0.81647692, 0.40826795, 0.40826795};
-	int M = 8;
-	double eigen_value;
-	double* result;
-	double norm = 0;
-
-
-	g = node_list_from_vector(g_vector, n_g);
-
-	A = spmat_allocate(n);
-	for(i = 0; i < n; i++){
-		spmat_add_row_from_vector(A, matrix[i], i);
-	}
-	printf("created A \n");
-
-	/*
-	A = spmat_from_matrix((int**)(&matrix), n);
-	*/
-	net = network_from_args(A, deg_vector, 4, M);
-	result = (double*)allocate(n_g * sizeof(double));
-
-	/* ************* TESTING DOT PRODUCT ******************* */
-
-	Bhat_multiplication(net, (double*)s, (double*)result, g, n_g);
-	printf("dot product is: ");
-	print_vector(result, n_g);
-
-
-	/* ************* TESTING NORM ******************* */
-
-	norm = Bhat_norm(net, g, n_g);
-	printf("norm: %f \n", norm);
-
-	/* ********* TESTING SHIFTED DOT PRODUCT *************** */
-	Bhat_shift(result, s, norm, n_g);
-	printf("shifted dot product: ");
-	print_vector(result, n_g);
-
-	/* ************* TESTING BIGGEST EIGEN-VECTOR *********** */
-	eigen_value = Bhat_largest_eigenvalue(net, norm, eigen_vector, n_g, g);
-	printf("eigen_value: %f \n", eigen_value);
-
-	/*TODO: free g */
-	free(result);
-	free(net);
-}
-
-/*
-int main(int argc, char* argv[]){
-	Bhat_tests();
-
-}
-*/
-

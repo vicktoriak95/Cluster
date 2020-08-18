@@ -8,6 +8,7 @@
 #ifndef POWERITERATION_H_
 #define POWERITERATION_H_
 #define epsilon 0.00001
+
 #include "Network.h"
 
 /* Finds eigen-vector with biggest eigen-value */

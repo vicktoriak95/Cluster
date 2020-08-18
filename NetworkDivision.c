@@ -8,10 +8,8 @@
 #include <math.h>
 #include <stdlib.h>
 #include "NetworkDivision.h"
-#include "NodeUtils.h"
 #include "LinearUtils.h"
 #include "LibFuncsHandler.h"
-#include "Network.h"
 #include "PowerIteration.h"
 
 int main(int argc, char* argv[]){
@@ -98,6 +96,7 @@ int main(int argc, char* argv[]){
 	write_clusters_to_output(O, output);
 	close_file(output);
 
+	/* TODO: delete this line */
 	print_output_file(argv[2]);
 
 	/* Free all  */
@@ -113,7 +112,6 @@ void indivisable(double* s, int n_g){
 		s[i] = 1.0;
 	}
 }
-
 
 void devide_into_two(Network* N, Node* g, double* s, int n_g){
 	double Q;
@@ -144,7 +142,6 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g){
 	}
 }
 
-
 void calculate_s(double* eigen_vector, double* s, int n_g){
 	int i = 0;
 	for (i = 0; i < n_g; i ++){
@@ -156,7 +153,6 @@ void calculate_s(double* eigen_vector, double* s, int n_g){
 		}
 	}
 }
-
 
 Node* divide_group(Node** g1_p, double* s, int n_g){
 	Node* g2 = NULL;
@@ -198,8 +194,6 @@ Node* divide_group(Node** g1_p, double* s, int n_g){
 	}
 	return g2;
 }
-
-
 
 double calc_Qk(Network* N, double* s, Node* g, int n_g){
 	double res;
@@ -330,68 +324,3 @@ void print_output_file(char *pathname){
 	close_file(output_file);
 
 }
-
-
-void test_modularity_maximization(){
-	Node* g;
-	int n = 4;
-	int n_g = 4;
-	int i;
-	spmat* A;
-	/*double* eigen_vector;*/
-	Network* net;
-	int M = 10;
-	int deg_vector[4] = {2, 3, 2, 3};
-	int matrix[4][4] = {{0, 1, 0, 1}, {1, 0, 1, 1}, {0, 1, 0, 1}, {1, 1, 1, 0}};
-	int g_vector[4] = {0, 1, 2, 3};
-	double s[4] = {0, 0, 0, 0};
-	/* double norm = 0; */
-
-	g = node_list_from_vector(g_vector, n_g);
-
-	A = spmat_allocate(n);
-	for(i = 0; i < n; i++){
-		spmat_add_row_from_vector(A, matrix[i], i);
-	}
-	printf("created A \n");
-	net = network_from_args(A, deg_vector, 4, M);
-
-	/* ******** Checking norm, eigenvector, eigenvalue ************ */
-	/* norm = Bhat_norm(net, g, n_g); */
-	/* eigen_vector = power_iteration(net, norm, g, n_g); */
-	/* print_vector(eigen_vector, n_g); */
-
-	/* ******* Checking mod max ********* */
-	/*
-	modularity_maximization(net, s, g, n_g);
-	printf("vector s is: ");
-	print_vector(s, n_g);
-	*/
-
-	/* ****** Checking algo 2 *********** */
-	devide_into_two(net, g, s, n_g);
-	printf("vector s is: ");
-	print_vector(s, n_g);
-	/* TODO: Free things */
-
-}
-
-/*
-int main(int argc, char* argv[]){
-	test_modularity_maximization();
-
-}
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
