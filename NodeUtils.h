@@ -22,7 +22,7 @@ Node* create_node(int x);
 void push_node(Node** head_ref, Node* new_node);
 
 /* Delete the entire list */
-void delete_node_list(Node** head_ref, int n);
+void delete_node_list(Node* head_ref, int n);
 
 /* Printing list */
 void print_node_list(Node* list);
@@ -56,7 +56,7 @@ Group* create_group(Node* node);
 void push_group(Group** head_ref, Node* new_node);
 
 /* Deletes group */
-void delete_group(Group** head_ref, int n);
+void delete_group(Group* head_ref, int n);
 
 /* Prints group */
 void print_group(Group* group);
