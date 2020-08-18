@@ -40,21 +40,10 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 		Bhat_multiplication(N, b_prev, b_next, g, n_g);
 		/* Shifting b_next by b_prev and norm*/
 		Bhat_shift(b_next, b_prev, norm, n_g);
-		/*
-		printf("before norm vector is: \n");
-		print_vector(b_next, n_g);*/
-
-		/*
-		spmat_mult(N->A, b_prev, b_next, g, n_g);*/
 
 		/* Normalizing over norm */
 		vector_norm = sqrt(dot_product(b_next, b_next, n_g));
-		/*printf("norm: %f \n", vector_norm);*/
 		mult_vector_by_scalar(b_next, 1 / vector_norm, n_g);
-
-		/*
-		printf("after norm vector is: \n");
-		print_vector(b_next, n_g);*/
 
 		temp = b_prev;
 		b_prev = b_next;

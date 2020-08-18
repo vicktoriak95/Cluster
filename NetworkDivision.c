@@ -98,6 +98,7 @@ int main(int argc, char* argv[]){
 	write_clusters_to_output(O, output);
 	close_file(output);
 
+	/* TODO: delete this line */
 	print_output_file(argv[2]);
 
 	/* Free all  */
