@@ -127,6 +127,8 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g){
 	/* Finding biggest eigen_vector */
 	eigen_vector = power_iteration(N, norm, g, n_g);
 	eigen_value = Bhat_largest_eigenvalue(N, norm, eigen_vector, n_g, g);
+	calculate_s(eigen_vector, s, n_g);
+	free(eigen_vector);
 
 	/* Calculate s - In case of non-positive eigenvalues do not divide */
 	if (eigen_value <= 0){
@@ -134,14 +136,12 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g){
 		return;
 	}
 	else{
-		calculate_s(eigen_vector, s, n_g);
 		Q = calc_Qk(N, s, g, n_g);
 			if (Q <= 0){
 				indivisable(s, n_g);
 				return;
 			}
 	}
-	free(eigen_vector);
 }
 
 
