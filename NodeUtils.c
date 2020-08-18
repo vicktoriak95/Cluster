@@ -80,27 +80,6 @@ Node* node_list_from_vector(int* v, int n){
 
 }
 
-void copy_node_list(Node* original, Node* copy){
-	Node* curr_orig;
-	Node* curr_copy;
-	Node* temp;
-
-	/* validate input */
-	if (original == NULL){
-		printf("original vector is NULL - copy_node_list");
-		return;
-	}
-
-	curr_copy = create_node(original->index);
-	curr_orig = original->next;
-
-	while(curr_orig != NULL){
-		temp = create_node(curr_orig->index);
-		curr_copy->next = temp;
-		curr_copy = temp;
-	}
-}
-
 void vector_from_list(int* vector, Node* g ,int n){
 	int i;
 	Node* g_p = g;

@@ -36,9 +36,6 @@ int get_node_length(Node* g);
 /* Creating node list out of vector */
 Node* node_list_from_vector(int* v, int n);
 
-/* Given a list and its size, copies the list to given address */
-void copy_node_list(Node* original, Node* copy);
-
 void vector_from_list(int* vector, Node* g ,int n);
 
 
