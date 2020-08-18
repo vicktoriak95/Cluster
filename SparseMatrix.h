@@ -38,7 +38,7 @@ int spmat_add_row_from_file(spmat* A ,FILE* input, int i);
 void spmat_free(spmat *A);
 
 /* Multiplies matrix A by vector v, into result (result is pre-allocated) */
-void spmat_mult(const spmat* A, const double *v, double *result, Node* g, int n_g);
+void spmat_mult(const spmat* A, const double *v, double *result, Node* g);
 
 /* Sums row values of A, according to g values */
 int spmat_row_sum(spmat* A, int row_num, Node* g, int n_g);

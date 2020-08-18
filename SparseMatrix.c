@@ -124,7 +124,7 @@ void spmat_free(spmat* A){
 
 
 /* Multiplies matrix A by vector v, into result (result is pre-allocated) */
-void spmat_mult(const spmat* A, const double *v, double *result, Node* g, int n_g){
+void spmat_mult(const spmat* A, const double *v, double *result, Node* g){
 	int i, g_index, mat_index;
 	int cnt = 0;
 	int v_index = 0;

@@ -100,7 +100,7 @@ void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g
 	int g_index = 0;
 
 	/* Multiplying A*x, saving result in result vector */
-	spmat_mult(N->A, x, result, g, n_g);
+	spmat_mult(N->A, x, result, g);
 	/* printf("A @ s: \n");
 	print_vector(result, n_g); */
 	/* Calculating needed sums for rest of the multiplication */
