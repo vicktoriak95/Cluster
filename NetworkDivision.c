@@ -8,10 +8,8 @@
 #include <math.h>
 #include <stdlib.h>
 #include "NetworkDivision.h"
-#include "NodeUtils.h"
 #include "LinearUtils.h"
 #include "LibFuncsHandler.h"
-#include "Network.h"
 #include "PowerIteration.h"
 
 int main(int argc, char* argv[]){

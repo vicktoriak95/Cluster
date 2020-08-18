@@ -7,8 +7,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "SparseMatrix.h"
-#include "NodeUtils.h"
 #include "LinearUtils.h"
 #include "LibFuncsHandler.h"
 

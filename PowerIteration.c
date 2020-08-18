@@ -9,9 +9,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "PowerIteration.h"
-#include "Network.h"
 #include "LibFuncsHandler.h"
-#include "SparseMatrix.h"
 #include "LinearUtils.h"
 
 double* power_iteration(Network* N, double norm, Node* g, int n_g){

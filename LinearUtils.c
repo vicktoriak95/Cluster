@@ -7,11 +7,10 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "NodeUtils.h"
-#include "Network.h"
-#include "SparseMatrix.h"
 #include <assert.h>
 #include <math.h>
+#include "Network.h"
+#include "SparseMatrix.h"
 #include "LibFuncsHandler.h"
 
 double dot_product(double* vector1, double* vector2, int vector_size){

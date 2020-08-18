@@ -9,7 +9,6 @@
 #define NETWORKDIVISION_H_
 
 #include <stdio.h>
-#include "NodeUtils.h"
 #include "Network.h"
 
 /* Fills s with 1.0 - meaning all vertices are in the same group */
