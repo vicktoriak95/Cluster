@@ -96,7 +96,7 @@ int main(int argc, char* argv[]){
 	print_output_file(argv[2]);
 
 	/* Free all  */
-	delete_group(&O, net->n);
+	delete_group(O, net->n);
 	free_network(net);
 
 	return 0;

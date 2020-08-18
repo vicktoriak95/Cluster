@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "NodeUtils.h"
+#include "LibFuncsHandler.h"
 
 Node* create_node(int x){
 	Node* node;
@@ -17,36 +18,10 @@ void push_node(Node** head_ref, Node* new_node){
     (*head_ref) = new_node;
 }
 
-void delete_node(Node **head_ref, int key){
-	Node* temp = *head_ref, *prev;
-
-	/* If head node holds the key to be deleted */
-	if (temp != NULL && temp->index == key){
-		*head_ref = temp->next;
-		free(temp);
-		return;
-	}
-
-	/* Search for the key to be deleted, keep track of the
-	previous node */
-	/* TODO: add infinite loop detection */
-	while (temp != NULL && temp->index != key){
-		prev = temp;
-		temp = temp->next;
-	}
-
-	/* If key was not present in linked list */
-	if (temp == NULL) return;
-
-	/* Remove the node from linked list */
-	prev->next = temp->next;
-	free(temp);
-}
-
 /* Receives the head of the list and the number of nodes in the entire graph*/
-void delete_node_list(Node** head_ref, int n){
+void delete_node_list(Node* head_ref, int n){
 	int cnt = 0;
-	Node* current = *head_ref;
+	Node* current = head_ref;
 	Node* next;
 
 	while (current != NULL){
@@ -159,15 +134,15 @@ void push_group(Group** head_ref, Node* new_node){
 	}
 }
 
-void delete_group(Group** head_ref, int n){
+void delete_group(Group* head_ref, int n){
 	int cnt = 0;
-	Group* current = *head_ref;
+	Group* current = head_ref;
 	Group* next;
 
 	while (current != NULL){
 		infinite_loop_detection(cnt, n);
 		next = current->next;
-		delete_node_list(&(current->value), n);
+		delete_node_list(current->value, n);
 		free(current);
 		current = next;
 		cnt++;
