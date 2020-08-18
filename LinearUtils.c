@@ -68,9 +68,11 @@ double dot_product_auxiliary_sum(Network* N, double* x, Node* g, int n_g, int in
 	int* deg_vector = N->deg_vector;
 	int M = N->M;
 	int x_index = 0;
+	int cnt = 0;
 
 	/* Iterating over g indices and calculating sum */
 	while(head != NULL){
+		infinite_loop_detection(cnt, n_g);
 		g_index = head->index;
 		if (indicator == 1){
 			mult = ((double)deg_vector[g_index] * (double)x[x_index]) / M;
@@ -81,6 +83,7 @@ double dot_product_auxiliary_sum(Network* N, double* x, Node* g, int n_g, int in
 		result = result + mult;
 		head = head->next;
 		x_index += 1;
+		cnt += 1;
 	}
 	return result;
 }
