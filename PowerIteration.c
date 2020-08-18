@@ -28,6 +28,7 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 	b_prev = (double*)allocate(n_g * sizeof(double));
 	create_random_vector(b_prev, n_g);
 	b_next =(double*)allocate(n_g * sizeof(double));
+	create_random_vector(b_next, n_g);
 
 	/* TODO: How to assure loop is not infinite */
 	/* While vectors diff bigger than epsilon */
