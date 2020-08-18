@@ -5,7 +5,7 @@
 
 Node* create_node(int x){
 	Node* node;
-	node = (Node*)allocate(sizeof(node));
+	node = (Node*)allocate(sizeof(Node));
 	node->index = x;
 	node->next = NULL;
 	return node;
