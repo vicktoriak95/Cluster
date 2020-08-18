@@ -1,4 +1,4 @@
-FLAGS = -ansi -Wall -Wextra -Werror -pedantic-errors
+FLAGS = -ansi -Wall -Wextra -Werror -pedantic-errors -std=c99
 LIBS = -lm
 
 all: cluster
