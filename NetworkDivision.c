@@ -115,7 +115,6 @@ void indivisable(double* s, int n_g){
 	}
 }
 
-
 void devide_into_two(Network* N, Node* g, double* s, int n_g){
 	double Q;
 	double norm;
@@ -145,7 +144,6 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g){
 	}
 }
 
-
 void calculate_s(double* eigen_vector, double* s, int n_g){
 	int i = 0;
 	for (i = 0; i < n_g; i ++){
@@ -157,7 +155,6 @@ void calculate_s(double* eigen_vector, double* s, int n_g){
 		}
 	}
 }
-
 
 Node* divide_group(Node** g1_p, double* s, int n_g){
 	Node* g2 = NULL;
@@ -199,8 +196,6 @@ Node* divide_group(Node** g1_p, double* s, int n_g){
 	}
 	return g2;
 }
-
-
 
 double calc_Qk(Network* N, double* s, Node* g, int n_g){
 	double res;

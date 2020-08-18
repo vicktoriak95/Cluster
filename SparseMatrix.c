@@ -12,8 +12,6 @@
 #include "LinearUtils.h"
 #include "LibFuncsHandler.h"
 
-
-/* Create node in a list representing row */
 Node_matrix* nodemat_create_node(int value, int col_index){
 	Node_matrix* node;
 
@@ -25,8 +23,6 @@ Node_matrix* nodemat_create_node(int value, int col_index){
 	return node;
 }
 
-
-/* Free list of a row */
 void nodemat_free_list(Node_matrix* list){
 	if (list != NULL){
 		nodemat_free_list((Node_matrix*)list->next);
@@ -34,8 +30,6 @@ void nodemat_free_list(Node_matrix* list){
 	}
 }
 
-
-/* Allocates a new linked-lists sparse matrix of size n */
 spmat* spmat_allocate(int n){
 	spmat* A;
 	Node_matrix** private;
@@ -52,7 +46,6 @@ spmat* spmat_allocate(int n){
 	return A;
 }
 
-/* Add a single row from vector*/
 void spmat_add_row_from_vector(spmat* A, const int *row, int i){
 	/* Tail Pointing on last node added */
 	Node_matrix* tail = NULL;
@@ -79,8 +72,6 @@ void spmat_add_row_from_vector(spmat* A, const int *row, int i){
 	}
 }
 
-/* Adds row i the matrix from file*/
-/* Returns num of non-zero entries in row*/
 int spmat_add_row_from_file(spmat* A ,FILE* input, int i){
 	int j;
 	int nnz_row, col_index;
@@ -110,7 +101,6 @@ int spmat_add_row_from_file(spmat* A ,FILE* input, int i){
 	return nnz_row;
 }
 
-/* Free lists of all rows, array of rows and spmat itself */
 void spmat_free(spmat* A){
 	int i;
 
@@ -121,8 +111,6 @@ void spmat_free(spmat* A){
 	free(A);
 }
 
-
-/* Multiplies matrix A by vector v, into result (result is pre-allocated) */
 void spmat_mult(const spmat* A, const double *v, double *result, Node* g){
 	int i, g_index, mat_index;
 	int cnt = 0;
@@ -174,8 +162,6 @@ void spmat_mult(const spmat* A, const double *v, double *result, Node* g){
 	}
 }
 
-
-/* Sums row values of A, according to g values */
 int spmat_row_sum(spmat* A, int row_num, Node* g){
 	Node_matrix* row_head;
 	Node* g_head = g;
@@ -219,7 +205,6 @@ void print_sparse_matrix(spmat* sp_mat){
 		printf("\n");
 	}
 }
-
 
 void print_node_matrix_list(spmat* sp_mat, int i){
 

@@ -5,7 +5,6 @@
  *      Author: adi
  */
 
-
 #ifndef NODEUTILS_H_
 #define NODEUTILS_H_
 
@@ -15,6 +14,13 @@ typedef struct _Node {
 
 }Node;
 
+/*list of lists*/
+typedef struct _LinkedGroup {
+	Node* value;
+	struct _LinkedGroup *next;
+
+}Group;
+
 /* Creates new node with index x */
 Node* create_node(int x);
 
@@ -22,6 +28,7 @@ Node* create_node(int x);
 void push_node(Node** head_ref, Node* new_node);
 
 /* Delete the entire list */
+/* Receives the head of the list and the number of nodes in the entire graph*/
 void delete_node_list(Node* head_ref, int n);
 
 /* Printing list */
@@ -38,14 +45,6 @@ Node* node_list_from_vector(int* v, int n);
 
 void vector_from_list(int* vector, Node* g ,int n);
 
-
-/*list of lists*/
-typedef struct _LinkedGroup {
-	Node* value;
-	struct _LinkedGroup *next;
-
-}Group;
-
 /* Creates list representing group */
 Group* create_group(Node* node);
 
@@ -60,6 +59,5 @@ void print_group(Group* group);
 
 /* Iterating over the group list and count the length of the list */
 int get_group_length(Group* group);
-
 
 #endif /* NODEUTILS_H_ */

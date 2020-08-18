@@ -12,9 +12,8 @@
 #include "Network.h"
 #include "LibFuncsHandler.h"
 #include "SparseMatrix.h"
-# include "LinearUtils.h"
+#include "LinearUtils.h"
 
-/* Finds eigen-vector with biggest eigen-value */
 double* power_iteration(Network* N, double norm, Node* g, int n_g){
 	/*double b_prev_const[3] = {0.36283495, 0.56467796, 0.66505637};
 	double b_next_const[3] = {0.11767303, 0.5011049, 0.89936061};*/
@@ -53,7 +52,6 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 	return b_prev;
 }
 
-/* Creates random vector */
 void create_random_vector(double * vector, int vector_size){
 	int i;
 	for(i=0; i<vector_size; i++){
@@ -61,8 +59,6 @@ void create_random_vector(double * vector, int vector_size){
 	}
 }
 
-/* Checks if difference between two vectors is bigger than epsilon */
-/* returns -1 if difference is bigger than epsilon, 0 otherwise. */
 int close_vectors(double* vector_a, double* vector_b, int n){
 	int i;
 	/* Iterating over vectors, checking if diff of every entry is bigger than epsilon */
@@ -73,4 +69,3 @@ int close_vectors(double* vector_a, double* vector_b, int n){
 	}
 	return 0;
 }
-

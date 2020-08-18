@@ -5,7 +5,6 @@
  *      Author: adi
  */
 
-
 #include <stdlib.h>
 #include <stdio.h>
 #include "NodeUtils.h"
@@ -15,8 +14,6 @@
 #include <math.h>
 #include "LibFuncsHandler.h"
 
-
-/* Dot product between two vectors */
 double dot_product(double* vector1, double* vector2, int vector_size){
 	double sum = 0;
 	double product;
@@ -28,7 +25,6 @@ double dot_product(double* vector1, double* vector2, int vector_size){
 	return sum;
 }
 
-/* Prints vector */
 void print_vector(double* vector, int vector_size){
 	int i;
 
@@ -39,7 +35,6 @@ void print_vector(double* vector, int vector_size){
 
 }
 
-/* Sums all entries of a given integer vector*/
 double abs_sum_of_double_vector(double* vec, int length){
 	int i;
 	double sum = 0;
@@ -49,7 +44,6 @@ double abs_sum_of_double_vector(double* vec, int length){
 	return sum;
 }
 
-/* Sum all entries of a given integer vector*/
 double sum_of_integer_vector(int* vec, int length){
 	int i;
 	int sum = 0;
@@ -59,7 +53,6 @@ double sum_of_integer_vector(int* vec, int length){
 	return sum;
 }
 
-/* Calculating auxiliary sum for B\hat[g] dot product */
 double dot_product_auxiliary_sum(Network* N, double* x, Node* g, int n_g, int indicator){
 	double result = 0;
 	int g_index;
@@ -88,7 +81,6 @@ double dot_product_auxiliary_sum(Network* N, double* x, Node* g, int n_g, int in
 	return result;
 }
 
-/* Multiplication of B\hat[g] with vector */
 void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g){
 	double first_sum = 0;
 	double second_sum = 0;
@@ -113,8 +105,6 @@ void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g
 	}
 }
 
-
-/* Multiplying all entries of a given vector by a scalar */
 void mult_vector_by_scalar(double* vector, double scalar, int length){
 	int i;
 	for (i = 0; i < length; i++){
@@ -122,7 +112,6 @@ void mult_vector_by_scalar(double* vector, double scalar, int length){
 	}
 }
 
-/* Shifting dot product B\hat[g] by B\hat[g] norm */
 void Bhat_shift(double* dot_product, double* x, double norm, int length){
 	int i;
 	double prod;
@@ -133,7 +122,6 @@ void Bhat_shift(double* dot_product, double* x, double norm, int length){
 	}
 }
 
-/* Updates v such that entry j is 1 and every other entry is 0*/
 void unit_vector_j(double* v, int n, int j){
 	int i;
 
@@ -147,7 +135,6 @@ void unit_vector_j(double* v, int n, int j){
 	}
 }
 
-/* Calculating dot product of B\hat[g] */
 double Bhat_norm(Network* N, Node* g, int n_g){
 	double norm = -INFINITY;
 	int j;
@@ -171,9 +158,6 @@ double Bhat_norm(Network* N, Node* g, int n_g){
 	return norm;
 }
 
-
-/* Calculates the eigenvalue corresponding to largest eigen_vector */
-/* Shifts result by norm */
 double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, int n_g, Node* g){
 	double numerator;
 	double denominator;
