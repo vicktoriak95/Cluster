@@ -29,6 +29,11 @@ int main(int argc, char* argv[]){
 	int i = 0;
 	int n_g = 0;
 
+	if (argc != 3) {
+		printf("Num of args should be 3\n"); 
+		exit(1); 
+	}
+
 	/* Read the input file into the net struct */
 	input = open_file(argv[1], "rb");
 	net = create_network(input);
