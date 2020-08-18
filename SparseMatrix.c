@@ -52,7 +52,6 @@ spmat* spmat_allocate(int n){
 	return A;
 }
 
-/* TODO: erase if only used in tests */
 /* Add a single row from vector*/
 void spmat_add_row_from_vector(spmat* A, const int *row, int i){
 	/* Tail Pointing on last node added */
@@ -211,80 +210,6 @@ int spmat_row_sum(spmat* A, int row_num, Node* g){
 	return sum;
 }
 
-/* Creates spmat from matrix */
-/* TODO: DEBUG CAUSE NOT WORKING */
-spmat* spmat_from_matrix(int** matrix, int n){
-	spmat* A;
-	int i;
-
-	A = spmat_allocate(n);
-	for(i = 0; i < n; i++){
-		spmat_add_row_from_vector(A, matrix[i], i);
-	}
-	printf("created A \n");
-	return A;
-}
-
-
-/* TODO: erase */
-void test_sparse(){
-	spmat* A;
-	Node* g;
-	Node* node;
-	int row_sum;
-	int matrix[4][4] = {{0,0,0,0},{1,300,8,500},{0,0,0,0},{4,1,2,0}};
-	int i;
-	double v[2] = {1,1};
-	double result[2];
-	int row_num;
-	int n;
-
-	/* Creating g */
-	g = create_node(3);
-	node = create_node(1);
-	push_node(&g, node);
-	row_num = 2;
-	printf("created g \n");
-
-	/* Creating A */
-	n = 4;
-	A = spmat_allocate(n);
-	for(i = 0; i < n; i++){
-		spmat_add_row_from_vector(A, matrix[i], i);
-	}
-	printf("created A \n");
-
-	/* Multiplying A by v */
-	spmat_mult(A, v, result, g);
-	printf("Mult result: \n");
-	print_vector(result, row_num);
-
-	/* Summing first row */
-	/*
-	row_sum = spmat_row_sum(A, 0, g, 2);
-	printf("First row sum %d \n", row_sum);
-	*/
-
-	/* Summing all rows */
-	for(i=0; i<row_num; i++){
-		row_sum = spmat_row_sum(A, i, g);
-		printf("%d row sum %d \n", i, row_sum);
-	}
-
-	free(A);
-
-	printf("Vicki is the Best");
-}
-
-/* TODO: erase */
-/*
-int main(int argc, char* argv[]){
-	test();
-
-}
-*/
-
-/* TODO: erase? */
 void print_sparse_matrix(spmat* sp_mat){
 	int i;
 
@@ -295,7 +220,7 @@ void print_sparse_matrix(spmat* sp_mat){
 	}
 }
 
-/* TODO: erase? */
+
 void print_node_matrix_list(spmat* sp_mat, int i){
 
 	int j;

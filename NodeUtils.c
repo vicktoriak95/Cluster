@@ -152,25 +152,3 @@ int get_group_length(Group* group){
 	}
 	return length;
 }
-
-/* TODO: delete? */
-void test_node_utils(){
-	Node* g = NULL;
-	int v[4] = {1,2,3,4};
-	int n = 4;
-
-	/* Test list from vector */
-	g = node_list_from_vector(v, n);
-	printf("g is made \n");
-	print_node_list(g);
-
-}
-
-/*
-int main(int argc, char* argv[]){
-	test_node_utils();
-
-}
-*/
-
-
