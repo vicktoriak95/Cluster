@@ -125,7 +125,6 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g){
 	norm = Bhat_norm(N, g, n_g);
 
 	/* Finding biggest eigen_vector */
-	eigen_vector = (double*)allocate(n_g * sizeof(double));
 	eigen_vector = power_iteration(N, norm, g, n_g);
 	eigen_value = Bhat_largest_eigenvalue(N, norm, eigen_vector, n_g, g);
 
