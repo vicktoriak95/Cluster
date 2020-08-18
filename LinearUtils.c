@@ -110,7 +110,7 @@ void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g
 	/* printf("sum2= %f \n", second_sum); */
 	/* Calculating final result vector */
 	for(i=0; i<n_g; i++){
-		A_row_sum = spmat_row_sum(N->A, i, g, n_g);
+		A_row_sum = spmat_row_sum(N->A, i, g);
 		g_index = g_head->index;
 		ki = N->deg_vector[g_index];
 		result[i] = result[i] - (first_sum * ki) + (second_sum * ki * x[i]) - (A_row_sum * x[i]);

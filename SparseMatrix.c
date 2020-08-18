@@ -177,7 +177,7 @@ void spmat_mult(const spmat* A, const double *v, double *result, Node* g){
 
 
 /* Sums row values of A, according to g values */
-int spmat_row_sum(spmat* A, int row_num, Node* g, int n_g){
+int spmat_row_sum(spmat* A, int row_num, Node* g){
 	Node_matrix* row_head;
 	Node* g_head = g;
 	int sum = 0;
@@ -255,7 +255,7 @@ void test_sparse(){
 	printf("created A \n");
 
 	/* Multiplying A by v */
-	spmat_mult(A, v, result, g, row_num);
+	spmat_mult(A, v, result, g);
 	printf("Mult result: \n");
 	print_vector(result, row_num);
 
@@ -267,7 +267,7 @@ void test_sparse(){
 
 	/* Summing all rows */
 	for(i=0; i<row_num; i++){
-		row_sum = spmat_row_sum(A, i, g, row_num);
+		row_sum = spmat_row_sum(A, i, g);
 		printf("%d row sum %d \n", i, row_sum);
 	}
 
