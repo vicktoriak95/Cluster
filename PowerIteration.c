@@ -61,7 +61,7 @@ int close_vectors(double* vector_a, double* vector_b, int n){
 	int i;
 	/* Iterating over vectors, checking if diff of every entry is bigger than epsilon */
 	for (i = 0; i < n; i++){
-		if(fabs(vector_a[i] - vector_b[i]) > epsilon){
+		if(fabs(vector_a[i] - vector_b[i]) > EPSILON){
 			return -1;
 		}
 	}

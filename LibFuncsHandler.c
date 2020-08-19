@@ -14,7 +14,7 @@ FILE* open_file(char *pathname, const char *mode){
 	f = fopen(pathname, mode);
 	if (f == NULL){
 		printf("File opening failed\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	return f;
 }
@@ -25,7 +25,7 @@ int close_file(FILE *stream){
 	result = fclose(stream);
 	if (result == EOF){
 		printf("File closing failed\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	return result;
 }
@@ -38,7 +38,7 @@ int int_fread(FILE* f){
 	return_value = fread(&n, sizeof(int), 1, f);
 	if (return_value != 1) {
 		printf("File reading failed\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	return n;
 }
@@ -50,7 +50,7 @@ void int_fwrite(int n, FILE* f){
 	return_value = fwrite(&n, sizeof(int), 1, f);
 	if (return_value != 1) {
 		printf("File writing failed\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -59,7 +59,7 @@ void* allocate(size_t n){
 	p = malloc(n);
 	if (p == NULL){
 		printf("Memory allocation failed\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	return p;
 }
@@ -67,7 +67,7 @@ void* allocate(size_t n){
 void infinite_loop_detection(int counter, int max_counter){
 	if(counter >= max_counter){
 		printf("Infinite loop error\n");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 }
 
@@ -78,17 +78,17 @@ void assert_file_not_empty(FILE* f){
     result = fseek (f, 0, SEEK_END);
     if (result != 0){
     	printf("File seek failed\n");
-    	exit(1);
+    	exit(EXIT_FAILURE);
     }
 
     size = ftell(f);
     if (size == -1){
     	printf("File tell failed\n");
-    	exit(1);
+    	exit(EXIT_FAILURE);
     }
 
     if (size == 0) {
         printf("File is empty\n");
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 }

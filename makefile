@@ -6,8 +6,11 @@ all: cluster
 clean:
 	rm -rf *.o cluster
 
-cluster: NetworkDivision.o LibFuncsHandler.o LinearUtils.o Network.o NodeUtils.o PowerIteration.o SparseMatrix.o
-	gcc NetworkDivision.o LibFuncsHandler.o LinearUtils.o Network.o NodeUtils.o PowerIteration.o SparseMatrix.o -o cluster $(LIBS)
+cluster: NetworkDivision.o LibFuncsHandler.o LinearUtils.o Network.o NodeUtils.o PowerIteration.o SparseMatrix.o main.o
+	gcc NetworkDivision.o LibFuncsHandler.o LinearUtils.o Network.o NodeUtils.o PowerIteration.o SparseMatrix.o main.o -o cluster $(LIBS)
+
+main.o: main.c
+	gcc $(FLAGS) -c main.c
 
 NetworkDivision.o: NetworkDivision.c
 	gcc $(FLAGS) -c NetworkDivision.c

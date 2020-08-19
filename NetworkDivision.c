@@ -12,9 +12,7 @@
 #include "LibFuncsHandler.h"
 #include "PowerIteration.h"
 
-int main(int argc, char* argv[]){
-	FILE* input;
-	FILE* output;
+void divide_net_to_clusters(FILE* input, FILE* output){
 	Network* net = NULL;
 	Group* P = NULL;
 	Group* O = NULL;
@@ -27,19 +25,8 @@ int main(int argc, char* argv[]){
 	int i = 0;
 	int n_g = 0;
 
-	/* Check input validity */
-	if (argc != 3) {
-		printf("Num of args should be 3\n"); 
-		exit(1); 
-	}
-	input = open_file(argv[1], "rb");
-	assert_file_not_empty(input);
-	close_file(input);
-
 	/* Read the input file into the net struct */
-	input = open_file(argv[1], "rb");
 	net = create_network(input);
-	close_file(input);
 
 	/*  Create the group P with the first node */
 	head = create_node(0);
@@ -96,18 +83,11 @@ int main(int argc, char* argv[]){
 	}
 
 	/* Write the devision to output file */
-	output = open_file(argv[2], "wb");
 	write_clusters_to_output(O, output);
-	close_file(output);
-
-	/* TODO: delete this line */
-	print_output_file(argv[2]);
 
 	/* Free all  */
 	delete_group(O, net->n);
 	free_network(net);
-
-	return 0;
 }
 
 void indivisable(double* s, int n_g){
@@ -301,15 +281,13 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 
 }
 
-void print_output_file(char *pathname){
-	FILE* output_file = NULL;
+void print_output_file(FILE* output_file){
 	int num_of_groups = -1;
 	int i = -1;
 	int j = -1;
 	int num_of_nodes_in_group = -1;
 	int node_index = -1;
 
-	output_file = open_file(pathname, "rb");
 	num_of_groups = int_fread(output_file);
 	/* Reading num of groups */
 	printf("Num of groups: %d \n", num_of_groups);
@@ -325,6 +303,4 @@ void print_output_file(char *pathname){
 		}
 		printf(" \n");
 	}
-	close_file(output_file);
-
 }

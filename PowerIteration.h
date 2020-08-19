@@ -7,7 +7,7 @@
 
 #ifndef POWERITERATION_H_
 #define POWERITERATION_H_
-#define epsilon 0.00001
+#define EPSILON 0.00001
 
 #include "Network.h"
 
