@@ -93,3 +93,10 @@ void assert_file_not_empty(FILE* f){
         exit(EXIT_FAILURE);
     }
 }
+
+void assert_not_zero(double n){
+	if (n == 0){
+		printf("Zero division error\n");
+		exit(EXIT_FAILURE);
+	}
+}

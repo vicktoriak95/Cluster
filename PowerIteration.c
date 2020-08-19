@@ -40,6 +40,7 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 
 		/* Normalizing over norm */
 		vector_norm = sqrt(dot_product(b_next, b_next, n_g));
+		assert_not_zero(vector_norm);
 		mult_vector_by_scalar(b_next, 1 / vector_norm, n_g);
 
 		temp = b_prev;

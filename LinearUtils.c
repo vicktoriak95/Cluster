@@ -176,6 +176,7 @@ double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, in
 	/* Calculating denominator */
 	denominator = dot_product(eigen_vector, eigen_vector, n_g);
 	/* Calculating lambda */
+	assert_not_zero(denominator);
 	lambda = numerator / denominator;
 	eigen_value = lambda - norm;
 	free(mul);
