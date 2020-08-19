@@ -212,6 +212,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	int* indices = NULL;
 	int* unmoved = NULL;
 	int cnt = 0;
+	int first_score = 1;
 
 	/* Initiate unmoved with all the vertices' indexes corresponding to g */
 	unmoved = (int*)allocate(n_g * sizeof(int));
@@ -230,13 +231,15 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 		for (i = 0; i < n_g; i++){
 			Q0 = calc_Qk(N, s, g, n_g);
 			max_score_index = -1;
+			first_score = 1;
 			/* Searching for the best node to move among unmoved */
 			for(k = 0; k < n_g; k++){
 				if(unmoved[k] != (-1)){
 					s[k] = s[k]*(-1);
 					Qk = calc_Qk(N, s, g, n_g);
 					Q_diff = Qk - Q0;
-					if ((k == 0) || (Q_diff > max_score)){
+					if ((first_score == 1) || (Q_diff > max_score)){
+						first_score = 0;
 						max_score = Q_diff;
 						max_score_index = k;
 					}
