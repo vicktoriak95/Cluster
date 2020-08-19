@@ -42,7 +42,7 @@ Network* create_network(FILE* input){
 	net->n = n;
 
 	/* Update the degrees vector and adjacency matrix from the file*/
-	for(i = 0; i < net->n; i++){
+	for (i = 0; i < net->n; i++){
 		net->deg_vector[i] = spmat_add_row_from_file(net->A, input, i);
 	}
 

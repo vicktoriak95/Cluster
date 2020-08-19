@@ -91,17 +91,18 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 }
 
 void indivisable(double* s, int n_g){
-	int i;
+	int i = 0;
+
 	for (i = 0; i < n_g; i++){
 		s[i] = 1.0;
 	}
 }
 
 void devide_into_two(Network* N, Node* g, double* s, int n_g){
-	double Q;
-	double norm;
-	double eigen_value;
-	double* eigen_vector;
+	double Q = 0;
+	double norm = 0;
+	double eigen_value = 0;
+	double* eigen_vector = NULL;
 
 	/* Calculating matrix norm */
 	norm = Bhat_norm(N, g, n_g);
@@ -128,6 +129,7 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g){
 
 void calculate_s(double* eigen_vector, double* s, int n_g){
 	int i = 0;
+
 	for (i = 0; i < n_g; i ++){
 		if (eigen_vector[i] >= 0){
 			s[i] = 1;
@@ -180,8 +182,8 @@ Node* divide_group(Node** g1_p, double* s, int n_g){
 }
 
 double calc_Qk(Network* N, double* s, Node* g, int n_g){
-	double res;
-	double* result;
+	double res = 0;
+	double* result = NULL;
 
 	result = (double*)allocate(n_g * sizeof(double));
 	Bhat_multiplication(N, s, result, g, n_g);
@@ -192,17 +194,18 @@ double calc_Qk(Network* N, double* s, Node* g, int n_g){
 }
 
 void modularity_maximization(Network* N, double* s, Node* g, int n_g){
-	int i;
-	int k;
+	int i = 0;
+	int k = 0;
 	int max_score_index = -1;
 	int improve_index = 0;
-	double Q0, Qk;
-	double delta_Q;
+	double Q0 = 0;
+	double Qk = 0;
+	double delta_Q = 0;
 	double Q_diff = - INFINITY;
 	double max_score = - INFINITY;
-	double* improve;
-	int* indices;
-	int* unmoved;
+	double* improve = NULL;
+	int* indices = NULL;
+	int* unmoved = NULL;
 
 	/* Initiate unmoved with all the vertices' indexes corresponding to g */
 	unmoved = (int*)allocate(n_g * sizeof(int));
@@ -273,12 +276,11 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 		}
 
 
-	}while(delta_Q > 0);
+	} while(delta_Q > 0);
 
 	free(unmoved);
 	free(improve);
 	free(indices);
-
 }
 
 void print_output_file(FILE* output_file){
@@ -292,12 +294,12 @@ void print_output_file(FILE* output_file){
 	/* Reading num of groups */
 	printf("Num of groups: %d \n", num_of_groups);
 	/* Reading num of nodes in every group, and nodes in group  */
-	for(i=0; i < num_of_groups; i++){
+	for (i = 0; i < num_of_groups; i++){
 		num_of_nodes_in_group = int_fread(output_file);
 		printf("Num of nodes in group %d is %d \n", i, num_of_nodes_in_group);
 		/* Reading nodes in group */
 		printf("The nodes are:");
-		for(j=0; j < num_of_nodes_in_group; j++){
+		for (j = 0; j < num_of_nodes_in_group; j++){
 			node_index = int_fread(output_file);
 			printf(" %d", node_index);
 		}

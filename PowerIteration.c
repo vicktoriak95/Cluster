@@ -15,9 +15,9 @@
 double* power_iteration(Network* N, double norm, Node* g, int n_g){
 	/*double b_prev_const[3] = {0.36283495, 0.56467796, 0.66505637};
 	double b_next_const[3] = {0.11767303, 0.5011049, 0.89936061};*/
-	double* temp;
-	double* b_prev;
-	double* b_next;
+	double* temp = NULL;
+	double* b_prev = NULL;
+	double* b_next = NULL;
 	double vector_norm = 0;
 
 
@@ -51,17 +51,17 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 }
 
 void create_random_vector(double * vector, int vector_size){
-	int i;
-	for(i=0; i<vector_size; i++){
+	int i = 0;
+	for (i = 0; i < vector_size; i++){
 		vector[i] = (double)rand();
 	}
 }
 
 int close_vectors(double* vector_a, double* vector_b, int n){
-	int i;
+	int i = 0;
 	/* Iterating over vectors, checking if diff of every entry is bigger than epsilon */
 	for (i = 0; i < n; i++){
-		if(fabs(vector_a[i] - vector_b[i]) > EPSILON){
+		if (fabs(vector_a[i] - vector_b[i]) > EPSILON){
 			return -1;
 		}
 	}
