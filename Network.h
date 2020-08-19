@@ -33,7 +33,7 @@ Network* allocate_network(int n);
 Network* create_network(FILE* input);
 
 /* Writes clusters in O to output file */
-void write_clusters_to_output(Group* O, FILE* f);
+void write_clusters_to_output(Group* O, FILE* f, int n);
 
 /* Free all allocated space of a network */
 void free_network(Network* net);

@@ -24,6 +24,7 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 	Node* head = NULL;
 	int i = 0;
 	int n_g = 0;
+	int cnt = 0;
 
 	/* Read the input file into the net struct */
 	net = create_network(input);
@@ -38,6 +39,9 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 	}
 
 	while (P != NULL){
+		/* Number of iterations is linear in n */
+		/* 2n chosen as an upper bound */
+		infinite_loop_detection(cnt, 2 * net->n);
 		/* Pop g out of P */
 		g = P->value;
 		old_P = P;
@@ -45,7 +49,7 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 		free(old_P);
 
 		/* Divide g into two groups */
-		n_g = get_node_length(g);
+		n_g = get_node_length(g, net->n);
 		s = (double*)allocate(n_g * sizeof(double));
 		devide_into_two(net, g, s, n_g);
 		modularity_maximization(net, s, g, n_g);
@@ -80,10 +84,11 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 				push_group(&P, g2);
 			}
 		}
+		cnt += 1;
 	}
 
 	/* Write the devision to output file */
-	write_clusters_to_output(O, output);
+	write_clusters_to_output(O, output, net->n);
 
 	/* Free all  */
 	delete_group(O, net->n);
@@ -206,6 +211,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	double* improve = NULL;
 	int* indices = NULL;
 	int* unmoved = NULL;
+	int cnt = 0;
 
 	/* Initiate unmoved with all the vertices' indexes corresponding to g */
 	unmoved = (int*)allocate(n_g * sizeof(int));
@@ -214,6 +220,9 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 
 	/* Keep improving while Q > 0 */
 	do{
+		/* Every iteration increases the Q of the division and thus we would not visit the same division twice
+		 * There are at most (2 ** n_g) divisions */
+		infinite_loop_detection(cnt, pow(2, n_g));
 		/* Initiating unmoved with g values */
 		vector_from_list(unmoved, g, n_g);
 
@@ -274,7 +283,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 			delta_Q = improve[improve_index];
 		}
 
-
+		cnt += 1;
 	} while(delta_Q > 0);
 
 	free(unmoved);

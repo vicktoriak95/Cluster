@@ -19,6 +19,7 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 	double* b_prev = NULL;
 	double* b_next = NULL;
 	double vector_norm = 0;
+	int cnt = 0;
 
 
 	/* Initiating b_prev to be random b_0 */
@@ -27,9 +28,9 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 	b_next =(double*)allocate(n_g * sizeof(double));
 	create_random_vector(b_next, n_g);
 
-	/* TODO: How to assure loop is not infinite */
 	/* While vectors diff bigger than epsilon */
 	while(close_vectors(b_prev, b_next, n_g) != 0){
+		infinite_loop_detection(cnt, MAX_POWER_ITERATIONS);
 
 		/* Dot product between B\hat[g]_shifted and b_k */
 
@@ -46,6 +47,7 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 		temp = b_prev;
 		b_prev = b_next;
 		b_next = temp;
+		cnt += 1;
 	}
 	free(b_next);
 	return b_prev;

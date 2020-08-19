@@ -56,26 +56,32 @@ Network* create_network(FILE* input){
 	return net;
 }
 
-void write_clusters_to_output(Group* O, FILE* f){
+void write_clusters_to_output(Group* O, FILE* f, int n){
 	Group* group_head = O;
 	Node* node_head = NULL;
 	int group_length = 0;
 	int node_length = 0;
+	int outer_while_cnt = 0;
+	int inner_while_cnt = 0;
 
-	group_length = get_group_length(group_head);
+	group_length = get_group_length(group_head, n);
 	int_fwrite(group_length, f);
 
 	while (group_head != NULL){
-		node_length = get_node_length(group_head->value);
+		infinite_loop_detection(outer_while_cnt, n);
+		node_length = get_node_length(group_head->value, n);
 		int_fwrite(node_length, f);
 
 		node_head = group_head->value;
 		while (node_head != NULL){
+			infinite_loop_detection(inner_while_cnt, n);
 			int_fwrite(node_head->index, f);
 			node_head = node_head->next;
+			inner_while_cnt += 1;
 		}
 
 		group_head = group_head->next;
+		outer_while_cnt += 1;
 	}
 }
 

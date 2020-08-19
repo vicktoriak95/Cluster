@@ -36,7 +36,7 @@ void delete_node_list(Node* head_ref, int n){
 		next = current->next;
 		free(current);
 		current = next;
-		cnt++;
+		cnt += 1;
 	}
 }
 
@@ -60,13 +60,16 @@ int get_node_value(Node* g, int k){
 	return head->index;
 }
 
-int get_node_length(Node* g){
+int get_node_length(Node* g, int n){
 	Node* head = g;
 	int length = 0;
+	int cnt = 0;
 
 	while (head != NULL){
+		infinite_loop_detection(cnt, n);
 		length += 1;
 		head = head->next;
+		cnt += 1;
 	}
 	return length;
 }
@@ -129,7 +132,7 @@ void delete_group(Group* head_ref, int n){
 		delete_node_list(current->value, n);
 		free(current);
 		current = next;
-		cnt++;
+		cnt += 1;
 	}
 }
 
@@ -144,13 +147,16 @@ void print_group(Group* group){
 	}
 }
 
-int get_group_length(Group* group){
+int get_group_length(Group* group, int n){
 	Group* head = group;
 	int length = 0;
+	int cnt = 0;
 
 	while (head != NULL){
+		infinite_loop_detection(cnt, n);
 		length += 1;
 		head = head->next;
+		cnt += 1;
 	}
 	return length;
 }

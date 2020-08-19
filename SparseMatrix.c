@@ -83,7 +83,7 @@ int spmat_add_row_from_file(spmat* A ,FILE* input, int i){
 		col_index = int_fread(input);
 		/* Node is always pointing on current added node */
 		/* entry_val is const and equals 1 */
-		node = nodemat_create_node(entry_val, col_index);
+		node = nodemat_create_node(ENTRY_VAL, col_index);
 
 		/* Inserting node to spmat */
 		/* List is empty - first node appended */
@@ -153,6 +153,7 @@ void spmat_mult(const spmat* A, const double *v, double *result, Node* g){
 				else {
 					mat_col = (Node_matrix*)mat_col->next;
 				}
+				cnt += 1;
 			}
 			/* Updating result vector */
 			result[result_index] = dot_product;
@@ -195,6 +196,7 @@ int spmat_row_sum(spmat* A, int row_num, Node* g){
 		else {
 			row_head = (Node_matrix*)row_head->next;
 		}
+		cnt += 1;
 	}
 	return sum;
 }
