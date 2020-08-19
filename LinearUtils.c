@@ -138,7 +138,7 @@ void unit_vector_j(double* v, int n, int j){
 }
 
 double Bhat_norm(Network* N, Node* g, int n_g){
-	double norm = -INFINITY;
+	double norm = 0;
 	int j = 0;
 	double* ej = NULL;
 	double* B_col = NULL;
@@ -151,7 +151,7 @@ double Bhat_norm(Network* N, Node* g, int n_g){
 		unit_vector_j(ej, n_g, j);
 		Bhat_multiplication(N, ej, B_col, g, n_g);
 		col_sum = abs_sum_of_double_vector(B_col, n_g);
-		if (col_sum > norm){
+		if ((j == 0) || (col_sum > norm)){
 			norm = col_sum;
 		}
 	}
