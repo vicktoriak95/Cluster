@@ -24,6 +24,7 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 	Node* head = NULL;
 	int i = 0;
 	int n_g = 0;
+	int cnt = 0;
 
 	/* Read the input file into the net struct */
 	net = create_network(input);
@@ -38,6 +39,9 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 	}
 
 	while (P != NULL){
+		/* Number of iterations is linear in n */
+		/* 2n chosen as an upper bound */
+		infinite_loop_detection(cnt, 2 * net->n);
 		/* Pop g out of P */
 		g = P->value;
 		old_P = P;
@@ -45,7 +49,7 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 		free(old_P);
 
 		/* Divide g into two groups */
-		n_g = get_node_length(g);
+		n_g = get_node_length(g, net->n);
 		s = (double*)allocate(n_g * sizeof(double));
 		devide_into_two(net, g, s, n_g);
 		modularity_maximization(net, s, g, n_g);
@@ -80,10 +84,11 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 				push_group(&P, g2);
 			}
 		}
+		cnt += 1;
 	}
 
 	/* Write the devision to output file */
-	write_clusters_to_output(O, output);
+	write_clusters_to_output(O, output, net->n);
 
 	/* Free all  */
 	delete_group(O, net->n);
@@ -91,17 +96,18 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 }
 
 void indivisable(double* s, int n_g){
-	int i;
+	int i = 0;
+
 	for (i = 0; i < n_g; i++){
 		s[i] = 1.0;
 	}
 }
 
 void devide_into_two(Network* N, Node* g, double* s, int n_g){
-	double Q;
-	double norm;
-	double eigen_value;
-	double* eigen_vector;
+	double Q = 0;
+	double norm = 0;
+	double eigen_value = 0;
+	double* eigen_vector = NULL;
 
 	/* Calculating matrix norm */
 	norm = Bhat_norm(N, g, n_g);
@@ -128,6 +134,7 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g){
 
 void calculate_s(double* eigen_vector, double* s, int n_g){
 	int i = 0;
+
 	for (i = 0; i < n_g; i ++){
 		if (eigen_vector[i] >= 0){
 			s[i] = 1;
@@ -180,8 +187,8 @@ Node* divide_group(Node** g1_p, double* s, int n_g){
 }
 
 double calc_Qk(Network* N, double* s, Node* g, int n_g){
-	double res;
-	double* result;
+	double res = 0;
+	double* result = NULL;
 
 	result = (double*)allocate(n_g * sizeof(double));
 	Bhat_multiplication(N, s, result, g, n_g);
@@ -192,17 +199,19 @@ double calc_Qk(Network* N, double* s, Node* g, int n_g){
 }
 
 void modularity_maximization(Network* N, double* s, Node* g, int n_g){
-	int i;
-	int k;
+	int i = 0;
+	int k = 0;
 	int max_score_index = -1;
 	int improve_index = 0;
-	double Q0, Qk;
-	double delta_Q;
-	double Q_diff = - INFINITY;
-	double max_score = - INFINITY;
-	double* improve;
-	int* indices;
-	int* unmoved;
+	double Q0 = 0;
+	double Qk = 0;
+	double delta_Q = 0;
+	double Q_diff = 0;
+	double max_score = 0;
+	double* improve = NULL;
+	int* indices = NULL;
+	int* unmoved = NULL;
+	int cnt = 0;
 
 	/* Initiate unmoved with all the vertices' indexes corresponding to g */
 	unmoved = (int*)allocate(n_g * sizeof(int));
@@ -211,13 +220,15 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 
 	/* Keep improving while Q > 0 */
 	do{
+		/* Every iteration increases the Q of the division and thus we would not visit the same division twice
+		 * There are at most (2 ** n_g) divisions */
+		infinite_loop_detection(cnt, pow(2, n_g));
 		/* Initiating unmoved with g values */
 		vector_from_list(unmoved, g, n_g);
 
 		/* Making n_g transitions of vertices to improve Q*/
 		for (i = 0; i < n_g; i++){
 			Q0 = calc_Qk(N, s, g, n_g);
-			max_score = - INFINITY;
 			max_score_index = -1;
 			/* Searching for the best node to move among unmoved */
 			for(k = 0; k < n_g; k++){
@@ -225,7 +236,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 					s[k] = s[k]*(-1);
 					Qk = calc_Qk(N, s, g, n_g);
 					Q_diff = Qk - Q0;
-					if (Q_diff > max_score){
+					if ((k == 0) || (Q_diff > max_score)){
 						max_score = Q_diff;
 						max_score_index = k;
 					}
@@ -272,13 +283,12 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 			delta_Q = improve[improve_index];
 		}
 
-
-	}while(delta_Q > 0);
+		cnt += 1;
+	} while(delta_Q > 0);
 
 	free(unmoved);
 	free(improve);
 	free(indices);
-
 }
 
 void print_output_file(FILE* output_file){
@@ -292,12 +302,12 @@ void print_output_file(FILE* output_file){
 	/* Reading num of groups */
 	printf("Num of groups: %d \n", num_of_groups);
 	/* Reading num of nodes in every group, and nodes in group  */
-	for(i=0; i < num_of_groups; i++){
+	for (i = 0; i < num_of_groups; i++){
 		num_of_nodes_in_group = int_fread(output_file);
 		printf("Num of nodes in group %d is %d \n", i, num_of_nodes_in_group);
 		/* Reading nodes in group */
 		printf("The nodes are:");
-		for(j=0; j < num_of_nodes_in_group; j++){
+		for (j = 0; j < num_of_nodes_in_group; j++){
 			node_index = int_fread(output_file);
 			printf(" %d", node_index);
 		}

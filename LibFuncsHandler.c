@@ -56,6 +56,7 @@ void int_fwrite(int n, FILE* f){
 
 void* allocate(size_t n){
 	void* p = NULL;
+
 	p = malloc(n);
 	if (p == NULL){
 		printf("Memory allocation failed\n");
@@ -65,7 +66,7 @@ void* allocate(size_t n){
 }
 
 void infinite_loop_detection(int counter, int max_counter){
-	if(counter >= max_counter){
+	if (counter >= max_counter){
 		printf("Infinite loop error\n");
 		exit(EXIT_FAILURE);
 	}
@@ -91,4 +92,11 @@ void assert_file_not_empty(FILE* f){
         printf("File is empty\n");
         exit(EXIT_FAILURE);
     }
+}
+
+void assert_not_zero(double n){
+	if (n == 0){
+		printf("Zero division error\n");
+		exit(EXIT_FAILURE);
+	}
 }

@@ -27,4 +27,7 @@ void infinite_loop_detection(int counter, int max_counter);
 /* Detects if a file is empty and exits */
 void assert_file_not_empty(FILE* f);
 
+/* Detects if a double is zero and exit to avoid dividing by it */
+void assert_not_zero(double n);
+
 #endif /* LIBFUNCSHANDLER_H_ */

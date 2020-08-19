@@ -7,7 +7,7 @@
 
 #ifndef SPARSEMATRIX_H_
 #define SPARSEMATRIX_H_
-#define entry_val  1
+#define ENTRY_VAL  1
 
 #include "NodeUtils.h"
 
@@ -23,7 +23,7 @@ typedef struct _spmat {
 
 /* Definition of node struct representing entries in sparse matrix*/
 typedef struct _Node_matrix {
-    double value;
+    int value;
     int col_index;
     struct _Node_matrix* next;
 } Node_matrix;
@@ -51,7 +51,6 @@ void spmat_free(spmat *A);
 /* Multiplies matrix A by vector v, into result (result is pre-allocated) */
 void spmat_mult(const spmat* A, const double *v, double *result, Node* g);
 
-/* TODO: make sure is fine with double */
 /* Sums row values of A, according to g values */
 int spmat_row_sum(spmat* A, int row_num, Node* g);
 

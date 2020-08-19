@@ -11,7 +11,8 @@
 #include "LibFuncsHandler.h"
 
 Node* create_node(int x){
-	Node* node;
+	Node* node = NULL;
+
 	node = (Node*)allocate(sizeof(Node));
 	node->index = x;
 	node->next = NULL;
@@ -28,22 +29,22 @@ void push_node(Node** head_ref, Node* new_node){
 void delete_node_list(Node* head_ref, int n){
 	int cnt = 0;
 	Node* current = head_ref;
-	Node* next;
+	Node* next = NULL;
 
 	while (current != NULL){
 		infinite_loop_detection(cnt, n);
 		next = current->next;
 		free(current);
 		current = next;
-		cnt++;
+		cnt += 1;
 	}
 }
 
 void print_node_list(Node* list){
-	if(list == NULL){
+	if (list == NULL){
 		printf(" \n");
 	}
-	else{
+	else {
 		printf("%d ", list->index);
 		print_node_list((Node*)(list->next));
 	}
@@ -51,31 +52,34 @@ void print_node_list(Node* list){
 
 int get_node_value(Node* g, int k){
 	Node* head = g;
-	int i;
+	int i = 0;
 
-	for(i = 0; i < k; i++){
+	for (i = 0; i < k; i++){
 		head = head->next;
 	}
 	return head->index;
 }
 
-int get_node_length(Node* g){
+int get_node_length(Node* g, int n){
 	Node* head = g;
 	int length = 0;
+	int cnt = 0;
 
 	while (head != NULL){
+		infinite_loop_detection(cnt, n);
 		length += 1;
 		head = head->next;
+		cnt += 1;
 	}
 	return length;
 }
 
 Node* node_list_from_vector(int* v, int n){
 	Node* head = NULL;
-	Node* node;
-	int i;
+	Node* node = NULL;
+	int i = 0;
 
-	for(i = n-1; i >= 0; i--){
+	for (i = n-1; i >= 0; i--){
 		node = create_node(v[i]);
 		push_node(&head, node);
 	}
@@ -84,16 +88,17 @@ Node* node_list_from_vector(int* v, int n){
 }
 
 void vector_from_list(int* vector, Node* g ,int n){
-	int i;
+	int i = 0;
 	Node* g_p = g;
+
 	for(i = 0; i < n; i++){
-			vector[i] = g_p->index;
-			g_p = g_p->next;
-		}
+		vector[i] = g_p->index;
+		g_p = g_p->next;
+	}
 }
 
 Group* create_group(Node* node){
-	Group* group;
+	Group* group = NULL;
 
 	group = (Group*)allocate(sizeof(Group));
 	group->value = node;
@@ -119,7 +124,7 @@ void push_group(Group** head_ref, Node* new_node){
 void delete_group(Group* head_ref, int n){
 	int cnt = 0;
 	Group* current = head_ref;
-	Group* next;
+	Group* next = NULL;
 
 	while (current != NULL){
 		infinite_loop_detection(cnt, n);
@@ -127,30 +132,31 @@ void delete_group(Group* head_ref, int n){
 		delete_node_list(current->value, n);
 		free(current);
 		current = next;
-		cnt++;
-		}
+		cnt += 1;
+	}
 }
 
 void print_group(Group* group){
-
-	if(group == NULL){
+	if (group == NULL){
 		printf("NULL\n");
 	}
-	else
-	{
+	else {
 		print_node_list(group->value);
 		printf("NULL\n");
 		print_node_list((Node*)(group->next));
 	}
 }
 
-int get_group_length(Group* group){
+int get_group_length(Group* group, int n){
 	Group* head = group;
 	int length = 0;
+	int cnt = 0;
 
 	while (head != NULL){
+		infinite_loop_detection(cnt, n);
 		length += 1;
 		head = head->next;
+		cnt += 1;
 	}
 	return length;
 }

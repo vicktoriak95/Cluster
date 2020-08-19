@@ -15,10 +15,11 @@
 double* power_iteration(Network* N, double norm, Node* g, int n_g){
 	/*double b_prev_const[3] = {0.36283495, 0.56467796, 0.66505637};
 	double b_next_const[3] = {0.11767303, 0.5011049, 0.89936061};*/
-	double* temp;
-	double* b_prev;
-	double* b_next;
+	double* temp = NULL;
+	double* b_prev = NULL;
+	double* b_next = NULL;
 	double vector_norm = 0;
+	int cnt = 0;
 
 
 	/* Initiating b_prev to be random b_0 */
@@ -27,9 +28,9 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 	b_next =(double*)allocate(n_g * sizeof(double));
 	create_random_vector(b_next, n_g);
 
-	/* TODO: How to assure loop is not infinite */
 	/* While vectors diff bigger than epsilon */
 	while(close_vectors(b_prev, b_next, n_g) != 0){
+		infinite_loop_detection(cnt, MAX_POWER_ITERATIONS);
 
 		/* Dot product between B\hat[g]_shifted and b_k */
 
@@ -40,28 +41,30 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 
 		/* Normalizing over norm */
 		vector_norm = sqrt(dot_product(b_next, b_next, n_g));
+		assert_not_zero(vector_norm);
 		mult_vector_by_scalar(b_next, 1 / vector_norm, n_g);
 
 		temp = b_prev;
 		b_prev = b_next;
 		b_next = temp;
+		cnt += 1;
 	}
 	free(b_next);
 	return b_prev;
 }
 
 void create_random_vector(double * vector, int vector_size){
-	int i;
-	for(i=0; i<vector_size; i++){
+	int i = 0;
+	for (i = 0; i < vector_size; i++){
 		vector[i] = (double)rand();
 	}
 }
 
 int close_vectors(double* vector_a, double* vector_b, int n){
-	int i;
+	int i = 0;
 	/* Iterating over vectors, checking if diff of every entry is bigger than epsilon */
 	for (i = 0; i < n; i++){
-		if(fabs(vector_a[i] - vector_b[i]) > EPSILON){
+		if (fabs(vector_a[i] - vector_b[i]) > EPSILON){
 			return -1;
 		}
 	}

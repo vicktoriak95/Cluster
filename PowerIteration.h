@@ -8,6 +8,7 @@
 #ifndef POWERITERATION_H_
 #define POWERITERATION_H_
 #define EPSILON 0.00001
+#define MAX_POWER_ITERATIONS 1000
 
 #include "Network.h"
 

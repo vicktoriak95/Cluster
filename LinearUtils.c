@@ -15,8 +15,9 @@
 
 double dot_product(double* vector1, double* vector2, int vector_size){
 	double sum = 0;
-	double product;
-	int i;
+	double product = 0;
+	int i = 0;
+
 	for (i = 0; i < vector_size; i++){
 		product = vector1[i] * vector2[i];
 		sum = sum + product;
@@ -25,18 +26,18 @@ double dot_product(double* vector1, double* vector2, int vector_size){
 }
 
 void print_vector(double* vector, int vector_size){
-	int i;
+	int i = 0;
 
 	for (i = 0; i < vector_size; i++){
 		printf("%f ", vector[i]);
 	}
 	printf("\n");
-
 }
 
 double abs_sum_of_double_vector(double* vec, int length){
-	int i;
+	int i = 0;
 	double sum = 0;
+
 	for (i = 0; i < length; i++){
 		sum = sum + fabs(vec[i]);
 	}
@@ -44,8 +45,9 @@ double abs_sum_of_double_vector(double* vec, int length){
 }
 
 double sum_of_integer_vector(int* vec, int length){
-	int i;
+	int i = 0;
 	int sum = 0;
+
 	for (i = 0; i < length; i++){
 		sum = sum + vec[i];
 	}
@@ -54,9 +56,9 @@ double sum_of_integer_vector(int* vec, int length){
 
 double dot_product_auxiliary_sum(Network* N, double* x, Node* g, int n_g, int indicator){
 	double result = 0;
-	int g_index;
+	int g_index = 0;
 	Node* head = g;
-	double mult;
+	double mult = 0;
 	int* deg_vector = N->deg_vector;
 	int M = N->M;
 	int x_index = 0;
@@ -85,7 +87,7 @@ void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g
 	double second_sum = 0;
 	int A_row_sum = 0;
 	int ki = 0;
-	int i;
+	int i = 0;
 	Node* g_head = g;
 	int g_index = 0;
 
@@ -95,7 +97,7 @@ void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g
 	first_sum = dot_product_auxiliary_sum(N,  x, g, n_g, 1);
 	second_sum = dot_product_auxiliary_sum(N, x, g, n_g, 2);
 	/* Calculating final result vector */
-	for(i=0; i<n_g; i++){
+	for (i = 0; i < n_g; i++){
 		A_row_sum = spmat_row_sum(N->A, i, g);
 		g_index = g_head->index;
 		ki = N->deg_vector[g_index];
@@ -105,15 +107,16 @@ void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g
 }
 
 void mult_vector_by_scalar(double* vector, double scalar, int length){
-	int i;
+	int i = 0;
+
 	for (i = 0; i < length; i++){
 		vector[i] = vector[i] * scalar;
 	}
 }
 
 void Bhat_shift(double* dot_product, double* x, double norm, int length){
-	int i;
-	double prod;
+	int i = 0;
+	double prod = 0;
 
 	for (i = 0; i < length; i++){
 		prod = x[i] * norm;
@@ -122,33 +125,33 @@ void Bhat_shift(double* dot_product, double* x, double norm, int length){
 }
 
 void unit_vector_j(double* v, int n, int j){
-	int i;
+	int i = 0;
 
-	for(i=0; i<n; i++){
-		if(i == j){
+	for (i = 0; i < n; i++){
+		if (i == j){
 			v[i] = 1;
 		}
-		else{
+		else {
 			v[i] = 0;
 		}
 	}
 }
 
 double Bhat_norm(Network* N, Node* g, int n_g){
-	double norm = -INFINITY;
-	int j;
-	double* ej;
-	double* B_col;
-	double col_sum;
+	double norm = 0;
+	int j = 0;
+	double* ej = NULL;
+	double* B_col = NULL;
+	double col_sum = 0;
 
 	ej = (double*)allocate(n_g * sizeof(double));
 	B_col = (double*)allocate(n_g * sizeof(double));
 
-	for(j=0; j<n_g; j++){
+	for (j = 0; j < n_g; j++){
 		unit_vector_j(ej, n_g, j);
 		Bhat_multiplication(N, ej, B_col, g, n_g);
 		col_sum = abs_sum_of_double_vector(B_col, n_g);
-		if(col_sum > norm){
+		if ((j == 0) || (col_sum > norm)){
 			norm = col_sum;
 		}
 	}
@@ -158,11 +161,11 @@ double Bhat_norm(Network* N, Node* g, int n_g){
 }
 
 double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, int n_g, Node* g){
-	double numerator;
-	double denominator;
-	double* mul;
-	double lambda;
-	double eigen_value;
+	double numerator = 0;
+	double denominator = 0;
+	double* mul = NULL;
+	double lambda = 0;
+	double eigen_value = 0;
 
 	/* Calculating numerator */
 	mul = (double*)allocate(n_g * sizeof(double));
@@ -173,6 +176,7 @@ double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, in
 	/* Calculating denominator */
 	denominator = dot_product(eigen_vector, eigen_vector, n_g);
 	/* Calculating lambda */
+	assert_not_zero(denominator);
 	lambda = numerator / denominator;
 	eigen_value = lambda - norm;
 	free(mul);
