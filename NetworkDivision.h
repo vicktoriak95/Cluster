@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include "Network.h"
 
+void divide_net_to_clusters(FILE* input, FILE* output);
+
 /* Fills s with 1.0 - meaning all vertices are in the same group */
 void indivisable(double* s, int n_g);
 
@@ -31,6 +33,6 @@ double calc_Qk(Network* N, double* s, Node* g, int n_g);
 /* Improving modularity */
 void modularity_maximization(Network* N, double* s, Node* g, int n_g);
 
-void print_output_file(char *pathname);
+void print_output_file(FILE* output_file);
 
 #endif /* NETWORKDIVISION_H_ */

@@ -24,4 +24,7 @@ void* allocate(size_t n);
 /* Detects infinite loops and exits */
 void infinite_loop_detection(int counter, int max_counter);
 
+/* Detects if a file is empty and exits */
+void assert_file_not_empty(FILE* f);
+
 #endif /* LIBFUNCSHANDLER_H_ */
