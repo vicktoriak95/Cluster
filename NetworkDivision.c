@@ -27,10 +27,14 @@ int main(int argc, char* argv[]){
 	int i = 0;
 	int n_g = 0;
 
+	/* Check input validity */
 	if (argc != 3) {
 		printf("Num of args should be 3\n"); 
 		exit(1); 
 	}
+	input = open_file(argv[1], "rb");
+	assert_file_not_empty(input);
+	close_file(input);
 
 	/* Read the input file into the net struct */
 	input = open_file(argv[1], "rb");
