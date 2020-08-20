@@ -1,8 +1,12 @@
 /*
  * spmat.h
  *
- *  Created on: Aug 8, 2020
- *      Author: User
+ * Definition of spmat struct represents sparse matrix.
+ * Definition of Node_matrix struct, because we chose to implement the linked list version of sparse matrix.
+ *
+ * Functions: all functions which handles sparse matrix: allocation and free, reading row from file and vector,
+ * multiplication by vector and row sum.
+ *
  */
 
 #ifndef SPARSEMATRIX_H_
@@ -21,7 +25,7 @@ typedef struct _spmat {
 
 } spmat;
 
-/* Definition of node struct representing entries in sparse matrix*/
+/* Definition of node struct representing entries in sparse matrix */
 typedef struct _Node_matrix {
     int value;
     int col_index;
@@ -37,25 +41,27 @@ void nodemat_free_list(Node_matrix* list);
 /* Allocates a new linked-lists sparse matrix of size n */
 spmat* spmat_allocate(int n);
 
-/* Add a single row from vector*/
+/* Add a single row from vector */
 void spmat_add_row_from_vector(spmat* A, const int *row, int i);
 
-/* Adds row i the matrix from file*/
-/* Returns num of non-zero entries in row */
+/* Read and add a single row from file*/
+/* Returns number of non-zero entries in row - deg of vertex the row representing */
 int spmat_add_row_from_file(spmat* A ,FILE* input, int i);
 
-/* Frees all resources used by A */
-/* Free lists of all rows, array of rows and spmat itself */
+/* Free all resources used by A.
+ * Frees lists of all rows, array of rows and spmat itself */
 void spmat_free(spmat *A);
 
-/* Multiplies matrix A by vector v, into result (result is pre-allocated) */
+/* Multiplies sub-matrix matrix A[g] by vector v, into result (result is pre-allocated) */
 void spmat_mult(const spmat* A, const double *v, double *result, Node* g);
 
-/* Sums row values of A, according to g values */
+/* Sums row values of sun-matrix A[g], according to g values */
 int spmat_row_sum(spmat* A, int row_num, Node* g);
 
+/* Prints sparse matrix */
 void print_sparse_matrix(spmat* sp_mat);
 
+/* Prints node matrix list */
 void print_node_matrix_list(spmat* sp_mat, int i);
 
 #endif /* SPARSEMATRIX_H_ */

@@ -1,8 +1,12 @@
 /*
  * Network.h
  *
- *  Created on: Aug 8, 2020
- *      Author: User
+ *	Defines Strcut Network which contains all information about given network:
+ *	adjacency matrix, degree vector, sum of degrees and number of vertices.
+ *
+ *	Functions working with networks: allocating and freeing network,
+ *	creation of network from file and from args and writing clusters to output.
+ *
  */
 
 #ifndef NETWORK_H_

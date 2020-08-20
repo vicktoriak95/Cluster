@@ -1,8 +1,6 @@
 /*
  * SparseMatrix.c
  *
- *  Created on: Aug 8, 2020
- *      Author: User
  */
 
 #include <stdio.h>
@@ -81,12 +79,12 @@ int spmat_add_row_from_file(spmat* A ,FILE* input, int i){
 	nnz_row = int_fread(input);
 	for (j = 0; j < nnz_row; j++){
 		col_index = int_fread(input);
-		/* Node is always pointing on current added node */
-		/* entry_val is const and equals 1 */
+		/* Node is always pointing on current added node.
+		 * ENTRY_VAL is const and equals 1. */
 		node = nodemat_create_node(ENTRY_VAL, col_index);
 
-		/* Inserting node to spmat */
-		/* List is empty - first node appended */
+		/* Inserting node to spmat.
+		 * List is empty - first node appended */
 		if (tail == NULL){
 			((Node_matrix** )A->private)[i] = node;
 		}
@@ -173,7 +171,7 @@ int spmat_row_sum(spmat* A, int row_num, Node* g){
 	int mat_col_index = 0;
 	int g_col_index = 0;
 
-	/* find row index in A*/
+	/* Find row index in A*/
 	mat_row_index = get_node_value(g, row_num);
 
 	row_head = ((Node_matrix** )A->private)[mat_row_index];
@@ -204,7 +202,7 @@ int spmat_row_sum(spmat* A, int row_num, Node* g){
 void print_sparse_matrix(spmat* sp_mat){
 	int i = 0;
 
-	/* Iterating over spmat private  i.e. over rows*/
+	/* Iterating over spmat private i.e. over rows*/
 	for (i = 0; i < sp_mat->n; i++){
 		print_node_matrix_list(sp_mat, i);
 		printf("\n");

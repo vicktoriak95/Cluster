@@ -1,12 +1,11 @@
 /*
  * Network.c
  *
- *  Created on: Aug 8, 2020
- *      Author: User
  */
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
+
 #include "LibFuncsHandler.h"
 #include "LinearUtils.h"
 
@@ -64,14 +63,17 @@ void write_clusters_to_output(Group* O, FILE* f, int n){
 	int outer_while_cnt = 0;
 	int inner_while_cnt = 0;
 
+	/* Calculating O group length and writing it to output */
 	group_length = get_group_length(group_head, n);
 	int_fwrite(group_length, f);
 
+	/* Iterating over O and writing clusters to output */
 	while (group_head != NULL){
 		infinite_loop_detection(outer_while_cnt, n);
 		node_length = get_node_length(group_head->value, n);
 		int_fwrite(node_length, f);
 
+		/* Iterating over a cluster and writing vertices in it to output */
 		node_head = group_head->value;
 		while (node_head != NULL){
 			infinite_loop_detection(inner_while_cnt, n);

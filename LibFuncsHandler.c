@@ -1,8 +1,6 @@
 /*
  * LibFuncsHandler.c
  *
- *  Created on: 8 баев„ 2020
- *      Author: user
  */
 
 #include <stdlib.h>
