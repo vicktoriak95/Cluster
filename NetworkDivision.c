@@ -1,8 +1,6 @@
 /*
- * NetworkDevision.h
+ * NetworkDevision.c
  *
- *  Created on: Aug 8, 2020
- *      Author: User
  */
 
 #include <math.h>
@@ -59,7 +57,7 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 
 		/* One of the groups is empty */
 		if (g1 == NULL || g2 == NULL){
-			/* set g as the non emply list */
+			/* set g as the non empty list */
 			if (g1 != NULL){
 				g = g1;
 			}
@@ -90,7 +88,7 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 	/* Write the devision to output file */
 	write_clusters_to_output(O, output, net->n);
 
-	/* Free all  */
+	/* Free all */
 	delete_group(O, net->n);
 	free_network(net);
 }
@@ -163,6 +161,7 @@ Node* divide_group(Node** g1_p, double* s, int n_g){
 		/* If we move the node to g2 */
 		else {
 			to_be_g2_head = g1_head;
+			/* If we are moving first node from g1 */
 			if (g1_head_prev == NULL) {
 				*g1_p = g1_head->next;
 				g1_head = g1_head->next;
@@ -171,7 +170,7 @@ Node* divide_group(Node** g1_p, double* s, int n_g){
 				g1_head_prev->next = g1_head->next;
 				g1_head = g1_head_prev->next;
 			}
-
+			/* If we are moving first node to g_2 */
 			if (g2_head == NULL){
 				g2 = to_be_g2_head;
 				g2_head = to_be_g2_head;

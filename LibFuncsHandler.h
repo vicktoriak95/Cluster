@@ -1,16 +1,18 @@
 /*
  * LibFuncsHandler.h
  *
- *  Created on: 8 баев„ 2020
- *      Author: user
+ *  Functions handling errors: exiting and printing appropriate massage.
+ *
  */
 
 #ifndef LIBFUNCSHANDLER_H_
 #define LIBFUNCSHANDLER_H_
 
-FILE* open_file(char *pathname, const char *mode);
+/* Open file from pathname */
+FILE* open_file(char* pathname, const char* mode);
 
-int close_file(FILE *stream);
+/* Close file from stream */
+int close_file(FILE* stream);
 
 /* Read an integer from an open file descriptor */
 int int_fread(FILE* f);

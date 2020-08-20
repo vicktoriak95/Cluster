@@ -1,8 +1,6 @@
 /*
  * LinearUtils.c
  *
- *  Created on: Aug 8, 2020
- *      Author: adi
  */
 
 #include <stdlib.h>
@@ -147,6 +145,7 @@ double Bhat_norm(Network* N, Node* g, int n_g){
 	ej = (double*)allocate(n_g * sizeof(double));
 	B_col = (double*)allocate(n_g * sizeof(double));
 
+	/* Calculating all column absolute sums of B_hat[g], finding max sum */
 	for (j = 0; j < n_g; j++){
 		unit_vector_j(ej, n_g, j);
 		Bhat_multiplication(N, ej, B_col, g, n_g);

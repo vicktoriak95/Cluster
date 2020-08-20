@@ -1,8 +1,6 @@
 /*
  * PowerIteration.c
  *
- *  Created on: Aug 10, 2020
- *      Author: User
  */
 
 #include <stdio.h>
@@ -13,8 +11,6 @@
 #include "LinearUtils.h"
 
 double* power_iteration(Network* N, double norm, Node* g, int n_g){
-	/*double b_prev_const[3] = {0.36283495, 0.56467796, 0.66505637};
-	double b_next_const[3] = {0.11767303, 0.5011049, 0.89936061};*/
 	double* temp = NULL;
 	double* b_prev = NULL;
 	double* b_next = NULL;
@@ -22,7 +18,7 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 	int cnt = 0;
 
 
-	/* Initiating b_prev to be random b_0 */
+	/* Initiating b_prev to be random b_0, b_next to be random too */
 	b_prev = (double*)allocate(n_g * sizeof(double));
 	create_random_vector(b_prev, n_g);
 	b_next =(double*)allocate(n_g * sizeof(double));
@@ -32,9 +28,8 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 	while(close_vectors(b_prev, b_next, n_g) != 0){
 		infinite_loop_detection(cnt, MAX_POWER_ITERATIONS);
 
-		/* Dot product between B\hat[g]_shifted and b_k */
-
-		/* Multiplying B\hat by b_prev and saving result in b_next */
+		/* Calculating dot product between B\hat[g]_shifted and b_k:
+		 * Multiplying B\hat by b_prev and saving result in b_next */
 		Bhat_multiplication(N, b_prev, b_next, g, n_g);
 		/* Shifting b_next by b_prev and norm*/
 		Bhat_shift(b_next, b_prev, norm, n_g);

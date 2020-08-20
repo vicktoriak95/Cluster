@@ -1,8 +1,6 @@
 /*
  * main.c
  *
- *  Created on: Aug 8, 2020
- *      Author: user
  */
 
 #include <stdlib.h>
@@ -35,10 +33,12 @@ int main(int argc, char* argv[]){
 	input_file_path = argv[1];
 	output_file_path = argv[2];
 
+	/* Opening file to assert is not empty */
 	input = open_file(input_file_path, "rb");
 	assert_file_not_empty(input);
 	close_file(input);
 
+	/* Opening file to read network */
 	input = open_file(input_file_path, "rb");
 	output = open_file(output_file_path, "wb");
 	divide_net_to_clusters(input, output);

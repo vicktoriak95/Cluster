@@ -1,8 +1,6 @@
 /*
  * NodeUtils.c
  *
- *  Created on: Aug 10, 2020
- *      Author: User
  */
 
 #include <stdlib.h>
@@ -22,7 +20,7 @@ Node* create_node(int x){
 void push_node(Node** head_ref, Node* new_node){
     /* Make next of new node as head */
     new_node->next = (*head_ref);
-    /* move the head to point to the new node */
+    /* Move the head to point to the new node */
     (*head_ref) = new_node;
 }
 
