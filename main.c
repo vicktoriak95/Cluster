@@ -36,7 +36,7 @@ int main(int argc, char* argv[]){
 
 	/* TODO: delete these lines */
 	output = open_file(output_file_path, "rb");
-	print_output_file(output);
+	/*print_output_file(output);*/
 	close_file(output);
 
 	exit(EXIT_SUCCESS);
