@@ -11,6 +11,9 @@
 #include <stdio.h>
 #include "Network.h"
 
+/* INT_MAX == 2 ** 31 - 1 */
+#define INT_MAX_POWER_OF_2 30
+
 void divide_net_to_clusters(FILE* input, FILE* output);
 
 /* Fills s with 1.0 - meaning all vertices are in the same group */

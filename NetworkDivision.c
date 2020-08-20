@@ -213,6 +213,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	int* unmoved = NULL;
 	int cnt = 0;
 	int first_score = 1;
+	int power_of_2 = n_g;
 
 	/* Initiate unmoved with all the vertices' indexes corresponding to g */
 	unmoved = (int*)allocate(n_g * sizeof(int));
@@ -221,9 +222,12 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 
 	/* Keep improving while Q > 0 */
 	do{
+		if (n_g > INT_MAX_POWER_OF_2){
+			power_of_2 = INT_MAX_POWER_OF_2;
+		}
 		/* Every iteration increases the Q of the division and thus we would not visit the same division twice
 		 * There are at most (2 ** n_g) divisions */
-		infinite_loop_detection(cnt, pow(2, n_g));
+		infinite_loop_detection(cnt, pow(2, power_of_2));
 		/* Initiating unmoved with g values */
 		vector_from_list(unmoved, g, n_g);
 
