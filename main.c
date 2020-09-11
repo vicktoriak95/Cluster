@@ -8,7 +8,7 @@
 #include "NetworkDivision.h"
 #include "LibFuncsHandler.h"
 
-/*#define DEBUG*/
+#define DEBUG
 
 #ifdef DEBUG
 #include <time.h>

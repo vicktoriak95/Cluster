@@ -197,6 +197,21 @@ double calc_Qk(Network* N, double* s, Node* g, int n_g){
 	return res;
 }
 
+double calc_Q_diff(double* d, int i, Network* N, Node* g, int n_g){
+	double first_sum = 0;
+	double second_sum = 0;
+	double res = 0;
+	int j = 0;
+
+	first_sum = spmat_row_sum_mult_by_vector(N->A, i, g, d);
+	for(j=0; j<=n_g; j++){
+		second_sum += (N->deg_vector[i] * N->deg_vector[j] / N->M) * d[j];
+	}
+	res = 4 * d[i] * (first_sum - second_sum) + 4 * (N->deg_vector[i] * N->deg_vector[i]) / N->M;
+
+	return res;
+}
+
 void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	int i = 0;
 	int k = 0;
@@ -214,7 +229,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	int first_score = 1;
 	int power_of_2 = n_g;
 
-	/* Initiate unmoved with all the vertices' indexes corresponding to g */
+	/* Initiate unmoved with all the vertices indexes corresponding to g */
 	unmoved = (int*)allocate(n_g * sizeof(int));
 	improve = (double*)allocate(n_g * sizeof(double));
 	indices = (int*)allocate(n_g * sizeof(int));
@@ -227,10 +242,11 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 		/* Every iteration increases the Q of the division and thus we would not visit the same division twice
 		 * There are at most (2 ** n_g) divisions */
 		infinite_loop_detection(cnt, pow(2, power_of_2));
+
 		/* Initiating unmoved with g values */
 		vector_from_list(unmoved, g, n_g);
 
-		/* Making n_g transitions of vertices to improve Q*/
+		/* Making n_g transitions of vertices to improve Q */
 		for (i = 0; i < n_g; i++){
 			Q0 = calc_Qk(N, s, g, n_g);
 			max_score_index = -1;

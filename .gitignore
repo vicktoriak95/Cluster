@@ -2,5 +2,7 @@
 .classpath
 .project
 .cproject
+tester
 .settings/
 Debug/
+Tester_Files/
