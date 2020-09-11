@@ -201,11 +201,16 @@ double calc_Q_diff(double* d, int i, Network* N, Node* g, int n_g){
 	double first_sum = 0;
 	double second_sum = 0;
 	double res = 0;
+	/*
+	double ki = 0;
+	double kj = 0;*/
+	double to_add = 0;
 	int j = 0;
 
 	first_sum = spmat_row_sum_mult_by_vector(N->A, i, g, d);
 	for(j=0; j<=n_g; j++){
-		second_sum += (N->deg_vector[i] * N->deg_vector[j] / N->M) * d[j];
+		to_add = ((double)N->deg_vector[i] * N->deg_vector[j] / N->M) * d[j];
+		second_sum += to_add;
 	}
 	res = 4 * d[i] * (first_sum - second_sum) + 4 * (N->deg_vector[i] * N->deg_vector[i]) / N->M;
 
@@ -221,6 +226,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	double Qk = 0;
 	double delta_Q = 0;
 	double Q_diff = 0;
+	double Q_diff_old = 0;
 	double max_score = 0;
 	double* improve = NULL;
 	int* indices = NULL;
@@ -255,8 +261,12 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 			for(k = 0; k < n_g; k++){
 				if(unmoved[k] != (-1)){
 					s[k] = s[k]*(-1);
+					/* Calculating Q the old way */
 					Qk = calc_Qk(N, s, g, n_g);
-					Q_diff = Qk - Q0;
+					Q_diff_old = Qk - Q0;
+					/* Calculating Q the new way */
+					Q_diff = calc_Q_diff(s, k, N, g, n_g);
+
 					if ((first_score == 1) || (Q_diff > max_score)){
 						first_score = 0;
 						max_score = Q_diff;
