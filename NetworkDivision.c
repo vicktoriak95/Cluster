@@ -10,8 +10,7 @@
 #include "LibFuncsHandler.h"
 #include "PowerIteration.h"
 
-
-void divide_net_to_clusters(FILE* input, FILE* output){
+void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 	Network* net = NULL;
 	Group* P = NULL;
 	Group* O = NULL;
@@ -24,7 +23,9 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 	int i = 0;
 	int n_g = 0;
 	int cnt = 0;
-
+	double* row_sums = NULL;
+	double B_norm = 0;
+	clock_t before_devide_into_two, after_devide_into_two, after_modularity_maximization;
 
 	/* Read the input file into the net struct */
 	net = create_network(input);
@@ -38,6 +39,13 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 		head = head->next;
 	}
 
+	/* TODO: make look good*/
+	g = P->value;
+	n_g = get_node_length(g, net->n);
+	row_sums = allocate(n_g * sizeof(double));
+	B_row_sums(g, net, row_sums, n_g);
+	B_norm = Bhat_norm(net, g, net->n, row_sums);
+
 	while (P != NULL){
 		/* Number of iterations is linear in n */
 		/* 2n chosen as an upper bound */
@@ -48,12 +56,23 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 		P = P->next;
 		free(old_P);
 
-		/* Divide g into two groups */
+		/* Count g length */
 		n_g = get_node_length(g, net->n);
+		row_sums = allocate(n_g * sizeof(double));
+		B_row_sums(g, net, row_sums, n_g);
 		s = (double*)allocate(n_g * sizeof(double));
 
-		devide_into_two(net, g, s, n_g);
+		/* Divide g into two groups */
+		before_devide_into_two = clock();
+		printf("Time up to before_devide_into_two: %f seconds\n", ((double)(before_devide_into_two-start) / CLOCKS_PER_SEC));
+		devide_into_two(net, g, s, n_g, start, B_norm, row_sums);
+		after_devide_into_two = clock();
+		printf("Time up to after_devide_into_two: %f seconds\n", ((double)(after_devide_into_two-start) / CLOCKS_PER_SEC));
+
 		modularity_maximization(net, s, g, n_g);
+		after_modularity_maximization = clock();
+		printf("Time up to after_modularity_maximization: %f seconds\n\n", ((double)(after_modularity_maximization-start) / CLOCKS_PER_SEC));
+
 		g1 = g;
 		g2 = divide_group(&g1, s, n_g);
 		free(s);
@@ -104,20 +123,42 @@ void indivisable(double* s, int n_g){
 	}
 }
 
-void devide_into_two(Network* N, Node* g, double* s, int n_g){
+void devide_into_two(Network* N, Node* g, double* s, int n_g, clock_t start, double B_norm, double* row_sums){
 	double Q = 0;
-	double norm = 0;
+	double norm = B_norm;
 	double eigen_value = 0;
 	double* eigen_vector = NULL;
+	/*
+	clock_t before_norm, after_norm;
+	*/
+	/*clock_t after_power_iteration, after_largest_eigenvalue, after_calculating_s, finish;*/
 
 	/* Calculating matrix norm */
+	/*
+	before_norm = clock();
+	printf("Time up to norm: %f seconds\n", ((double)(before_norm-start) / CLOCKS_PER_SEC));
 	norm = Bhat_norm(N, g, n_g);
-
+	after_norm = clock();
+	printf("Time up to after norm: %f seconds\n", ((double)(after_norm-start) / CLOCKS_PER_SEC));
+	*/
+	/*printf("### Entered into divide into two ###\n");*/
 	/* Finding biggest eigen_vector */
-	eigen_vector = power_iteration(N, norm, g, n_g);
-	eigen_value = Bhat_largest_eigenvalue(N, norm, eigen_vector, n_g, g);
+	eigen_vector = power_iteration(N, norm, g, n_g, row_sums);
+	/*after_power_iteration = clock();
+	printf("Time up to after power iteration: %f seconds\n", ((double)(after_power_iteration-start) / CLOCKS_PER_SEC));*/
+
+	eigen_value = Bhat_largest_eigenvalue(N, norm, eigen_vector, n_g, g, row_sums);
+	/*after_largest_eigenvalue = clock();
+	printf("Time up to largest eigenvalue: %f seconds\n", ((double)(after_largest_eigenvalue-start) / CLOCKS_PER_SEC));*/
+
 	calculate_s(eigen_vector, s, n_g);
+	/*after_calculating_s = clock();
+	printf("Time up to after_calculating_s: %f seconds\n", ((double)(after_calculating_s-start) / CLOCKS_PER_SEC));*/
+
 	free(eigen_vector);
+	/*finish = clock();
+	printf("Time up to after finish: %f seconds\n", ((double)(finish-start) / CLOCKS_PER_SEC));
+	printf("### Exited divide into two ###\n");*/
 
 	/* Calculate s - In case of non-positive eigenvalues do not divide */
 	if (eigen_value <= 0){
@@ -125,7 +166,7 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g){
 		return;
 	}
 	else{
-		Q = calc_Qk(N, s, g, n_g);
+		Q = calc_Qk(N, s, g, n_g, row_sums);
 			if (Q <= 0){
 				indivisable(s, n_g);
 				return;
@@ -188,26 +229,24 @@ Node* divide_group(Node** g1_p, double* s, int n_g){
 	return g2;
 }
 
-double calc_Qk(Network* N, double* s, Node* g, int n_g){
+double calc_Qk(Network* N, double* s, Node* g, int n_g, double* row_sums){
 	double res = 0;
 	double* result = NULL;
 
 	result = (double*)allocate(n_g * sizeof(double));
-	Bhat_multiplication(N, s, result, g, n_g);
+	Bhat_multiplication(N, s, result, g, n_g, row_sums);
 	res = dot_product(s, result, n_g);
 	free(result);
 
 	return res;
 }
 
+
 double calc_Q_diff(double* d, int i, Network* N, Node* g, int n_g){
 	double first_sum = 0;
 	double second_sum = 0;
 	double res = 0;
 	Node* g_pointer = g;
-	/*
-	double ki = 0;
-	double kj = 0;*/
 	double to_add = 0;
 	int j = 0;
 	int real_j = 0;
@@ -232,11 +271,6 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	int k = 0;
 	int max_score_index = -1;
 	int improve_index = 0;
-	/*
-	double Q0 = 0;
-	double Qk = 0;
-	double Q_diff_old = 0;
-	*/
 	double delta_Q = 0;
 	double Q_diff = 0;
 	double max_score = 0;
@@ -266,21 +300,12 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 
 		/* Making n_g transitions of vertices to improve Q */
 		for (i = 0; i < n_g; i++){
-			/*
-			Q0 = calc_Qk(N, s, g, n_g);
-			*/
 			max_score_index = -1;
 			first_score = 1;
 			/* Searching for the best node to move among unmoved */
 			for(k = 0; k < n_g; k++){
 				if(unmoved[k] != (-1)){
 					s[k] = s[k] * (-1);
-					/* Calculating Q the old way */
-					/*
-					Qk = calc_Qk(N, s, g, n_g);
-					Q_diff_old = Qk - Q0;
-					*/
-					/* Calculating Q the new way */
 					Q_diff = calc_Q_diff(s, k, N, g, n_g);
 					if ((first_score == 1) || (Q_diff > max_score)){
 						first_score = 0;

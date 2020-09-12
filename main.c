@@ -41,7 +41,7 @@ int main(int argc, char* argv[]){
 	/* Opening file to read network */
 	input = open_file(input_file_path, "rb");
 	output = open_file(output_file_path, "wb");
-	divide_net_to_clusters(input, output);
+	divide_net_to_clusters(input, output, start);
 	close_file(input);
 	close_file(output);
 

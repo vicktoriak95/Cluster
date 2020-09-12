@@ -45,4 +45,10 @@ void free_network(Network* net);
 /* Creates network from args */
 Network* network_from_args(spmat* matrix, int* deg_vector, int n, int M);
 
+/* Sums B[g] rows, i.e returns f_i^g = sum(A[g]_i,j - k_i*k_j/M) */
+double B_row_sum(spmat* A, int row_num, Node* g, Network* N);
+
+/* TODO */
+void B_row_sums(Node* g, Network* N, double* row_sums, int n_g);
+
 #endif /* NETWORK_H_ */

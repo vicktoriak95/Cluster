@@ -11,19 +11,19 @@
 
 #include <stdio.h>
 #include "Network.h"
-
+#include <time.h>
 /* INT_MAX == 2 ** 31 - 1 */
 #define INT_MAX_POWER_OF_2 30
 
 /* Main algorithm, receives input and output file,
  * reads network from input file, calculates clusters and writes them to output file. */
-void divide_net_to_clusters(FILE* input, FILE* output);
+void divide_net_to_clusters(FILE* input, FILE* output, clock_t start);
 
 /* Fills s with 1.0 - meaning all vertices are in the same group */
 void indivisable(double* s, int n_g);
 
 /* Divides g into two groups by updating entries of vector s which represents the division of g */
-void devide_into_two(Network* N, Node* g, double* s, int n_g);
+void devide_into_two(Network* N, Node* g, double* s, int n_g, clock_t start, double B_norm, double* row_sums);
 
 /* Calculating vector s matching to given eigen-vector */
 void calculate_s(double* eigen_vector, double* s, int n_g);
@@ -33,7 +33,7 @@ void calculate_s(double* eigen_vector, double* s, int n_g);
 Node* divide_group(Node** g1_p, double* s, int n_g);
 
 /* Calculates Q by formula: s^t * B_hat[g] * s */
-double calc_Qk(Network* N, double* s, Node* g, int n_g);
+double calc_Qk(Network* N, double* s, Node* g, int n_g, double* row_sums);
 
 /* Calculating difference in Q after moving vertex.
  * Calculation is based on formulas that were derived from (s^t * B * s - d^t * B * s)

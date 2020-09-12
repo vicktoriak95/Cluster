@@ -199,6 +199,7 @@ int spmat_row_sum(spmat* A, int row_num, Node* g){
 	return sum;
 }
 
+
 double spmat_row_sum_mult_by_vector(spmat* A, int row_num, Node* g, double* vector){
 	Node_matrix* row_head = NULL;
 	Node* g_head = g;

@@ -10,10 +10,12 @@
 #define EPSILON 0.00001
 #define MAX_POWER_ITERATIONS 100000
 
+#include <time.h>
+
 #include "Network.h"
 
 /* Finds eigen-vector with biggest eigen-value of matrix A */
-double* power_iteration(Network* N, double norm, Node* g, int n_g);
+double* power_iteration(Network* N, double norm, Node* g, int n_g, double* row_sums);
 
 /* Receives allocated vector "vector" and updates it with random doubles */
 void create_random_vector(double * vector, int vector_size);
