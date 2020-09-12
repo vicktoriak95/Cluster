@@ -35,7 +35,7 @@ Node* divide_group(Node** g1_p, double* s, int n_g);
 /* Calculates Q by formula: s^t * B_hat[g] * s */
 double calc_Qk(Network* N, double* s, Node* g, int n_g);
 
-/* Calcluting difference in Q after moving vertex.
+/* Calculating difference in Q after moving vertex.
  * Calculation is based on formulas that were derived from (s^t * B * s - d^t * B * s)
  * where d is vector s after moving one vertex. */
 double calc_Q_diff(double* d, int i, Network* N, Node* g, int n_g);

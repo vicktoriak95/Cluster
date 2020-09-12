@@ -10,6 +10,7 @@
 #include "LibFuncsHandler.h"
 #include "PowerIteration.h"
 
+
 void divide_net_to_clusters(FILE* input, FILE* output){
 	Network* net = NULL;
 	Group* P = NULL;
@@ -23,6 +24,7 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 	int i = 0;
 	int n_g = 0;
 	int cnt = 0;
+
 
 	/* Read the input file into the net struct */
 	net = create_network(input);
@@ -49,6 +51,7 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 		/* Divide g into two groups */
 		n_g = get_node_length(g, net->n);
 		s = (double*)allocate(n_g * sizeof(double));
+
 		devide_into_two(net, g, s, n_g);
 		modularity_maximization(net, s, g, n_g);
 		g1 = g;
@@ -201,18 +204,25 @@ double calc_Q_diff(double* d, int i, Network* N, Node* g, int n_g){
 	double first_sum = 0;
 	double second_sum = 0;
 	double res = 0;
+	Node* g_pointer = g;
 	/*
 	double ki = 0;
 	double kj = 0;*/
 	double to_add = 0;
 	int j = 0;
+	int real_j = 0;
+	int real_i = 0;
+
+	real_i = get_node_value(g, i);
 
 	first_sum = spmat_row_sum_mult_by_vector(N->A, i, g, d);
-	for(j=0; j<=n_g; j++){
-		to_add = ((double)N->deg_vector[i] * N->deg_vector[j] / N->M) * d[j];
+	for(j = 0; j < n_g; j++){
+		real_j = g_pointer->index;
+		to_add = (((double)N->deg_vector[real_i] * N->deg_vector[real_j]) / N->M) * d[j];
 		second_sum += to_add;
+		g_pointer = g_pointer->next;
 	}
-	res = 4 * d[i] * (first_sum - second_sum) + 4 * (N->deg_vector[i] * N->deg_vector[i]) / N->M;
+	res = 4 * d[i] * (first_sum - second_sum) + 4 * (((double)N->deg_vector[real_i] * N->deg_vector[real_i])) / N->M;
 
 	return res;
 }
@@ -222,11 +232,13 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	int k = 0;
 	int max_score_index = -1;
 	int improve_index = 0;
+	/*
 	double Q0 = 0;
 	double Qk = 0;
+	double Q_diff_old = 0;
+	*/
 	double delta_Q = 0;
 	double Q_diff = 0;
-	double Q_diff_old = 0;
 	double max_score = 0;
 	double* improve = NULL;
 	int* indices = NULL;
@@ -254,25 +266,28 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 
 		/* Making n_g transitions of vertices to improve Q */
 		for (i = 0; i < n_g; i++){
+			/*
 			Q0 = calc_Qk(N, s, g, n_g);
+			*/
 			max_score_index = -1;
 			first_score = 1;
 			/* Searching for the best node to move among unmoved */
 			for(k = 0; k < n_g; k++){
 				if(unmoved[k] != (-1)){
-					s[k] = s[k]*(-1);
+					s[k] = s[k] * (-1);
 					/* Calculating Q the old way */
+					/*
 					Qk = calc_Qk(N, s, g, n_g);
 					Q_diff_old = Qk - Q0;
+					*/
 					/* Calculating Q the new way */
 					Q_diff = calc_Q_diff(s, k, N, g, n_g);
-
 					if ((first_score == 1) || (Q_diff > max_score)){
 						first_score = 0;
 						max_score = Q_diff;
 						max_score_index = k;
 					}
-					s[k] = s[k]*(-1);
+					s[k] = s[k] * (-1);
 				}
 			}
 
