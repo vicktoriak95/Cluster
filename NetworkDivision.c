@@ -350,7 +350,6 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 		vector_from_list(unmoved, g, n_g);
 		*/
 
-
 		/* Making n_g transitions of vertices to improve Q */
 		for (i = 0; i < n_g; i++){
 
@@ -404,11 +403,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 			}
 		}
 
-		/* Move back all the remaining vertices that do not improve the modularity */
-		for(i = n_g - 1; i > improve_index; i--){
-			k = indices[i];
-			s[k] = s[k]*(-1);
-		}
+
 
 		/* If the best separation occurs when all the vertices switched groups, then nothing actually changed */
 		if (improve_index == n_g - 1){
@@ -416,6 +411,11 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 		}
 		else{
 			delta_Q = improve[improve_index];
+			/* Move back all the remaining vertices that do not improve the modularity */
+			for(i = n_g - 1; i > improve_index; i--){
+				k = indices[i];
+				s[k] = s[k]*(-1);
+			}
 		}
 
 		/* Switching unmoved and unmoved next*/
