@@ -42,7 +42,7 @@ double calc_Q_diff(double* d, int i, Network* N, Node* g, int n_g, double A_sum)
 
 /* Receives network N, s which represents division, and g the group we dividing.
  * Improving modularity of division, updating s to match best division found */
-void modularity_maximization(Network* N, double* s, Node* g, int n_g);
+void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* row_sums);
 
 /* Reads and prints output file containing division into clusters */
 void print_output_file(FILE* output_file);

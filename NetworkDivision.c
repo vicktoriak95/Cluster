@@ -69,7 +69,7 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 		after_devide_into_two = clock();
 		printf("Time up to after_devide_into_two: %f seconds\n", ((double)(after_devide_into_two-start) / CLOCKS_PER_SEC));
 
-		modularity_maximization(net, s, g, n_g);
+		modularity_maximization(net, s, g, n_g, row_sums);
 		after_modularity_maximization = clock();
 		printf("Time up to after_modularity_maximization: %f seconds\n\n", ((double)(after_modularity_maximization-start) / CLOCKS_PER_SEC));
 
@@ -300,7 +300,7 @@ void update_A_sums(double* A_sums, int k, int real_k, Network* N, double* s, Nod
 }
 
 
-void modularity_maximization(Network* N, double* s, Node* g, int n_g){
+void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* row_sums){
 	int i = 0;
 	int k = 0;
 	int max_score_index = -1;
@@ -308,7 +308,6 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	double delta_Q = 0;
 	double Q_diff = 0;
 	double max_score = 0;
-	double* improve = NULL;
 	int* indices = NULL;
 	int* unmoved = NULL;
 	int cnt = 0;
@@ -320,12 +319,15 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	double* A_sums = NULL;
 	int real_k = 0;
 	int real_max_score_index = 0;
+	double curr_improve = 0;
+	double max_improve = -HUGE_VAL;
+	double Q_max = 0;
+	double Q_0;
 
 	printf("got into mod_max bitches \n");
 
 	/* Initiate unmoved with all the vertices indexes corresponding to g */
 	unmoved = (int*)allocate(n_g * sizeof(int));
-	improve = (double*)allocate(n_g * sizeof(double));
 	indices = (int*)allocate(n_g * sizeof(int));
 	next_unmoved = (int*)allocate(n_g * sizeof(int));
 	A_sums = (double*)allocate(n_g * sizeof(double));
@@ -350,6 +352,13 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 		vector_from_list(unmoved, g, n_g);
 		*/
 
+		/* Initiating improve variabales */
+		max_improve = -HUGE_VAL;
+		improve_index = -1;
+
+		/* Calc Q_0*/
+		Q_0 = calc_Qk(N, s, g, n_g, row_sums);
+
 		/* Making n_g transitions of vertices to improve Q */
 		for (i = 0; i < n_g; i++){
 
@@ -370,6 +379,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 						max_score = Q_diff;
 						max_score_index = k;
 						real_max_score_index = real_k;
+						Q_max = Q_0 + Q_diff;
 					}
 					s[k] = s[k] * (-1);
 				}
@@ -385,32 +395,23 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 			indices[i] = max_score_index;
 
 			/* Update improve */
-			if (i == 0){
-				improve[i] = max_score;
-			}
-			else{
-				improve[i] = improve[i-1] + max_score;
+			curr_improve += Q_max - Q_0;
+			if(max_improve < curr_improve){
+				max_improve = curr_improve;
+				improve_index = i;
 			}
 
 			/* Remove max_score_index from unmoved */
 			unmoved[max_score_index] = -1;
+			Q_0  = Q_max;
 		}
-
-		/* Find the largest improvement index */
-		for (k = 0; k < n_g; k++){
-			if (improve[k] > improve[improve_index]){
-				improve_index = k;
-			}
-		}
-
-
 
 		/* If the best separation occurs when all the vertices switched groups, then nothing actually changed */
 		if (improve_index == n_g - 1){
 			delta_Q = 0;
 		}
 		else{
-			delta_Q = improve[improve_index];
+			delta_Q = max_improve;
 			/* Move back all the remaining vertices that do not improve the modularity */
 			for(i = n_g - 1; i > improve_index; i--){
 				k = indices[i];
@@ -419,7 +420,6 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 		}
 
 		/* Switching unmoved and unmoved next*/
-
 		temp = unmoved;
 		unmoved = next_unmoved;
 		next_unmoved = temp;
@@ -430,7 +430,6 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	} while(delta_Q > 0);
 
 	free(unmoved);
-	free(improve);
 	free(indices);
 	free(next_unmoved);
 }
