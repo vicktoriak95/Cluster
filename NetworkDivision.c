@@ -335,7 +335,10 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 	/* Initiating unmoved with g values */
 	vector_from_list(unmoved, g, n_g);
 
-	/* Keep improving while Q > 0 */
+	/* Calc Q_0*/
+	Q_0 = calc_Qk(N, s, g, n_g, row_sums);
+
+	/* Keep improving while delta_Q > 0 */
 	do{
 		if (n_g > INT_MAX_POWER_OF_2){
 			power_of_2 = INT_MAX_POWER_OF_2;
@@ -355,9 +358,6 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 		/* Initiating improve variabales */
 		max_improve = -HUGE_VAL;
 		improve_index = -1;
-
-		/* Calc Q_0*/
-		Q_0 = calc_Qk(N, s, g, n_g, row_sums);
 
 		/* Making n_g transitions of vertices to improve Q */
 		for (i = 0; i < n_g; i++){
@@ -425,6 +425,8 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 		next_unmoved = temp;
 		g_unmoved_head = g;
 
+		/* Updating Q_0 */
+		Q_0 = Q_0 + max_improve;
 
 		cnt += 1;
 	} while(delta_Q > 0);
