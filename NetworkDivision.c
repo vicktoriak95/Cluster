@@ -242,24 +242,13 @@ double calc_Qk(Network* N, double* s, Node* g, int n_g, double* row_sums){
 }
 
 
-double calc_Q_diff(double* d, int i, Network* N, Node* g, int n_g, double A_sum){
-	double second_sum = 0;
+double calc_Q_diff(double* s, int k, int real_k, Network* N, Node* g, int n_g, double A_sum, double aux_sum){
+
 	double res = 0;
-	Node* g_pointer = g;
-	double to_add = 0;
-	int j = 0;
-	int real_j = 0;
-	int real_i = 0;
+	double deg_k = (double)N->deg_vector[real_k];
+	double M = (double)N->M;
 
-	real_i = get_node_value(g, i);
-
-	for(j = 0; j < n_g; j++){
-		real_j = g_pointer->index;
-		to_add = (((double)N->deg_vector[real_i] * N->deg_vector[real_j]) / N->M) * d[j];
-		second_sum += to_add;
-		g_pointer = g_pointer->next;
-	}
-	res = 4 * d[i] * (A_sum - second_sum) + 4 * (((double)N->deg_vector[real_i] * N->deg_vector[real_i])) / N->M;
+	res = -4 * s[k] * (A_sum - ((deg_k / M) * aux_sum)) + 4 * ((deg_k * deg_k) / M);
 
 	return res;
 }
@@ -299,6 +288,19 @@ void update_A_sums(double* A_sums, int k, int real_k, Network* N, double* s, Nod
 	}
 }
 
+double aux_sum_score(Network* N, double* s, Node* g, int n_g){
+	int i = 0;
+	double aux_sum = 0;
+	Node* g_head = g;
+	int real_i = 0;
+
+	for(i=0; i<n_g; i++){
+		real_i = g_head->index;
+		aux_sum += (double)N->deg_vector[real_i] * s[i];
+		g_head = g_head->next;
+	}
+	return aux_sum;
+}
 
 void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* row_sums){
 	int i = 0;
@@ -323,6 +325,8 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 	double max_improve = -HUGE_VAL;
 	double Q_max = 0;
 	double Q_0;
+	double base_aux_sum = 0;
+	double new_aux_sum = 0;
 
 	printf("got into mod_max bitches \n");
 
@@ -349,6 +353,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 
 		/* Calculating Aux sums */
 		 A_row_sums(g, N, A_sums, n_g, s);
+		 base_aux_sum = aux_sum_score(N, s, g, n_g);
 
 		/* Initiating unmoved with g values */
 		/*
@@ -371,9 +376,9 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 			/* Searching for the best node to move among unmoved */
 			for(k = 0; k < n_g; k++){
 				if(unmoved[k] != (-1)){
-					s[k] = s[k] * (-1);
 					real_k = get_node_value(g, k);
-					Q_diff = calc_Q_diff(s, k, N, g, n_g, A_sums[k]);
+					new_aux_sum = base_aux_sum - 2 * (s[k] * N->deg_vector[real_k]);
+					Q_diff = calc_Q_diff(s, k, real_k, N, g, n_g, A_sums[k], new_aux_sum);
 					if ((first_score == 1) || (Q_diff > max_score)){
 						first_score = 0;
 						max_score = Q_diff;
@@ -381,12 +386,12 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 						real_max_score_index = real_k;
 						Q_max = Q_0 + Q_diff;
 					}
-					s[k] = s[k] * (-1);
 				}
 			}
 
 			/* Update A sums */
 			update_A_sums(A_sums, max_score_index, real_max_score_index, N, s ,g);
+			base_aux_sum -= 2 * (s[max_score_index] * N->deg_vector[real_max_score_index]);
 
 			/* Move max_score_index to the other group */
 			s[max_score_index] = s[max_score_index]*(-1);

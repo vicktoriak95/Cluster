@@ -38,7 +38,7 @@ double calc_Qk(Network* N, double* s, Node* g, int n_g, double* row_sums);
 /* Calculating difference in Q after moving vertex.
  * Calculation is based on formulas that were derived from (s^t * B * s - d^t * B * s)
  * where d is vector s after moving one vertex. */
-double calc_Q_diff(double* d, int i, Network* N, Node* g, int n_g, double A_sum);
+double calc_Q_diff(double* s, int k, int real_k, Network* N, Node* g, int n_g, double A_sum, double aux_sum);
 
 /* Receives network N, s which represents division, and g the group we dividing.
  * Improving modularity of division, updating s to match best division found */
@@ -49,5 +49,10 @@ void print_output_file(FILE* output_file);
 
 /* TODO */
 void update_A_sums(double* A_sums, int k, int real_k, Network* N, double* s, Node* g);
+
+/* TODO */
+double aux_sum_score(Network* N, double* s, Node* g, int n_g);
+
+
 
 #endif /* NETWORKDIVISION_H_ */
