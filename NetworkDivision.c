@@ -242,8 +242,7 @@ double calc_Qk(Network* N, double* s, Node* g, int n_g, double* row_sums){
 }
 
 
-double calc_Q_diff(double* d, int i, Network* N, Node* g, int n_g){
-	double first_sum = 0;
+double calc_Q_diff(double* d, int i, Network* N, Node* g, int n_g, double A_sum){
 	double second_sum = 0;
 	double res = 0;
 	Node* g_pointer = g;
@@ -254,17 +253,52 @@ double calc_Q_diff(double* d, int i, Network* N, Node* g, int n_g){
 
 	real_i = get_node_value(g, i);
 
-	first_sum = spmat_row_sum_mult_by_vector(N->A, real_i, g, d);
 	for(j = 0; j < n_g; j++){
 		real_j = g_pointer->index;
 		to_add = (((double)N->deg_vector[real_i] * N->deg_vector[real_j]) / N->M) * d[j];
 		second_sum += to_add;
 		g_pointer = g_pointer->next;
 	}
-	res = 4 * d[i] * (first_sum - second_sum) + 4 * (((double)N->deg_vector[real_i] * N->deg_vector[real_i])) / N->M;
+	res = 4 * d[i] * (A_sum - second_sum) + 4 * (((double)N->deg_vector[real_i] * N->deg_vector[real_i])) / N->M;
 
 	return res;
 }
+
+void update_A_sums(double* A_sums, int k, int real_k, Network* N, double* s, Node* g){
+	Node_matrix* row_head = NULL;
+	Node* g_head = g;
+	int cnt = 0;
+	int mat_col_index = 0;
+	int g_col_index = 0;
+	int vector_index = 0;
+	spmat* A = N->A;
+
+	row_head = ((Node_matrix** )A->private)[real_k];
+
+	/* Iterating over row, summing only entries in g */
+	while ((row_head != NULL) && (g_head != NULL)){
+		infinite_loop_detection(cnt, N->n);
+
+		/* Comparing indices and promoting g_head, mat_head respectively */
+		mat_col_index = row_head->col_index;
+		g_col_index = g_head->index;
+		if (mat_col_index == g_col_index){
+			A_sums[vector_index] -= 2 * row_head->value * s[k];
+			g_head = g_head->next;
+			row_head = (Node_matrix*)row_head->next;
+			vector_index += 1;
+		}
+		else if (mat_col_index > g_col_index){
+			g_head = g_head->next;
+			vector_index += 1;
+		}
+		else {
+			row_head = (Node_matrix*)row_head->next;
+		}
+		cnt += 1;
+	}
+}
+
 
 void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	int i = 0;
@@ -283,17 +317,18 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	int* next_unmoved = NULL;
 	Node* g_unmoved_head = g;
 	int* temp;
-	/*
 	double* A_sums = NULL;
-	*/
+	int real_k = 0;
+	int real_max_score_index = 0;
+
+	printf("got into mod_max bitches \n");
 
 	/* Initiate unmoved with all the vertices indexes corresponding to g */
 	unmoved = (int*)allocate(n_g * sizeof(int));
 	improve = (double*)allocate(n_g * sizeof(double));
 	indices = (int*)allocate(n_g * sizeof(int));
 	next_unmoved = (int*)allocate(n_g * sizeof(int));
-	/*
-	A_sums = (double*)allocate(n_g * sizeof(double));*/
+	A_sums = (double*)allocate(n_g * sizeof(double));
 
 	/* Initiating unmoved with g values */
 	vector_from_list(unmoved, g, n_g);
@@ -308,9 +343,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 		infinite_loop_detection(cnt, pow(2, power_of_2));
 
 		/* Calculating Aux sums */
-		/*
 		 A_row_sums(g, N, A_sums, n_g, s);
-		 */
 
 		/* Initiating unmoved with g values */
 		/*
@@ -331,15 +364,20 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 			for(k = 0; k < n_g; k++){
 				if(unmoved[k] != (-1)){
 					s[k] = s[k] * (-1);
-					Q_diff = calc_Q_diff(s, k, N, g, n_g);
+					real_k = get_node_value(g, k);
+					Q_diff = calc_Q_diff(s, k, N, g, n_g, A_sums[k]);
 					if ((first_score == 1) || (Q_diff > max_score)){
 						first_score = 0;
 						max_score = Q_diff;
 						max_score_index = k;
+						real_max_score_index = real_k;
 					}
 					s[k] = s[k] * (-1);
 				}
 			}
+
+			/* Update A sums */
+			update_A_sums(A_sums, max_score_index, real_max_score_index, N, s ,g);
 
 			/* Move max_score_index to the other group */
 			s[max_score_index] = s[max_score_index]*(-1);
