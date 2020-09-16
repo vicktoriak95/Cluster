@@ -58,10 +58,6 @@ void spmat_mult(const spmat* A, const double *v, double *result, Node* g);
 /* Sums row values of sub-matrix A[g], according to g values */
 int spmat_row_sum(spmat* A, int row_num, Node* g);
 
-/* Sums row values of sub-matrix A[g], according to g values,
- *  multiplied by values of vector d. */
-double spmat_row_sum_mult_by_vector(spmat* A, int row_num, Node* g, double* vector);
-
 /* Prints sparse matrix */
 void print_sparse_matrix(spmat* sp_mat);
 

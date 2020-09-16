@@ -203,48 +203,6 @@ int spmat_row_sum(spmat* A, int row_num, Node* g){
 	return sum;
 }
 
-
-double spmat_row_sum_mult_by_vector(spmat* A, int row_num, Node* g, double* vector){
-	Node_matrix* row_head = NULL;
-	Node* g_head = g;
-	int sum = 0;
-	int cnt = 0;
-	int mat_row_index = 0;
-	int mat_col_index = 0;
-	int g_col_index = 0;
-	int vector_index = 0;
-
-	/* Find row index in A*/
-	mat_row_index = get_node_value(g, row_num);
-
-	row_head = ((Node_matrix** )A->private)[mat_row_index];
-
-	/* Iterating over row, summing only entries in g */
-	while ((row_head != NULL) && (g_head != NULL)){
-		infinite_loop_detection(cnt, A->n);
-
-		/* Comparing indices and promoting g_head, mat_head respectively */
-		mat_col_index = row_head->col_index;
-		g_col_index = g_head->index;
-		if (mat_col_index == g_col_index){
-			sum += row_head->value * vector[vector_index];
-			g_head = g_head->next;
-			row_head = (Node_matrix*)row_head->next;
-			vector_index += 1;
-		}
-		else if (mat_col_index > g_col_index){
-			g_head = g_head->next;
-			vector_index += 1;
-		}
-		else {
-			row_head = (Node_matrix*)row_head->next;
-		}
-		cnt += 1;
-	}
-	return sum;
-}
-
-
 void print_sparse_matrix(spmat* sp_mat){
 	int i = 0;
 

@@ -254,7 +254,7 @@ double calc_Q_diff(double* d, int i, Network* N, Node* g, int n_g){
 
 	real_i = get_node_value(g, i);
 
-	first_sum = spmat_row_sum_mult_by_vector(N->A, i, g, d);
+	first_sum = spmat_row_sum_mult_by_vector(N->A, real_i, g, d);
 	for(j = 0; j < n_g; j++){
 		real_j = g_pointer->index;
 		to_add = (((double)N->deg_vector[real_i] * N->deg_vector[real_j]) / N->M) * d[j];
@@ -280,11 +280,23 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 	int cnt = 0;
 	int first_score = 1;
 	int power_of_2 = n_g;
+	int* next_unmoved = NULL;
+	Node* g_unmoved_head = g;
+	int* temp;
+	/*
+	double* A_sums = NULL;
+	*/
 
 	/* Initiate unmoved with all the vertices indexes corresponding to g */
 	unmoved = (int*)allocate(n_g * sizeof(int));
 	improve = (double*)allocate(n_g * sizeof(double));
 	indices = (int*)allocate(n_g * sizeof(int));
+	next_unmoved = (int*)allocate(n_g * sizeof(int));
+	/*
+	A_sums = (double*)allocate(n_g * sizeof(double));*/
+
+	/* Initiating unmoved with g values */
+	vector_from_list(unmoved, g, n_g);
 
 	/* Keep improving while Q > 0 */
 	do{
@@ -295,11 +307,24 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 		 * There are at most (2 ** n_g) divisions */
 		infinite_loop_detection(cnt, pow(2, power_of_2));
 
+		/* Calculating Aux sums */
+		/*
+		 A_row_sums(g, N, A_sums, n_g, s);
+		 */
+
 		/* Initiating unmoved with g values */
+		/*
 		vector_from_list(unmoved, g, n_g);
+		*/
+
 
 		/* Making n_g transitions of vertices to improve Q */
 		for (i = 0; i < n_g; i++){
+
+			/* Updating next unmoved */
+			next_unmoved[i] = g_unmoved_head->index;
+			g_unmoved_head = g_unmoved_head->next;
+
 			max_score_index = -1;
 			first_score = 1;
 			/* Searching for the best node to move among unmoved */
@@ -355,12 +380,21 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g){
 			delta_Q = improve[improve_index];
 		}
 
+		/* Switching unmoved and unmoved next*/
+
+		temp = unmoved;
+		unmoved = next_unmoved;
+		next_unmoved = temp;
+		g_unmoved_head = g;
+
+
 		cnt += 1;
 	} while(delta_Q > 0);
 
 	free(unmoved);
 	free(improve);
 	free(indices);
+	free(next_unmoved);
 }
 
 void print_output_file(FILE* output_file){
