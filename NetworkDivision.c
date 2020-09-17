@@ -9,6 +9,7 @@
 #include "LinearUtils.h"
 #include "LibFuncsHandler.h"
 #include "PowerIteration.h"
+#include "ModularityMax.h"
 
 void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 	Network* net = NULL;

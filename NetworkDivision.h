@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include "Network.h"
 #include <time.h>
-#include "ModularityMax.h"
 
 /* Main algorithm, receives input and output file,
  * reads network from input file, calculates clusters and writes them to output file. */
