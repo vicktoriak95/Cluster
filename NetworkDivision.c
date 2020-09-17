@@ -27,8 +27,6 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 	double* row_sums = NULL;
 	double B_norm = 0;
 	clock_t before_devide_into_two, after_devide_into_two, after_modularity_maximization;
-	double* indivisble = NULL;
-	int l = 0;
 
 	/* Read the input file into the net struct */
 	net = create_network(input);
@@ -49,13 +47,6 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 	B_row_sums(g, net, row_sums, n_g);
 	B_norm = Bhat_norm(net, g, net->n, row_sums);
 
-	/* Indivisble */
-	indivisble = (double*)allocate(n_g * sizeof(double));
-	for(l = 0; l < n_g ; l++){
-		indivisble[l] = 1;
-	}
-
-
 	while (P != NULL){
 		/* Number of iterations is linear in n */
 		/* 2n chosen as an upper bound */
@@ -75,7 +66,7 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 		/* Divide g into two groups */
 		before_devide_into_two = clock();
 		printf("Time up to before_devide_into_two: %f seconds\n", ((double)(before_devide_into_two-start) / CLOCKS_PER_SEC));
-		devide_into_two(net, g, s, n_g, B_norm, row_sums, indivisble);
+		devide_into_two(net, g, s, n_g, B_norm, row_sums);
 		after_devide_into_two = clock();
 		printf("Time up to after_devide_into_two: %f seconds\n", ((double)(after_devide_into_two-start) / CLOCKS_PER_SEC));
 
@@ -133,7 +124,7 @@ void indivisable(double* s, int n_g){
 	}
 }
 
-void devide_into_two(Network* N, Node* g, double* s, int n_g, double B_norm, double* row_sums, double* indivisble){
+void devide_into_two(Network* N, Node* g, double* s, int n_g, double B_norm, double* row_sums){
 	double Q = 0;
 	double norm = B_norm;
 	double eigen_value = 0;
@@ -172,14 +163,12 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g, double B_norm, dou
 
 	/* Calculate s - In case of non-positive eigenvalues do not divide */
 	if (eigen_value <= 0){
-		s = indivisble;
-		/*indivisable(s, n_g);*/
+		indivisable(s, n_g);
 	}
 	else{
 		Q = calc_Qk(N, s, g, n_g, row_sums);
 			if (Q <= 0){
-				s = indivisble;
-				/*indivisable(s, n_g);*/
+				indivisable(s, n_g);
 			}
 	}
 
