@@ -11,37 +11,22 @@
 #include "NetworkDivision.h"
 
 void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* row_sums){
-	int i = 0;
-	int k = 0;
-	int max_score_index = -1;
-	int improve_index = 0;
-	double delta_Q = 0;
-	double Q_diff = 0;
-	double max_score = 0;
+	int loop_cnt = 0;
+	int power_of_2 = n_g;
+	int max_improve_index = 0;
 	int* indices = NULL;
 	int* unmoved = NULL;
-	int cnt = 0;
-	int first_score = 1;
-	int power_of_2 = n_g;
-	int* next_unmoved = NULL;
-	Node* g_unmoved_head = g;
-	int* temp;
-	double* A_sums = NULL;
-	int real_k = 0;
-	int real_max_score_index = 0;
-	double curr_improve = 0;
+	double delta_Q = 0;
 	double max_improve = -HUGE_VAL;
-	double Q_max = 0;
 	double Q_0;
-	double base_aux_sum = 0;
-	double new_aux_sum = 0;
+	double* A_sums = NULL;
+
 
 	printf("got into mod_max bitches \n");
 
 	/* Initiate unmoved with all the vertices indexes corresponding to g */
 	unmoved = (int*)allocate(n_g * sizeof(int));
 	indices = (int*)allocate(n_g * sizeof(int));
-	next_unmoved = (int*)allocate(n_g * sizeof(int));
 	A_sums = (double*)allocate(n_g * sizeof(double));
 
 	/* Initiating unmoved with g values */
@@ -57,96 +42,33 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 		}
 		/* Every iteration increases the Q of the division and thus we would not visit the same division twice
 		 * There are at most (2 ** n_g) divisions */
-		infinite_loop_detection(cnt, pow(2, power_of_2));
-
-		/* Calculating Aux sums */
-		 A_row_sums(g, N, A_sums, n_g, s);
-		 base_aux_sum = aux_sum_score(N, s, g, n_g);
-
-		/* Initiating unmoved with g values */
-		/*
-		vector_from_list(unmoved, g, n_g);
-		*/
+		infinite_loop_detection(loop_cnt, pow(2, power_of_2));
 
 		/* Initiating improve variabales */
 		max_improve = -HUGE_VAL;
-		improve_index = -1;
+		max_improve_index = -1;
 
-		/* Making n_g transitions of vertices to improve Q */
-		for (i = 0; i < n_g; i++){
-
-			/* Updating next unmoved */
-			next_unmoved[i] = g_unmoved_head->index;
-			g_unmoved_head = g_unmoved_head->next;
-
-			max_score_index = -1;
-			first_score = 1;
-			/* Searching for the best node to move among unmoved */
-			for(k = 0; k < n_g; k++){
-				if(unmoved[k] != (-1)){
-					real_k = get_node_value(g, k);
-					new_aux_sum = base_aux_sum - 2 * (s[k] * N->deg_vector[real_k]);
-					Q_diff = calc_Q_diff(s, k, real_k, N, A_sums[k], new_aux_sum);
-					if ((first_score == 1) || (Q_diff > max_score)){
-						first_score = 0;
-						max_score = Q_diff;
-						max_score_index = k;
-						real_max_score_index = real_k;
-						Q_max = Q_0 + Q_diff;
-					}
-				}
-			}
-
-			/* Update A sums */
-			update_A_sums(A_sums, max_score_index, real_max_score_index, N, s ,g);
-			base_aux_sum -= 2 * (s[max_score_index] * N->deg_vector[real_max_score_index]);
-
-			/* Move max_score_index to the other group */
-			s[max_score_index] = s[max_score_index]*(-1);
-
-			/* Add max_score_index to indices, which keeps the vertices transferring order */
-			indices[i] = max_score_index;
-
-			/* Update improve */
-			curr_improve += Q_max - Q_0;
-			if(max_improve < curr_improve){
-				max_improve = curr_improve;
-				improve_index = i;
-			}
-
-			/* Remove max_score_index from unmoved */
-			unmoved[max_score_index] = -1;
-			Q_0  = Q_max;
-		}
+		/* Move n_g vertices and find best improve */
+		find_best_improve(N, g, n_g, A_sums, s, unmoved, &Q_0, indices, &max_improve, &max_improve_index);
 
 		/* If the best separation occurs when all the vertices switched groups, then nothing actually changed */
-		if (improve_index == n_g - 1){
+		if (max_improve_index == n_g - 1){
 			delta_Q = 0;
 		}
 		else{
 			delta_Q = max_improve;
 			/* Move back all the remaining vertices that do not improve the modularity */
-			for(i = n_g - 1; i > improve_index; i--){
-				k = indices[i];
-				s[k] = s[k]*(-1);
-			}
+			flip_s(s, indices, n_g, max_improve_index);
 		}
-
-		/* Switching unmoved and unmoved next*/
-		temp = unmoved;
-		unmoved = next_unmoved;
-		next_unmoved = temp;
-		g_unmoved_head = g;
 
 		/* Updating Q_0 */
 		Q_0 = Q_0 + max_improve;
 
-		cnt += 1;
+		loop_cnt += 1;
 	} while(delta_Q > 0);
 
 	free(unmoved);
 	free(indices);
-	free(next_unmoved);
 }
 
 void update_A_sums(double* A_sums, int k, int real_k, Network* N, double* s, Node* g){
@@ -184,7 +106,7 @@ void update_A_sums(double* A_sums, int k, int real_k, Network* N, double* s, Nod
 	}
 }
 
-double aux_sum_score(Network* N, double* s, Node* g, int n_g){
+double calc_sk_aux_sum(Network* N, double* s, Node* g, int n_g){
 	int i = 0;
 	double aux_sum = 0;
 	Node* g_head = g;
@@ -198,7 +120,7 @@ double aux_sum_score(Network* N, double* s, Node* g, int n_g){
 	return aux_sum;
 }
 
-double spmat_row_sum_mult_by_vector(spmat* A, int mat_row_index, Node* g, double* vector){
+double A_single_row_sum_by_vec(spmat* A, int mat_row_index, Node* g, double* vector){
 	Node_matrix* row_head = NULL;
 	Node* g_head = g;
 	int sum = 0;
@@ -234,7 +156,7 @@ double spmat_row_sum_mult_by_vector(spmat* A, int mat_row_index, Node* g, double
 	return sum;
 }
 
-void A_row_sums(Node* g, Network* N, double* A_row_sums, int n_g, double* vector){
+void A_row_sums_by_vec(Node* g, Network* N, double* A_row_sums, int n_g, double* vector){
 	Node* g_row_head = g;
 	double row_sum = 0;
 	int mat_row_index = 0;
@@ -245,9 +167,91 @@ void A_row_sums(Node* g, Network* N, double* A_row_sums, int n_g, double* vector
 		/* Find row index in A*/
 		mat_row_index = g_row_head->index;
 
-		row_sum = spmat_row_sum_mult_by_vector(N->A, mat_row_index, g, vector);
+		row_sum = A_single_row_sum_by_vec(N->A, mat_row_index, g, vector);
 
 		A_row_sums[i] = row_sum;
 		g_row_head = g_row_head->next;
 	}
+}
+
+void flip_s(double* s, int* indices, int n_g, int max_improve_index){
+	int i = 0;
+	int k = 0;
+	for(i = n_g - 1; i > max_improve_index; i--){
+		k = indices[i];
+		s[k] = s[k] * (-1);
+	}
+}
+
+void find_best_vertex_to_move(Network* N, Node* g, double* s, int n_g, int* unmoved,
+		double base_aux_sum, double* A_sums, double* max_diff, int* max_diff_index, int* real_max_diff_index, double* Q_max, double Q_0){
+	int k = 0;
+	int real_k = 0;
+	double new_aux_sum = 0;
+	double Q_diff = 0;
+
+	/* Searching for the best node to move among unmoved */
+	for(k = 0; k < n_g; k++){
+		if(unmoved[k] != (-1)){
+			real_k = get_node_value(g, k);
+			new_aux_sum = base_aux_sum - 2 * (s[k] * N->deg_vector[real_k]);
+			Q_diff = calc_Q_diff(s, k, real_k, N, A_sums[k], new_aux_sum);
+			if (Q_diff > *max_diff){
+				*max_diff = Q_diff;
+				*max_diff_index = k;
+				*real_max_diff_index = real_k;
+				*Q_max = Q_0 + Q_diff;
+			}
+		}
+	}
+}
+
+void find_best_improve(Network* N, Node* g, int n_g, double* A_sums, double* s, int* unmoved, double* Q_0, int* indices, double* max_improve, int* max_improve_index){
+	double base_aux_sum = 0;
+	int i = 0;
+	int max_diff_index = -1;
+	double max_diff = -HUGE_VAL;
+	int real_max_diff_index = -1;
+	double Q_max = -HUGE_VAL;
+	double curr_improve = 0;
+
+	/* Calculating Aux sums */
+	 A_row_sums_by_vec(g, N, A_sums, n_g, s);
+	 base_aux_sum = calc_sk_aux_sum(N, s, g, n_g);
+
+	/* Initiating unmoved with g values */
+	vector_from_list(unmoved, g, n_g);
+
+	/* Making n_g transitions of vertices to improve Q */
+	for (i = 0; i < n_g; i++){
+
+		max_diff_index = -1;
+		max_diff = -HUGE_VAL;
+		real_max_diff_index = -1;
+
+		/* Searching for the best node to move among unmoved */
+		find_best_vertex_to_move(N, g, s, n_g, unmoved, base_aux_sum, A_sums, &max_diff, &max_diff_index, &real_max_diff_index, &Q_max, *Q_0);
+
+		/* Update A sums */
+		update_A_sums(A_sums, max_diff_index, real_max_diff_index, N, s ,g);
+		base_aux_sum -= 2 * (s[max_diff_index] * N->deg_vector[real_max_diff_index]);
+
+		/* Move max_score_index to the other group */
+		s[max_diff_index] = s[max_diff_index]*(-1);
+
+		/* Add max_score_index to indices, which keeps the vertices transferring order */
+		indices[i] = max_diff_index;
+
+		/* Update improve */
+		curr_improve += Q_max - *Q_0;
+		if(*max_improve < curr_improve){
+			*max_improve = curr_improve;
+			*max_improve_index = i;
+		}
+
+		/* Remove max_score_index from unmoved */
+		unmoved[max_diff_index] = -1;
+		*Q_0  = Q_max;
+	}
+
 }

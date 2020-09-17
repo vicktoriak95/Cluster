@@ -26,13 +26,24 @@ double calc_Q_diff(double* s, int k, int real_k, Network* N, double A_sum, doubl
 void update_A_sums(double* A_sums, int k, int real_k, Network* N, double* s, Node* g);
 
 /* TODO */
-double aux_sum_score(Network* N, double* s, Node* g, int n_g);
+double calc_sk_aux_sum(Network* N, double* s, Node* g, int n_g);
 
 /* Sums row values of sub-matrix A[g], according to g values,
  *  multiplied by values of vector d. */
-double spmat_row_sum_mult_by_vector(spmat* A, int mat_row_index, Node* g, double* vector);
+double A_single_row_sum_by_vec(spmat* A, int mat_row_index, Node* g, double* vector);
 
 /*TODO*/
-void A_row_sums(Node* g, Network* N, double* A_row_sums, int n_g, double* vector);
+void A_row_sums_by_vec(Node* g, Network* N, double* A_row_sums, int n_g, double* vector);
+
+/*TODO*/
+void flip_s(double* s, int* indices, int n_g, int max_improve_index);
+
+/*TODO*/
+void find_best_vertex_to_move(Network* N, Node* g, double* s, int n_g, int* unmoved,
+		double base_aux_sum, double* A_sums, double* max_diff, int* max_diff_index, int* real_max_diff_index, double* Q_max, double Q_0);
+
+/*TODO*/
+void find_best_improve(Network* N, Node* g, int n_g, double* A_sums, double* s, int* unmoved,
+		double* Q_0, int* indices, double* max_improve, int* max_improve_index);
 
 #endif /* MODULARITYMAX_H_ */
