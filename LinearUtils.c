@@ -109,7 +109,7 @@ void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g
 		g_head = g_head->next;
 	}
 	after_result_calc = clock();
-	*time_spent_in_first_sum += (double)(after_result_calc - after_first_sum);
+	*time_spent_in_final_result += (double)(after_result_calc - after_first_sum);
 
 }
 
