@@ -7,6 +7,7 @@
 
 #ifndef LIBFUNCSHANDLER_H_
 #define LIBFUNCSHANDLER_H_
+#include <stdio.h>
 
 /* Open file from pathname */
 FILE* open_file(char* pathname, const char* mode);

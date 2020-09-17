@@ -14,6 +14,7 @@
 #define ENTRY_VAL  1
 
 #include "NodeUtils.h"
+#include <stdio.h>
 
 typedef struct _spmat {
 	/* Matrix size (n*n) */
