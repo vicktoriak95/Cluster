@@ -16,6 +16,9 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g, double* row_s
 	double* b_next = NULL;
 	double vector_norm = 0;
 	int cnt = 0;
+	double time_spent_in_spmat_mult = 0;
+	double time_spent_in_first_sum = 0;
+	double time_spent_in_final_result = 0;
 	/*
 	clock_t after_bhat_mult, after_bhat_shift, after_vecotr_norm;
 	*/
@@ -27,9 +30,9 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g, double* row_s
 	double time_spent_in_bhat_mult = 0;
 	double time_spent_in_bhat_shift = 0;
 	double time_spent_in_bhat_remain = 0;
-	*/
 
-	/*
+
+
 	printf("### Entered into power iteration ###\n");
 	start = clock();
 	*/
@@ -50,7 +53,7 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g, double* row_s
 		*/
 		/* Calculating dot product between B\hat[g]_shifted and b_k:
 		 * Multiplying B\hat by b_prev and saving result in b_next */
-		Bhat_multiplication(N, b_prev, b_next, g, n_g, row_sums);
+		Bhat_multiplication(N, b_prev, b_next, g, n_g, row_sums, &time_spent_in_spmat_mult, &time_spent_in_spmat_mult, &time_spent_in_final_result);
 		/*
 		after_bhat_mult = clock();
 		printf("Time up to after_bhat_mult: %f seconds\n", ((double)(after_bhat_mult-start) / CLOCKS_PER_SEC));
@@ -58,9 +61,9 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g, double* row_s
 		/*
 		after_bhat_mult = clock();
 		time_spent_in_bhat_mult += (double)(after_bhat_mult-before_bhat_mult);
-		*/
 
-		/*
+
+
 		before_bhat_shift = clock();
 		*/
 		/* Shifting b_next by b_prev and norm*/
@@ -102,6 +105,10 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g, double* row_s
 	printf("time_spent_in_bhat_remain: %f seconds\n", (time_spent_in_bhat_remain / CLOCKS_PER_SEC));
 	printf("### Exited power iteration ###\n");
 	*/
+
+	printf("time_spent_in_spmat_mult: %f seconds\n", (time_spent_in_spmat_mult / CLOCKS_PER_SEC));
+	printf("time_spent_in_first_sum: %f seconds\n", (time_spent_in_first_sum / CLOCKS_PER_SEC));
+	printf("time_spent_in_final_result: %f seconds\n", (time_spent_in_final_result / CLOCKS_PER_SEC));
 	return b_prev;
 }
 

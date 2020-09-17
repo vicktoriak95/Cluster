@@ -10,6 +10,7 @@
 #include "Network.h"
 #include "SparseMatrix.h"
 #include "LibFuncsHandler.h"
+#include <time.h>
 
 double dot_product(double* vector1, double* vector2, int vector_size){
 	double sum = 0;
@@ -79,37 +80,37 @@ double dot_product_auxiliary_sum(Network* N, double* x, Node* g, int n_g, int in
 	return result;
 }
 
-void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g, double* row_sums){
+void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g, double* row_sums,
+		double* time_spent_in_spmat_mult, double* time_spent_in_first_sum, double* time_spent_in_final_result){
 	double first_sum = 0;
-	/*
-	double second_sum = 0;
-	int A_row_sum = 0;
-	*/
 	int ki = 0;
 	int i = 0;
 	Node* g_head = g;
 	int g_index = 0;
 
+	clock_t start, after_spmat_mult, after_first_sum, after_result_calc;
 	/* Multiplying A*x, saving result in result vector */
+	start = clock();
 	spmat_mult(N->A, x, result, g);
+	after_spmat_mult = clock();
+	*time_spent_in_spmat_mult += (double)(after_spmat_mult - start);
 
 	/* Calculating needed sums for rest of the multiplication */
 	/* first_sum = sum(kj*xj) */
 	first_sum = dot_product_auxiliary_sum(N,  x, g, n_g, 1);
-	/*
-	second_sum = dot_product_auxiliary_sum(N, x, g, n_g, 2);
-	*/
+	after_first_sum = clock();
+	*time_spent_in_first_sum += (double)(after_first_sum - after_spmat_mult);
+
 	/* Calculating final result vector */
 	for (i = 0; i < n_g; i++){
-		/*A_row_sum = spmat_row_sum(N->A, i, g);*/
 		g_index = g_head->index;
 		ki = N->deg_vector[g_index];
-		/*
-		result[i] = result[i] - (first_sum * ki) + (second_sum * ki * x[i]) - (A_row_sum * x[i]);
-		*/
 		result[i] = result[i] - (first_sum * ki) / N->M - row_sums[i] * x[i];
 		g_head = g_head->next;
 	}
+	after_result_calc = clock();
+	*time_spent_in_first_sum += (double)(after_result_calc - after_first_sum);
+
 }
 
 void mult_vector_by_scalar(double* vector, double scalar, int length){
@@ -149,6 +150,9 @@ double Bhat_norm(Network* N, Node* g, int n_g, double* row_sums){
 	double* ej = NULL;
 	double* B_col = NULL;
 	double col_sum = 0;
+	double a = 0;
+	double b = 0;
+	double c = 0;
 
 	ej = (double*)allocate(n_g * sizeof(double));
 	B_col = (double*)allocate(n_g * sizeof(double));
@@ -156,7 +160,7 @@ double Bhat_norm(Network* N, Node* g, int n_g, double* row_sums){
 	/* Calculating all column absolute sums of B_hat[g], finding max sum */
 	for (j = 0; j < n_g; j++){
 		unit_vector_j(ej, n_g, j);
-		Bhat_multiplication(N, ej, B_col, g, n_g, row_sums);
+		Bhat_multiplication(N, ej, B_col, g, n_g, row_sums, &a, &b, &c);
 		col_sum = abs_sum_of_double_vector(B_col, n_g);
 		if ((j == 0) || (col_sum > norm)){
 			norm = col_sum;
@@ -173,10 +177,13 @@ double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, in
 	double* mul = NULL;
 	double lambda = 0;
 	double eigen_value = 0;
+	double a = 0;
+	double b = 0;
+	double c = 0;
 
 	/* Calculating numerator */
 	mul = (double*)allocate(n_g * sizeof(double));
-	Bhat_multiplication(N, eigen_vector, mul, g, n_g, row_sums);
+	Bhat_multiplication(N, eigen_vector, mul, g, n_g, row_sums, &a, &b, &c);
 	/* Shifting mul */
 	Bhat_shift(mul, eigen_vector, norm, n_g);
 	numerator = dot_product(eigen_vector, mul, n_g);

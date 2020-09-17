@@ -27,6 +27,8 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 	double* row_sums = NULL;
 	double B_norm = 0;
 	clock_t before_devide_into_two, after_devide_into_two, after_modularity_maximization;
+	double* indivisble = NULL;
+	int l = 0;
 
 	/* Read the input file into the net struct */
 	net = create_network(input);
@@ -47,6 +49,13 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 	B_row_sums(g, net, row_sums, n_g);
 	B_norm = Bhat_norm(net, g, net->n, row_sums);
 
+	/* Indivisble */
+	indivisble = (double*)allocate(n_g * sizeof(double));
+	for(l = 0; l < n_g ; l++){
+		indivisble[l] = 1;
+	}
+
+
 	while (P != NULL){
 		/* Number of iterations is linear in n */
 		/* 2n chosen as an upper bound */
@@ -66,7 +75,7 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 		/* Divide g into two groups */
 		before_devide_into_two = clock();
 		printf("Time up to before_devide_into_two: %f seconds\n", ((double)(before_devide_into_two-start) / CLOCKS_PER_SEC));
-		devide_into_two(net, g, s, n_g, B_norm, row_sums);
+		devide_into_two(net, g, s, n_g, B_norm, row_sums, indivisble);
 		after_devide_into_two = clock();
 		printf("Time up to after_devide_into_two: %f seconds\n", ((double)(after_devide_into_two-start) / CLOCKS_PER_SEC));
 
@@ -124,15 +133,17 @@ void indivisable(double* s, int n_g){
 	}
 }
 
-void devide_into_two(Network* N, Node* g, double* s, int n_g, double B_norm, double* row_sums){
+void devide_into_two(Network* N, Node* g, double* s, int n_g, double B_norm, double* row_sums, double* indivisble){
 	double Q = 0;
 	double norm = B_norm;
 	double eigen_value = 0;
 	double* eigen_vector = NULL;
+	clock_t start = clock();
+
 	/*
 	clock_t before_norm, after_norm;
 	*/
-	/*clock_t after_power_iteration, after_largest_eigenvalue, after_calculating_s, finish;*/
+	clock_t after_power_iteration, after_largest_eigenvalue, after_calculating_s, finish;
 
 	/* Calculating matrix norm */
 	/*
@@ -142,37 +153,39 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g, double B_norm, dou
 	after_norm = clock();
 	printf("Time up to after norm: %f seconds\n", ((double)(after_norm-start) / CLOCKS_PER_SEC));
 	*/
-	/*printf("### Entered into divide into two ###\n");*/
+	printf("### Entered into divide into two ###\n");
 	/* Finding biggest eigen_vector */
+
 	eigen_vector = power_iteration(N, norm, g, n_g, row_sums);
-	/*after_power_iteration = clock();
-	printf("Time up to after power iteration: %f seconds\n", ((double)(after_power_iteration-start) / CLOCKS_PER_SEC));*/
+	after_power_iteration = clock();
+	printf("Time up to after power iteration: %f seconds\n", ((double)(after_power_iteration-start) / CLOCKS_PER_SEC));
 
 	eigen_value = Bhat_largest_eigenvalue(N, norm, eigen_vector, n_g, g, row_sums);
-	/*after_largest_eigenvalue = clock();
-	printf("Time up to largest eigenvalue: %f seconds\n", ((double)(after_largest_eigenvalue-start) / CLOCKS_PER_SEC));*/
+	after_largest_eigenvalue = clock();
+	printf("Time up to largest eigenvalue: %f seconds\n", ((double)(after_largest_eigenvalue-start) / CLOCKS_PER_SEC));
 
 	calculate_s(eigen_vector, s, n_g);
-	/*after_calculating_s = clock();
-	printf("Time up to after_calculating_s: %f seconds\n", ((double)(after_calculating_s-start) / CLOCKS_PER_SEC));*/
+	after_calculating_s = clock();
+	printf("Time up to after_calculating_s: %f seconds\n", ((double)(after_calculating_s-start) / CLOCKS_PER_SEC));
 
 	free(eigen_vector);
-	/*finish = clock();
-	printf("Time up to after finish: %f seconds\n", ((double)(finish-start) / CLOCKS_PER_SEC));
-	printf("### Exited divide into two ###\n");*/
 
 	/* Calculate s - In case of non-positive eigenvalues do not divide */
 	if (eigen_value <= 0){
-		indivisable(s, n_g);
-		return;
+		s = indivisble;
+		/*indivisable(s, n_g);*/
 	}
 	else{
 		Q = calc_Qk(N, s, g, n_g, row_sums);
 			if (Q <= 0){
-				indivisable(s, n_g);
-				return;
+				s = indivisble;
+				/*indivisable(s, n_g);*/
 			}
 	}
+
+	finish = clock();
+	printf("Time up to after finish: %f seconds\n", ((double)(finish-start) / CLOCKS_PER_SEC));
+	printf("### Exited divide into two ###\n");
 }
 
 void calculate_s(double* eigen_vector, double* s, int n_g){

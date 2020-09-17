@@ -21,7 +21,7 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start);
 void indivisable(double* s, int n_g);
 
 /* Divides g into two groups by updating entries of vector s which represents the division of g */
-void devide_into_two(Network* N, Node* g, double* s, int n_g, double B_norm, double* row_sums);
+void devide_into_two(Network* N, Node* g, double* s, int n_g, double B_norm, double* row_sums, double* indivisble);
 
 /* Calculating vector s matching to given eigen-vector */
 void calculate_s(double* eigen_vector, double* s, int n_g);
