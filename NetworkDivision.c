@@ -230,31 +230,6 @@ Node* divide_group(Node** g1_p, double* s, int n_g){
 	return g2;
 }
 
-double calc_Qk(Network* N, double* s, Node* g, int n_g, double* row_sums){
-	double res = 0;
-	double* result = NULL;
-
-	result = (double*)allocate(n_g * sizeof(double));
-	Bhat_multiplication(N, s, result, g, n_g, row_sums);
-	res = dot_product(s, result, n_g);
-	free(result);
-
-	return res;
-}
-
-
-double calc_Q_diff(double* s, int k, int real_k, Network* N, double A_sum, double aux_sum){
-
-	double res = 0;
-	double deg_k = (double)N->deg_vector[real_k];
-	double M = (double)N->M;
-
-	res = -4 * s[k] * (A_sum - ((deg_k / M) * aux_sum)) + 4 * ((deg_k * deg_k) / M);
-
-	return res;
-}
-
-
 void print_output_file(FILE* output_file){
 	int num_of_groups = -1;
 	int i = -1;

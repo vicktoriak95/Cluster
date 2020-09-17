@@ -30,9 +30,6 @@ void calculate_s(double* eigen_vector, double* s, int n_g);
  * Editing group g into group g1 ,and returns group g2 */
 Node* divide_group(Node** g1_p, double* s, int n_g);
 
-/* Calculates Q by formula: s^t * B_hat[g] * s */
-double calc_Qk(Network* N, double* s, Node* g, int n_g, double* row_sums);
-
 /* Reads and prints output file containing division into clusters */
 void print_output_file(FILE* output_file);
 

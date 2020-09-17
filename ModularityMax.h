@@ -46,4 +46,7 @@ void find_best_vertex_to_move(Network* N, Node* g, double* s, int n_g, int* unmo
 void find_best_improve(Network* N, Node* g, int n_g, double* A_sums, double* s, int* unmoved,
 		double* Q_0, int* indices, double* max_improve, int* max_improve_index);
 
+/* Calculates Q by formula: s^t * B_hat[g] * s */
+double calc_Qk(Network* N, double* s, Node* g, int n_g, double* row_sums);
+
 #endif /* MODULARITYMAX_H_ */
