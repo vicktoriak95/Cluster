@@ -202,59 +202,7 @@ void test_row_sum(){
 	print_vector(row_sums, n_g);
 }
 
-double spmat_row_sum_mult_by_vector(spmat* A, int mat_row_index, Node* g, double* vector){
-	Node_matrix* row_head = NULL;
-	Node* g_head = g;
-	int sum = 0;
-	int cnt = 0;
-	int mat_col_index = 0;
-	int g_col_index = 0;
-	int vector_index = 0;
 
-	row_head = ((Node_matrix** )A->private)[mat_row_index];
-
-	/* Iterating over row, summing only entries in g */
-	while ((row_head != NULL) && (g_head != NULL)){
-		infinite_loop_detection(cnt, A->n);
-
-		/* Comparing indices and promoting g_head, mat_head respectively */
-		mat_col_index = row_head->col_index;
-		g_col_index = g_head->index;
-		if (mat_col_index == g_col_index){
-			sum += row_head->value * vector[vector_index];
-			g_head = g_head->next;
-			row_head = (Node_matrix*)row_head->next;
-			vector_index += 1;
-		}
-		else if (mat_col_index > g_col_index){
-			g_head = g_head->next;
-			vector_index += 1;
-		}
-		else {
-			row_head = (Node_matrix*)row_head->next;
-		}
-		cnt += 1;
-	}
-	return sum;
-}
-
-void A_row_sums(Node* g, Network* N, double* A_row_sums, int n_g, double* vector){
-	Node* g_row_head = g;
-	double row_sum = 0;
-	int mat_row_index = 0;
-	int i = 0;
-
-	/* Calculating sum for each row */
-	for(i=0; i<n_g; i++){
-		/* Find row index in A*/
-		mat_row_index = g_row_head->index;
-
-		row_sum = spmat_row_sum_mult_by_vector(N->A, mat_row_index, g, vector);
-
-		A_row_sums[i] = row_sum;
-		g_row_head = g_row_head->next;
-	}
-}
 
 /*
 int main(){

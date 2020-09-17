@@ -28,4 +28,11 @@ void update_A_sums(double* A_sums, int k, int real_k, Network* N, double* s, Nod
 /* TODO */
 double aux_sum_score(Network* N, double* s, Node* g, int n_g);
 
+/* Sums row values of sub-matrix A[g], according to g values,
+ *  multiplied by values of vector d. */
+double spmat_row_sum_mult_by_vector(spmat* A, int mat_row_index, Node* g, double* vector);
+
+/*TODO*/
+void A_row_sums(Node* g, Network* N, double* A_row_sums, int n_g, double* vector);
+
 #endif /* MODULARITYMAX_H_ */
