@@ -23,7 +23,7 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start);
 void indivisable(double* s, int n_g);
 
 /* Divides g into two groups by updating entries of vector s which represents the division of g */
-void devide_into_two(Network* N, Node* g, double* s, int n_g, clock_t start, double B_norm, double* row_sums);
+void devide_into_two(Network* N, Node* g, double* s, int n_g, double B_norm, double* row_sums);
 
 /* Calculating vector s matching to given eigen-vector */
 void calculate_s(double* eigen_vector, double* s, int n_g);
@@ -38,7 +38,7 @@ double calc_Qk(Network* N, double* s, Node* g, int n_g, double* row_sums);
 /* Calculating difference in Q after moving vertex.
  * Calculation is based on formulas that were derived from (s^t * B * s - d^t * B * s)
  * where d is vector s after moving one vertex. */
-double calc_Q_diff(double* s, int k, int real_k, Network* N, Node* g, int n_g, double A_sum, double aux_sum);
+double calc_Q_diff(double* s, int k, int real_k, Network* N, double A_sum, double aux_sum);
 
 /* Receives network N, s which represents division, and g the group we dividing.
  * Improving modularity of division, updating s to match best division found */

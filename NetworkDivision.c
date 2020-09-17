@@ -65,7 +65,7 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 		/* Divide g into two groups */
 		before_devide_into_two = clock();
 		printf("Time up to before_devide_into_two: %f seconds\n", ((double)(before_devide_into_two-start) / CLOCKS_PER_SEC));
-		devide_into_two(net, g, s, n_g, start, B_norm, row_sums);
+		devide_into_two(net, g, s, n_g, B_norm, row_sums);
 		after_devide_into_two = clock();
 		printf("Time up to after_devide_into_two: %f seconds\n", ((double)(after_devide_into_two-start) / CLOCKS_PER_SEC));
 
@@ -123,7 +123,7 @@ void indivisable(double* s, int n_g){
 	}
 }
 
-void devide_into_two(Network* N, Node* g, double* s, int n_g, clock_t start, double B_norm, double* row_sums){
+void devide_into_two(Network* N, Node* g, double* s, int n_g, double B_norm, double* row_sums){
 	double Q = 0;
 	double norm = B_norm;
 	double eigen_value = 0;
@@ -242,7 +242,7 @@ double calc_Qk(Network* N, double* s, Node* g, int n_g, double* row_sums){
 }
 
 
-double calc_Q_diff(double* s, int k, int real_k, Network* N, Node* g, int n_g, double A_sum, double aux_sum){
+double calc_Q_diff(double* s, int k, int real_k, Network* N, double A_sum, double aux_sum){
 
 	double res = 0;
 	double deg_k = (double)N->deg_vector[real_k];
@@ -378,7 +378,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 				if(unmoved[k] != (-1)){
 					real_k = get_node_value(g, k);
 					new_aux_sum = base_aux_sum - 2 * (s[k] * N->deg_vector[real_k]);
-					Q_diff = calc_Q_diff(s, k, real_k, N, g, n_g, A_sums[k], new_aux_sum);
+					Q_diff = calc_Q_diff(s, k, real_k, N, A_sums[k], new_aux_sum);
 					if ((first_score == 1) || (Q_diff > max_score)){
 						first_score = 0;
 						max_score = Q_diff;
