@@ -6,11 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "SparseMatrix.h"
-/*
-#include "LinearUtils.h"
-
-#include "NodeUtils.h"
-*/
 #include "LibFuncsHandler.h"
 
 Node_matrix* nodemat_create_node(int value, int col_index){

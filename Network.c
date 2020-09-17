@@ -5,8 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-
-#include "LibFuncsHandler.h"
+#include "Network.h"
 #include "LinearUtils.h"
 
 Network* allocate_network(int n){

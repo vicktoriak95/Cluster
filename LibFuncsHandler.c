@@ -4,7 +4,7 @@
  */
 
 #include <stdlib.h>
-#include <stdio.h>
+#include "LibFuncsHandler.h"
 
 FILE* open_file(char *pathname, const char *mode){
 	FILE* f = NULL;

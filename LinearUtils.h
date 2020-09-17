@@ -11,7 +11,6 @@
 #define LINEARUTILS_H_
 
 #include <time.h>
-
 #include "Network.h"
 
 /* Dot product between two vectors */
@@ -27,7 +26,7 @@ double abs_sum_of_double_vector(double* vec, int length);
 double sum_of_integer_vector(int* vec, int length);
 
 /* Calculating auxiliary sum for B\hat[g] multiplication */
-double dot_product_auxiliary_sum(double* deg_vector, int M, double* x, Node* g, int n_g, int indicator);
+double dot_product_auxiliary_sum(Network* N, double* x, Node* g, int n_g, int indicator);
 
 /* Multiplication of B\hat[g] with vector x.
  * Receives Network N, x the vector we multiplying and result vector,

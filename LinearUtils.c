@@ -7,10 +7,9 @@
 #include <stdio.h>
 #include <assert.h>
 #include <math.h>
-#include "Network.h"
 #include "SparseMatrix.h"
 #include "LibFuncsHandler.h"
-#include <time.h>
+#include "LinearUtils.h"
 
 double dot_product(double* vector1, double* vector2, int vector_size){
 	double sum = 0;
