@@ -161,7 +161,6 @@ double Bhat_norm(Network* N, Node* g, int n_g){
 		}
 		g_row_head = g_row_head->next;
 	}
-
 	return norm;
 }
 
@@ -190,4 +189,77 @@ double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, in
 	free(mul);
 
 	return eigen_value;
+}
+
+double B_row_sum(spmat* A, int mat_row_index, Node* g, Network* N, int abs){
+	Node_matrix* row_head = NULL;
+	Node* g_col_head = g;
+	double row_sum = 0;
+	int loop_cnt = 0;
+	int mat_col_index = 0;
+	int g_col_index = 0;
+	int* deg_vector = N->deg_vector;
+	int M = N->M;
+
+	row_head = ((Node_matrix** )A->private)[mat_row_index];
+
+	/* Iterating over row, summing only entries in g */
+	while ((row_head != NULL) && (g_col_head != NULL)){
+		infinite_loop_detection(loop_cnt, A->n);
+
+		/* Comparing indices and promoting g_head, mat_head respectively */
+		mat_col_index = row_head->col_index;
+		g_col_index = g_col_head->index;
+		/* If we are looking at entry in g and it is not 0, adding 1-k_i*k_j/M to row_sum */
+		if (mat_col_index == g_col_index){
+			if(abs == 0){
+				row_sum += row_head->value - ((double)deg_vector[g_col_index] * deg_vector[mat_row_index]) / M;
+			}
+			else{
+				row_sum += fabs(row_head->value - ((double)deg_vector[g_col_index] * deg_vector[mat_row_index]) / M);
+			}
+			g_col_head = g_col_head->next;
+			row_head = (Node_matrix*)row_head->next;
+		}
+		/* If we are looking at entry in g that is 0, adding -k_i*k_j/M to row_sum */
+		else if(mat_col_index > g_col_index){
+			if(abs == 0){
+				row_sum -= ((double)deg_vector[g_col_index] * deg_vector[mat_row_index]) / M;
+			}
+			else{
+				row_sum += ((double)deg_vector[g_col_index] * deg_vector[mat_row_index]) / M;
+			}
+			g_col_head = g_col_head->next;
+		}
+		/* If we are looking at entry not in g, adding nothing to row_sum */
+		else{
+			row_head = (Node_matrix*)row_head->next;
+		}
+		loop_cnt += 1;
+	}
+	/* If there are entries in A with value 0 at the end of the row, adding -k_i*k_j/M to row_sum */
+	while(g_col_head != NULL){
+		g_col_index = g_col_head->index;
+		row_sum -= ((double)deg_vector[g_col_index] * deg_vector[mat_row_index]) / M;
+		g_col_head = g_col_head->next;
+	}
+	return row_sum;
+}
+
+void B_row_sums(Node* g, Network* N, double* row_sums, int n_g){
+	Node* g_row_head = g;
+	double row_sum = 0;
+	int mat_row_index = 0;
+	int i = 0;
+
+	/* Calculating sum for each row */
+	for(i=0; i<n_g; i++){
+		/* Find row index in A*/
+		mat_row_index = g_row_head->index;
+
+		row_sum = B_row_sum(N->A, mat_row_index, g, N, 0);
+
+		row_sums[i] = row_sum;
+		g_row_head = g_row_head->next;
+	}
 }

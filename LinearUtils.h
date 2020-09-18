@@ -57,4 +57,10 @@ double Bhat_norm(Network* N, Node* g, int n_g);
  * Shifts result by norm. */
 double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, int n_g, Node* g, double* row_sums);
 
+/* Sums B[g] rows, i.e returns f_i^g = sum(A[g]_i,j - k_i*k_j/M) */
+double B_row_sum(spmat* A, int mat_row_index, Node* g, Network* N, int abs);
+
+/* TODO */
+void B_row_sums(Node* g, Network* N, double* row_sums, int n_g);
+
 #endif /* LINEARUTILS_H_ */
