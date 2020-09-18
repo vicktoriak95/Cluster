@@ -48,10 +48,11 @@ int main(int argc, char* argv[]){
 	#ifdef DEBUG
 	end = clock();
 	printf("All execution took: %f seconds\n", ((double)(end-start) / CLOCKS_PER_SEC));
-
+	/*
 	output = open_file(output_file_path, "rb");
 	print_output_file(output);
 	close_file(output);
+	*/
 	#endif
 
 	exit(EXIT_SUCCESS);

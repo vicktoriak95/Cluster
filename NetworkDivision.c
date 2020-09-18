@@ -40,11 +40,12 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 		head = head->next;
 	}
 
-	/* TODO: make look good*/
+	/* Calculating g length and row_sums out of the loop for norm */
 	g = P->value;
 	n_g = get_node_length(g, net->n);
 	row_sums = allocate(n_g * sizeof(double));
 	B_row_sums(g, net, row_sums, n_g);
+	/* Calculating Norm  of matrix to be used for the whole run*/
 	B_norm = Bhat_norm(net, g, net->n, row_sums);
 
 	while (P != NULL){
@@ -57,10 +58,12 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 		P = P->next;
 		free(old_P);
 
-		/* Count g length */
-		n_g = get_node_length(g, net->n);
-		row_sums = allocate(n_g * sizeof(double));
-		B_row_sums(g, net, row_sums, n_g);
+		/* Calculating g length and row_sums */
+		if(cnt != 0){
+			n_g = get_node_length(g, net->n);
+			row_sums = allocate(n_g * sizeof(double));
+			B_row_sums(g, net, row_sums, n_g);
+		}
 		s = (double*)allocate(n_g * sizeof(double));
 
 		/* Divide g into two groups */
