@@ -48,6 +48,9 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 		max_improve = -HUGE_VAL;
 		max_improve_index = -1;
 
+		/* Initiating unmoved from g */
+		vector_from_list(unmoved, g, n_g);
+
 		/* Move n_g vertices and find best improve */
 		find_best_improve(N, g, n_g, A_sums, s, unmoved, &Q_0, indices, &max_improve, &max_improve_index);
 
@@ -217,13 +220,16 @@ void find_best_improve(Network* N, Node* g, int n_g, double* A_sums, double* s, 
 	int real_max_diff_index = -1;
 	double Q_max = -HUGE_VAL;
 	double curr_improve = 0;
+	int* temp = NULL;
 
 	/* Calculating Aux sums */
 	 A_row_sums_by_vec(g, N, A_sums, n_g, s);
 	 base_aux_sum = calc_sk_aux_sum(N, s, g, n_g);
 
 	/* Initiating unmoved with g values */
+	 /*
 	vector_from_list(unmoved, g, n_g);
+	*/
 
 	/* Making n_g transitions of vertices to improve Q */
 	for (i = 0; i < n_g; i++){
@@ -256,6 +262,12 @@ void find_best_improve(Network* N, Node* g, int n_g, double* A_sums, double* s, 
 		unmoved[max_diff_index] = -1;
 		*Q_0  = Q_max;
 	}
+
+	/* Swaping unmoved and indices */
+	temp = unmoved;
+	unmoved = indices;
+	indices = temp;
+
 }
 
 double calc_Qk(Network* N, double* s, Node* g, int n_g, double* row_sums){
