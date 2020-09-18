@@ -143,34 +143,7 @@ void unit_vector_j(double* v, int n, int j){
 	}
 }
 
-double Bhat_norm(Network* N, Node* g, int n_g, double* row_sums){
-	double norm = 0;
-	int j = 0;
-	double* ej = NULL;
-	double* B_col = NULL;
-	double col_sum = 0;
-	double a = 0;
-	double b = 0;
-	double c = 0;
-
-	ej = (double*)allocate(n_g * sizeof(double));
-	B_col = (double*)allocate(n_g * sizeof(double));
-
-	/* Calculating all column absolute sums of B_hat[g], finding max sum */
-	for (j = 0; j < n_g; j++){
-		unit_vector_j(ej, n_g, j);
-		Bhat_multiplication(N, ej, B_col, g, n_g, row_sums, &a, &b, &c);
-		col_sum = abs_sum_of_double_vector(B_col, n_g);
-		if ((j == 0) || (col_sum > norm)){
-			norm = col_sum;
-		}
-	}
-	free(ej);
-	free(B_col);
-	return norm;
-}
-
-double B_hat_norm_optimized(Network* N, Node* g, int n_g){
+double Bhat_norm(Network* N, Node* g, int n_g){
 	Node* g_row_head = g;
 	double row_abs_sum = 0;
 	int mat_row_index = 0;
