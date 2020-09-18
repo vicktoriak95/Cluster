@@ -114,6 +114,7 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 	/* Free all */
 	delete_group(O, net->n);
 	free_network(net);
+	free(row_sums);
 }
 
 void indivisable(double* s, int n_g){

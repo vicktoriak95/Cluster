@@ -53,7 +53,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 
 		/* If the best separation occurs when all the vertices switched groups, then nothing actually changed */
 		if (max_improve_index == n_g - 1){
-			delta_Q = 0;
+			delta_Q = EPSILON;
 		}
 		else{
 			delta_Q = max_improve;
@@ -65,7 +65,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 		Q_0 = Q_0 + max_improve;
 
 		loop_cnt += 1;
-	} while(delta_Q > 0);
+	} while(delta_Q > EPSILON);
 
 	free(unmoved);
 	free(indices);
