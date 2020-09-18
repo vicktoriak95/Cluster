@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include "Network.h"
 #include "LinearUtils.h"
+#include <math.h>
 
 Network* allocate_network(int n){
 	Network* net = NULL;
@@ -103,7 +104,7 @@ Network* network_from_args(spmat* matrix, int* deg_vector, int n, int M){
 	return net;
 }
 
-double B_row_sum(spmat* A, int mat_row_index, Node* g, Network* N){
+double B_row_sum(spmat* A, int mat_row_index, Node* g, Network* N, int abs){
 	Node_matrix* row_head = NULL;
 	Node* g_col_head = g;
 	double row_sum = 0;
@@ -124,13 +125,23 @@ double B_row_sum(spmat* A, int mat_row_index, Node* g, Network* N){
 		g_col_index = g_col_head->index;
 		/* If we are looking at entry in g and it is not 0, adding 1-k_i*k_j/M to row_sum */
 		if (mat_col_index == g_col_index){
-			row_sum += row_head->value - ((double)deg_vector[g_col_index] * deg_vector[mat_row_index]) / M;
+			if(abs == 0){
+				row_sum += row_head->value - ((double)deg_vector[g_col_index] * deg_vector[mat_row_index]) / M;
+			}
+			else{
+				row_sum += fabs(row_head->value - ((double)deg_vector[g_col_index] * deg_vector[mat_row_index]) / M);
+			}
 			g_col_head = g_col_head->next;
 			row_head = (Node_matrix*)row_head->next;
 		}
 		/* If we are looking at entry in g that is 0, adding -k_i*k_j/M to row_sum */
 		else if(mat_col_index > g_col_index){
-			row_sum -= ((double)deg_vector[g_col_index] * deg_vector[mat_row_index]) / M;
+			if(abs == 0){
+				row_sum -= ((double)deg_vector[g_col_index] * deg_vector[mat_row_index]) / M;
+			}
+			else{
+				row_sum += ((double)deg_vector[g_col_index] * deg_vector[mat_row_index]) / M;
+			}
 			g_col_head = g_col_head->next;
 		}
 		/* If we are looking at entry not in g, adding nothing to row_sum */
@@ -159,7 +170,7 @@ void B_row_sums(Node* g, Network* N, double* row_sums, int n_g){
 		/* Find row index in A*/
 		mat_row_index = g_row_head->index;
 
-		row_sum = B_row_sum(N->A, mat_row_index, g, N);
+		row_sum = B_row_sum(N->A, mat_row_index, g, N, 0);
 
 		row_sums[i] = row_sum;
 		g_row_head = g_row_head->next;
@@ -192,7 +203,7 @@ void test_row_sum(){
 
 	net = network_from_args(A, deg_vector, n, M);
 
-	row_sum = B_row_sum(A, row_num, g, net);
+	row_sum = B_row_sum(A, row_num, g, net, 0);
 	printf("Row sum is: %f \n", row_sum);
 
 	row_sums = allocate(n_g);

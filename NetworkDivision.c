@@ -46,7 +46,10 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 	row_sums = allocate(n_g * sizeof(double));
 	B_row_sums(g, net, row_sums, n_g);
 	/* Calculating Norm  of matrix to be used for the whole run*/
+	/*
 	B_norm = Bhat_norm(net, g, net->n, row_sums);
+	*/
+	B_norm = B_hat_norm_optimized(net, g, n_g, row_sums);
 
 	while (P != NULL){
 		/* Number of iterations is linear in n */
