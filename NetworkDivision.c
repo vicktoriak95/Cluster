@@ -23,7 +23,7 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 	Node* head = NULL;
 	int i = 0;
 	int n_g = 0;
-	int cnt = 0;
+	int loop_cnt = 0;
 	double* row_sums = NULL;
 	double B_norm = 0;
 	clock_t before_devide_into_two, after_devide_into_two, after_modularity_maximization;
@@ -45,16 +45,14 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 	n_g = get_node_length(g, net->n);
 	row_sums = allocate(n_g * sizeof(double));
 	B_row_sums(g, net, row_sums, n_g);
+
 	/* Calculating Norm  of matrix to be used for the whole run*/
-	/*
-	B_norm = Bhat_norm(net, g, net->n, row_sums);
-	*/
 	B_norm = B_hat_norm_optimized(net, g, n_g);
 
 	while (P != NULL){
 		/* Number of iterations is linear in n */
 		/* 2n chosen as an upper bound */
-		infinite_loop_detection(cnt, 2 * net->n);
+		infinite_loop_detection(loop_cnt, 2 * net->n);
 		/* Pop g out of P */
 		g = P->value;
 		old_P = P;
@@ -62,7 +60,7 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 		free(old_P);
 
 		/* Calculating g length and row_sums */
-		if(cnt != 0){
+		if(loop_cnt != 0){
 			n_g = get_node_length(g, net->n);
 			row_sums = allocate(n_g * sizeof(double));
 			B_row_sums(g, net, row_sums, n_g);
@@ -111,7 +109,7 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 				push_group(&P, g2);
 			}
 		}
-		cnt += 1;
+		loop_cnt += 1;
 	}
 
 	/* Write the devision to output file */

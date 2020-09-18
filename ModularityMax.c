@@ -189,11 +189,13 @@ void find_best_vertex_to_move(Network* N, Node* g, double* s, int n_g, int* unmo
 	int real_k = 0;
 	double new_aux_sum = 0;
 	double Q_diff = 0;
+	Node* g_pointer = g;
 
 	/* Searching for the best node to move among unmoved */
 	for(k = 0; k < n_g; k++){
 		if(unmoved[k] != (-1)){
-			real_k = get_node_value(g, k);
+			real_k = g_pointer->index;
+			/*real_k = get_node_value(g, k);*/
 			new_aux_sum = base_aux_sum - 2 * (s[k] * N->deg_vector[real_k]);
 			Q_diff = calc_Q_diff(s, k, real_k, N, A_sums[k], new_aux_sum);
 			if (Q_diff > *max_diff){
@@ -203,6 +205,7 @@ void find_best_vertex_to_move(Network* N, Node* g, double* s, int n_g, int* unmo
 				*Q_max = Q_0 + Q_diff;
 			}
 		}
+		g_pointer = g_pointer->next;
 	}
 }
 
