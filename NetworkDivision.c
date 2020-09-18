@@ -61,7 +61,6 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 		/* Calculating g length and row_sums */
 		if(loop_cnt != 0){
 			n_g = get_node_length(g, net->n);
-			row_sums = allocate(n_g * sizeof(double));
 			B_row_sums(g, net, row_sums, n_g);
 		}
 		s = (double*)allocate(n_g * sizeof(double));

@@ -6,3 +6,5 @@ tester
 .settings/
 Debug/
 Tester_Files/
+callgrind*
+itai/
