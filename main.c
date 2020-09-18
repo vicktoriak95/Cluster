@@ -9,6 +9,7 @@
 #include "LibFuncsHandler.h"
 
 #define DEBUG
+/*#define PRINT_RESULT*/
 
 #ifdef DEBUG
 #include <time.h>
@@ -41,18 +42,20 @@ int main(int argc, char* argv[]){
 	/* Opening file to read network */
 	input = open_file(input_file_path, "rb");
 	output = open_file(output_file_path, "wb");
-	divide_net_to_clusters(input, output, start);
+	divide_net_to_clusters(input, output);
 	close_file(input);
 	close_file(output);
 
 	#ifdef DEBUG
 	end = clock();
 	printf("All execution took: %f seconds\n", ((double)(end-start) / CLOCKS_PER_SEC));
-	/*
+
+	#ifdef PRINT_RESULT
 	output = open_file(output_file_path, "rb");
 	print_output_file(output);
 	close_file(output);
-	*/
+	#endif
+
 	#endif
 
 	exit(EXIT_SUCCESS);

@@ -21,9 +21,6 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 	double Q_0;
 	double* A_sums = NULL;
 
-
-	printf("got into mod_max bitches \n");
-
 	/* Initiate unmoved with all the vertices indexes corresponding to g */
 	unmoved = (int*)allocate(n_g * sizeof(int));
 	indices = (int*)allocate(n_g * sizeof(int));
@@ -262,12 +259,9 @@ void find_best_improve(Network* N, Node* g, int n_g, double* A_sums, double* s, 
 double calc_Qk(Network* N, double* s, Node* g, int n_g, double* row_sums){
 	double res = 0;
 	double* result = NULL;
-	double a = 0;
-	double b = 0;
-	double c = 0;
 
 	result = (double*)allocate(n_g * sizeof(double));
-	Bhat_multiplication(N, s, result, g, n_g, row_sums, &a, &b, &c);
+	Bhat_multiplication(N, s, result, g, n_g, row_sums);
 	res = dot_product(s, result, n_g);
 	free(result);
 

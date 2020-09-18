@@ -11,7 +11,7 @@
 #include "PowerIteration.h"
 #include "ModularityMax.h"
 
-void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
+void divide_net_to_clusters(FILE* input, FILE* output){
 	Network* net = NULL;
 	Group* P = NULL;
 	Group* O = NULL;
@@ -26,7 +26,6 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 	int loop_cnt = 0;
 	double* row_sums = NULL;
 	double B_norm = 0;
-	clock_t before_devide_into_two, after_devide_into_two, after_modularity_maximization;
 
 	/* Read the input file into the net struct */
 	net = create_network(input);
@@ -68,15 +67,10 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 		s = (double*)allocate(n_g * sizeof(double));
 
 		/* Divide g into two groups */
-		before_devide_into_two = clock();
-		printf("Time up to before_devide_into_two: %f seconds\n", ((double)(before_devide_into_two-start) / CLOCKS_PER_SEC));
 		devide_into_two(net, g, s, n_g, B_norm, row_sums);
-		after_devide_into_two = clock();
-		printf("Time up to after_devide_into_two: %f seconds\n", ((double)(after_devide_into_two-start) / CLOCKS_PER_SEC));
 
+		/* Maximizing Modularity */
 		modularity_maximization(net, s, g, n_g, row_sums);
-		after_modularity_maximization = clock();
-		printf("Time up to after_modularity_maximization: %f seconds\n\n", ((double)(after_modularity_maximization-start) / CLOCKS_PER_SEC));
 
 		g1 = g;
 		g2 = divide_group(&g1, s, n_g);
@@ -134,35 +128,12 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g, double B_norm, dou
 	double norm = B_norm;
 	double eigen_value = 0;
 	double* eigen_vector = NULL;
-	clock_t start = clock();
 
-	/*
-	clock_t before_norm, after_norm;
-	*/
-	clock_t after_power_iteration, after_largest_eigenvalue, after_calculating_s, finish;
-
-	/* Calculating matrix norm */
-	/*
-	before_norm = clock();
-	printf("Time up to norm: %f seconds\n", ((double)(before_norm-start) / CLOCKS_PER_SEC));
-	norm = Bhat_norm(N, g, n_g);
-	after_norm = clock();
-	printf("Time up to after norm: %f seconds\n", ((double)(after_norm-start) / CLOCKS_PER_SEC));
-	*/
-	printf("### Entered into divide into two ###\n");
 	/* Finding biggest eigen_vector */
-
 	eigen_vector = power_iteration(N, norm, g, n_g, row_sums);
-	after_power_iteration = clock();
-	printf("Time up to after power iteration: %f seconds\n", ((double)(after_power_iteration-start) / CLOCKS_PER_SEC));
-
 	eigen_value = Bhat_largest_eigenvalue(N, norm, eigen_vector, n_g, g, row_sums);
-	after_largest_eigenvalue = clock();
-	printf("Time up to largest eigenvalue: %f seconds\n", ((double)(after_largest_eigenvalue-start) / CLOCKS_PER_SEC));
 
 	calculate_s(eigen_vector, s, n_g);
-	after_calculating_s = clock();
-	printf("Time up to after_calculating_s: %f seconds\n", ((double)(after_calculating_s-start) / CLOCKS_PER_SEC));
 
 	free(eigen_vector);
 
@@ -176,10 +147,6 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g, double B_norm, dou
 				indivisable(s, n_g);
 			}
 	}
-
-	finish = clock();
-	printf("Time up to after finish: %f seconds\n", ((double)(finish-start) / CLOCKS_PER_SEC));
-	printf("### Exited divide into two ###\n");
 }
 
 void calculate_s(double* eigen_vector, double* s, int n_g){

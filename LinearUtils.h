@@ -33,8 +33,7 @@ double dot_product_auxiliary_sum(Network* N, double* x, Node* g, int n_g, int in
  * writes multiplication result to result vector.
  * Multiplication using only adjacency matrix A, and degree vector,
  * calculation is based on formulas that were derived from the B_hat[g]*x dot product */
-void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g, double* row_sums,
-		double* time_spent_in_spmat_mult, double* time_spent_in_first_sum, double* time_spent_in_final_result);
+void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g, double* row_sums);
 
 /* Multiplying all entries of a given vector by a scalar */
 void mult_vector_by_scalar(double* vector, double scalar, int length);

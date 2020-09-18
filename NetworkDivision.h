@@ -15,7 +15,7 @@
 
 /* Main algorithm, receives input and output file,
  * reads network from input file, calculates clusters and writes them to output file. */
-void divide_net_to_clusters(FILE* input, FILE* output, clock_t start);
+void divide_net_to_clusters(FILE* input, FILE* output);
 
 /* Fills s with 1.0 - meaning all vertices are in the same group */
 void indivisable(double* s, int n_g);

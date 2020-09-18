@@ -79,26 +79,19 @@ double dot_product_auxiliary_sum(Network* N, double* x, Node* g, int n_g, int in
 	return result;
 }
 
-void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g, double* row_sums,
-		double* time_spent_in_spmat_mult, double* time_spent_in_first_sum, double* time_spent_in_final_result){
+void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g, double* row_sums){
 	double first_sum = 0;
 	int ki = 0;
 	int i = 0;
 	Node* g_head = g;
 	int g_index = 0;
 
-	clock_t start, after_spmat_mult, after_first_sum, after_result_calc;
 	/* Multiplying A*x, saving result in result vector */
-	start = clock();
 	spmat_mult(N->A, x, result, g);
-	after_spmat_mult = clock();
-	*time_spent_in_spmat_mult += (double)(after_spmat_mult - start);
 
 	/* Calculating needed sums for rest of the multiplication */
 	/* first_sum = sum(kj*xj) */
 	first_sum = dot_product_auxiliary_sum(N,  x, g, n_g, 1);
-	after_first_sum = clock();
-	*time_spent_in_first_sum += (double)(after_first_sum - after_spmat_mult);
 
 	/* Calculating final result vector */
 	for (i = 0; i < n_g; i++){
@@ -107,8 +100,6 @@ void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g
 		result[i] = result[i] - (first_sum * ki) / N->M - row_sums[i] * x[i];
 		g_head = g_head->next;
 	}
-	after_result_calc = clock();
-	*time_spent_in_final_result += (double)(after_result_calc - after_first_sum);
 
 }
 
@@ -170,13 +161,10 @@ double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, in
 	double* mul = NULL;
 	double lambda = 0;
 	double eigen_value = 0;
-	double a = 0;
-	double b = 0;
-	double c = 0;
 
 	/* Calculating numerator */
 	mul = (double*)allocate(n_g * sizeof(double));
-	Bhat_multiplication(N, eigen_vector, mul, g, n_g, row_sums, &a, &b, &c);
+	Bhat_multiplication(N, eigen_vector, mul, g, n_g, row_sums);
 	/* Shifting mul */
 	Bhat_shift(mul, eigen_vector, norm, n_g);
 	numerator = dot_product(eigen_vector, mul, n_g);
