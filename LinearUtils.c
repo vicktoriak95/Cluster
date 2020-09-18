@@ -170,7 +170,7 @@ double Bhat_norm(Network* N, Node* g, int n_g, double* row_sums){
 	return norm;
 }
 
-double B_hat_norm_optimized(Network* N, Node* g, int n_g, double* row_sums){
+double B_hat_norm_optimized(Network* N, Node* g, int n_g){
 	Node* g_row_head = g;
 	double row_abs_sum = 0;
 	int mat_row_index = 0;

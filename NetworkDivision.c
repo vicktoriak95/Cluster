@@ -49,7 +49,7 @@ void divide_net_to_clusters(FILE* input, FILE* output, clock_t start){
 	/*
 	B_norm = Bhat_norm(net, g, net->n, row_sums);
 	*/
-	B_norm = B_hat_norm_optimized(net, g, n_g, row_sums);
+	B_norm = B_hat_norm_optimized(net, g, n_g);
 
 	while (P != NULL){
 		/* Number of iterations is linear in n */

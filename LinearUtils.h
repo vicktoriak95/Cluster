@@ -58,6 +58,6 @@ double Bhat_norm(Network* N, Node* g, int n_g, double* row_sums);
 double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, int n_g, Node* g, double* row_sums);
 
 /* TODO */
-double B_hat_norm_optimized(Network* N, Node* g, int n_g, double* row_sums);
+double B_hat_norm_optimized(Network* N, Node* g, int n_g);
 
 #endif /* LINEARUTILS_H_ */
