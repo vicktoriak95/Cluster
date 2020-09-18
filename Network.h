@@ -13,6 +13,7 @@
 #define NETWORK_H_
 
 #include "SparseMatrix.h"
+#include "LibFuncsHandler.h"
 
 typedef struct _network{
 

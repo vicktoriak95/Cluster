@@ -4,7 +4,7 @@
  */
 
 #include <stdlib.h>
-#include <stdio.h>
+#include "LibFuncsHandler.h"
 
 FILE* open_file(char *pathname, const char *mode){
 	FILE* f = NULL;
@@ -93,7 +93,7 @@ void assert_file_not_empty(FILE* f){
 }
 
 void assert_not_zero(double n){
-	if (n == 0){
+	if (n == EPSILON){
 		printf("Zero division error\n");
 		exit(EXIT_FAILURE);
 	}

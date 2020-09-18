@@ -14,6 +14,7 @@
 #define ENTRY_VAL  1
 
 #include "NodeUtils.h"
+#include <stdio.h>
 
 typedef struct _spmat {
 	/* Matrix size (n*n) */
@@ -55,7 +56,7 @@ void spmat_free(spmat *A);
 /* Multiplies sub-matrix matrix A[g] by vector v, into result (result is pre-allocated) */
 void spmat_mult(const spmat* A, const double *v, double *result, Node* g);
 
-/* Sums row values of sun-matrix A[g], according to g values */
+/* Sums row values of sub-matrix A[g], according to g values */
 int spmat_row_sum(spmat* A, int row_num, Node* g);
 
 /* Prints sparse matrix */

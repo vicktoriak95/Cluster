@@ -10,13 +10,12 @@
 #include "LibFuncsHandler.h"
 #include "LinearUtils.h"
 
-double* power_iteration(Network* N, double norm, Node* g, int n_g){
+double* power_iteration(Network* N, double norm, Node* g, int n_g, double* row_sums){
 	double* temp = NULL;
 	double* b_prev = NULL;
 	double* b_next = NULL;
 	double vector_norm = 0;
 	int cnt = 0;
-
 
 	/* Initiating b_prev to be random b_0, b_next to be random too */
 	b_prev = (double*)allocate(n_g * sizeof(double));
@@ -28,10 +27,8 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 	while(close_vectors(b_prev, b_next, n_g) != 0){
 		infinite_loop_detection(cnt, MAX_POWER_ITERATIONS);
 
-		/* Calculating dot product between B\hat[g]_shifted and b_k:
-		 * Multiplying B\hat by b_prev and saving result in b_next */
-		Bhat_multiplication(N, b_prev, b_next, g, n_g);
-		/* Shifting b_next by b_prev and norm*/
+		Bhat_multiplication(N, b_prev, b_next, g, n_g, row_sums);
+
 		Bhat_shift(b_next, b_prev, norm, n_g);
 
 		/* Normalizing over norm */
@@ -45,6 +42,7 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g){
 		cnt += 1;
 	}
 	free(b_next);
+
 	return b_prev;
 }
 
@@ -59,7 +57,7 @@ int close_vectors(double* vector_a, double* vector_b, int n){
 	int i = 0;
 	/* Iterating over vectors, checking if diff of every entry is bigger than epsilon */
 	for (i = 0; i < n; i++){
-		if (fabs(vector_a[i] - vector_b[i]) > EPSILON){
+		if (fabs(vector_a[i] - vector_b[i]) >= EPSILON){
 			return -1;
 		}
 	}

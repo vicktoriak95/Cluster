@@ -10,6 +10,7 @@
 #ifndef LINEARUTILS_H_
 #define LINEARUTILS_H_
 
+#include <time.h>
 #include "Network.h"
 
 /* Dot product between two vectors */
@@ -25,14 +26,14 @@ double abs_sum_of_double_vector(double* vec, int length);
 double sum_of_integer_vector(int* vec, int length);
 
 /* Calculating auxiliary sum for B\hat[g] multiplication */
-double dot_product_auxiliary_sum(double* deg_vector, int M, double* x, Node* g, int n_g, int indicator);
+double dot_product_auxiliary_sum(Network* N, double* x, Node* g, int n_g, int indicator);
 
 /* Multiplication of B\hat[g] with vector x.
  * Receives Network N, x the vector we multiplying and result vector,
  * writes multiplication result to result vector.
  * Multiplication using only adjacency matrix A, and degree vector,
  * calculation is based on formulas that were derived from the B_hat[g]*x dot product */
-void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g);
+void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g, double* row_sums);
 
 /* Multiplying all entries of a given vector by a scalar */
 void mult_vector_by_scalar(double* vector, double scalar, int length);
@@ -53,6 +54,12 @@ double Bhat_norm(Network* N, Node* g, int n_g);
 
 /* Calculates the eigenvalue corresponding to largest eigen_vector.
  * Shifts result by norm. */
-double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, int n_g, Node* g);
+double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, int n_g, Node* g, double* row_sums);
+
+/* Sums B[g] rows, i.e returns f_i^g = sum(A[g]_i,j - k_i*k_j/M) */
+double B_row_sum(spmat* A, int mat_row_index, Node* g, Network* N, int abs);
+
+/* TODO */
+void B_row_sums(Node* g, Network* N, double* row_sums, int n_g);
 
 #endif /* LINEARUTILS_H_ */

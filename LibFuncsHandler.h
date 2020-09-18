@@ -7,6 +7,8 @@
 
 #ifndef LIBFUNCSHANDLER_H_
 #define LIBFUNCSHANDLER_H_
+#include <stdio.h>
+#define EPSILON 0.0001
 
 /* Open file from pathname */
 FILE* open_file(char* pathname, const char* mode);

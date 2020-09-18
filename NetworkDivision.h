@@ -11,9 +11,7 @@
 
 #include <stdio.h>
 #include "Network.h"
-
-/* INT_MAX == 2 ** 31 - 1 */
-#define INT_MAX_POWER_OF_2 30
+#include <time.h>
 
 /* Main algorithm, receives input and output file,
  * reads network from input file, calculates clusters and writes them to output file. */
@@ -23,7 +21,7 @@ void divide_net_to_clusters(FILE* input, FILE* output);
 void indivisable(double* s, int n_g);
 
 /* Divides g into two groups by updating entries of vector s which represents the division of g */
-void devide_into_two(Network* N, Node* g, double* s, int n_g);
+void devide_into_two(Network* N, Node* g, double* s, int n_g, double B_norm, double* row_sums);
 
 /* Calculating vector s matching to given eigen-vector */
 void calculate_s(double* eigen_vector, double* s, int n_g);
@@ -31,13 +29,6 @@ void calculate_s(double* eigen_vector, double* s, int n_g);
 /* Dividing g according to s.
  * Editing group g into group g1 ,and returns group g2 */
 Node* divide_group(Node** g1_p, double* s, int n_g);
-
-/* Calculates Q by formula: s^t * B_hat[g] * s */
-double calc_Qk(Network* N, double* s, Node* g, int n_g);
-
-/* Receives network N, s which represents division, and g the group we dividing.
- * Improving modularity of division, updating s to match best division found */
-void modularity_maximization(Network* N, double* s, Node* g, int n_g);
 
 /* Reads and prints output file containing division into clusters */
 void print_output_file(FILE* output_file);

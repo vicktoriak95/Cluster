@@ -5,7 +5,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "LinearUtils.h"
+#include "SparseMatrix.h"
 #include "LibFuncsHandler.h"
 
 Node_matrix* nodemat_create_node(int value, int col_index){
@@ -29,12 +29,16 @@ void nodemat_free_list(Node_matrix* list){
 spmat* spmat_allocate(int n){
 	spmat* A = NULL;
 	Node_matrix** private = NULL;
+	int i = 0;
 
 	/* Allocating mem for A */
 	A = (spmat*)allocate(sizeof(spmat));
 
 	/* Using calloc to assure all pointers are NULL */
 	private = (Node_matrix**)allocate(n * sizeof(Node_matrix**));
+	for(i = 0; i < n; i++){
+		private[i] = NULL;
+	}
 
 	A->n = n;
 	A->private = private;
