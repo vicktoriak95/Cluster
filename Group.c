@@ -34,9 +34,9 @@ Group* allocate_group(int n_g){
 }
 
 void free_group(Group* group){
+	delete_node_list(group->vertices, group->A_g->n);
 	spmat_free(group->A_g);
 	free(group->row_sums);
-	delete_node_list(group->vertices, group->A_g->n);
 	free(group);
 }
 
