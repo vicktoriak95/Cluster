@@ -30,7 +30,7 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 	push_group(&P, group);
 
 	/* Calculating Norm of matrix to be used for the whole run*/
-	B_norm = Bhat_norm_new(net, group);
+	B_norm = Bhat_norm(net, group);
 
 	while (P != NULL){
 		/* Number of iterations is linear in n */
@@ -168,9 +168,9 @@ void divide_group(Network* N, Group* old_group, double* s, Group** new_group1, G
 	(*new_group2)->vertices = vertices2;
 
 	/* Calculate A_1 row_sums */
-	B_row_sums_new((*new_group1), N);
+	B_row_sums((*new_group1), N);
 	/* Calculate A_2 row_sums */
-	B_row_sums_new((*new_group2), N);
+	B_row_sums((*new_group2), N);
 
 	old_group->vertices = NULL;
 	free_group(old_group);
