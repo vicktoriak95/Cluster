@@ -231,9 +231,7 @@ void print_node_matrix_list(spmat* sp_mat, int i){
 	}
 }
 
-void divide_spmat(spmat* A, double* s, spmat** A1, spmat** A2){
-	int A1_n = 0;
-	int A2_n = 0;
+void divide_spmat(spmat* A, double* s, spmat** A1, spmat** A2, int A1_n, int A2_n){
 	int i = 0;
 	int old_row = 0;
 	int old_col = 0;
@@ -246,22 +244,12 @@ void divide_spmat(spmat* A, double* s, spmat** A1, spmat** A2){
 	Node_matrix* new_node = NULL;
 	Node_matrix* tail = NULL;
 
-
-	/* Calc the size of the new spmats */
-	A1_n = 0;
-	for (i=0; i<A->n; i++){
-		if (s[i] == 1) {
-			A1_n += 1;
-		}
-	}
-	A2_n = A->n - A1_n;
-
 	/* Allocate the new spmats */
 	(*A1) = spmat_allocate(A1_n);
 	(*A2) = spmat_allocate(A2_n);
 
 	/* Calc the new_col_index. */
-	new_col_index = (double*)allocate(A->n);
+	new_col_index = (double*)allocate(sizeof(double) * A->n);
 	A1_col = 0;
 	A2_col = 0;
 	for (i=0; i<A->n; i++){
@@ -312,8 +300,5 @@ void divide_spmat(spmat* A, double* s, spmat** A1, spmat** A2){
 		}
 	}
 
-	/* Free the old spmat and the new_col_index*/
 	free(new_col_index);
-	spmat_free(A);
-
 }

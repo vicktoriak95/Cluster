@@ -65,6 +65,6 @@ void print_sparse_matrix(spmat* sp_mat);
 /* Prints node matrix list */
 void print_node_matrix_list(spmat* sp_mat, int i);
 
-void divide_spmat(spmat* A, double* s, spmat** A1, spmat** A2);
+void divide_spmat(spmat* A, double* s, spmat** A1, spmat** A2, int A1_n, int A2_n);
 
 #endif /* SPARSEMATRIX_H_ */
