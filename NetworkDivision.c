@@ -196,8 +196,10 @@ void divide_group(Network* N, Group* old_group, double* s, Group** new_group1, G
 	int n2 = 0;
 	int i = 0;
 	int n = old_group->A_g->n;
+	/*
 	spmat* A1 = NULL;
 	spmat* A2 = NULL;
+	*/
 	Node* vertices1 = old_group->vertices;
 	Node* vertices2 = NULL;
 
@@ -214,13 +216,15 @@ void divide_group(Network* N, Group* old_group, double* s, Group** new_group1, G
 	(*new_group2) = allocate_group(n2);
 
 	/* Dividing A */
-	divide_spmat(old_group->A_g, s, &A1, &A2);
+	divide_spmat(old_group->A_g, s, &((*new_group1)->A_g), &((*new_group2)->A_g));
 	/*
 	print_sparse_matrix(A1);
 	printf(" \n");
 	print_sparse_matrix(A2);*/
+	/*
 	(*new_group1)->A_g = A1;
 	(*new_group2)->A_g = A2;
+	*/
 
 	/* Dividing vertices */
 	vertices2 = divide_node_list(&vertices1, s, old_group->A_g->n);
