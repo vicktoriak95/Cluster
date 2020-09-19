@@ -20,115 +20,40 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 	Group* group1 = NULL;
 	Group* group2 = NULL;
 	double* s = NULL;
-	/*
-	Old_Group* P = NULL;
-	Old_Group* O = NULL;
-	Node* g = NULL;
-	Node* g1 = NULL;
-	Node* g2 = NULL;
-	Old_Group* old_P = NULL;
-	Node* head = NULL;
-	int i = 0;
-	int n_g = 0;*/
 	int loop_cnt = 0;
-	/*
-	double* row_sums = NULL;
-	*/
 	double B_norm = 0;
 
 	/* Read the input file into the net struct */
 	create_network_and_first_group(input, &net, &group);
 
+	/* Push first group into P */
 	push_group(&P, group);
-
-	/* Create the group P with the first node */
-	/*
-	head = create_node(0);
-	P = create_group(head);
-	*/
-	/* Create the other n-1 nodes and add them to the group P */
-	/*
-	for (i = 1; i < net->n; i ++){
-		head->next = create_node(i);
-		head = head->next;
-	}
-	*/
-
-	/* Calculating g length and row_sums out of the loop for norm */
-	/*
-	g = P->vertices;
-	n_g = get_node_length(g, net->n);
-	row_sums = allocate(n_g * sizeof(double));
-	B_row_sums(g, net, row_sums, n_g);
-	*/
 
 	/* Calculating Norm of matrix to be used for the whole run*/
 	B_norm = Bhat_norm_new(net, group);
-	/*
-	B_norm = Bhat_norm(net, g, n_g);*/
 
 	while (P != NULL){
 		/* Number of iterations is linear in n */
 		/* 2n chosen as an upper bound */
 		infinite_loop_detection(loop_cnt, 2 * net->n);
+
 		/* Pop g out of P */
 		group = pop_group(&P);
-		/*
-		g = P->vertices;
-		old_P = P;
-		P = P->next;
-		free(old_P);*/
-
-		/* Calculating g length and row_sums */
-		/*
-		if(loop_cnt != 0){
-			n_g = get_node_length(g, net->n);
-			B_row_sums(g, net, row_sums, n_g);
-		}*/
 
 		s = (double*)allocate(group->A_g->n * sizeof(double));
 
 		/* Divide g into two groups */
-		/*
-		devide_into_two(net, g, s, n_g, B_norm, row_sums);*/
 		devide_into_two(net, group, s, B_norm);
 
 		/* Maximizing Modularity */
-		/*
-		modularity_maximization(net, s, g, n_g, row_sums);*/
 		modularity_maximization(net, group->A_g, s, group->vertices, group->A_g->n, group->row_sums);
 
-		/*
-		g1 = g;
-		g2 = divide_node_list(&g1, s, n_g); */
+		/* Dividing group by s */
 		divide_group(net, group, s, &group1, &group2);
 		free(s);
-		/* If one of groups is empty, insert other into O, free empty group*/
-		if((group1->A_g->n == 0) || (group2->A_g->n == 0)){
-			if(group1->A_g->n == 0){
-				push_group(&O, group2);
-				free_group(group1);
-			}
-			else{
-				push_group(&O, group1);
-				free_group(group2);
-			}
-		}
-		else { /* Both groups are not empty */
-			/* For both groups push them into O iff size == 1 */
-			if (group1->A_g->n == 1){
-				push_group(&O, group1);
-			}
-			else {
-				push_group(&P, group1);
-			}
-			if (group2->A_g->n == 1){
-				push_group(&O, group2);
-			}
-			else {
-				push_group(&P, group2);
-			}
-		}
+
+		/* Push groups into O and P */
+		groups_into_O_P(&O, &P, &group1, &group2);
 		loop_cnt += 1;
 	}
 
@@ -138,6 +63,35 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 	/* Free all */
 	free_group_list(O, net->n);
 	free_network(net);
+}
+
+void groups_into_O_P(Group** O, Group** P, Group** group1, Group** group2){
+	/* If one of groups is empty, insert other into O, free empty group*/
+	if(((*group1)->A_g->n == 0) || ((*group2)->A_g->n == 0)){
+		if((*group1)->A_g->n == 0){
+			push_group(O, (*group2));
+			free_group((*group1));
+		}
+		else{
+			push_group(O, (*group1));
+			free_group(*group2);
+		}
+	}
+	else { /* Both groups are not empty */
+		/* For both groups push them into O iff size == 1 */
+		if ((*group1)->A_g->n == 1){
+			push_group(O, (*group1));
+		}
+		else {
+			push_group(P, (*group1));
+		}
+		if ((*group2)->A_g->n == 1){
+			push_group(O, (*group2));
+		}
+		else {
+			push_group(P, (*group2));
+		}
+	}
 }
 
 void indivisable(double* s, int n_g){
@@ -194,37 +148,19 @@ void calculate_s(double* eigen_vector, double* s, int n_g){
 void divide_group(Network* N, Group* old_group, double* s, Group** new_group1, Group** new_group2){
 	int n1 = 0;
 	int n2 = 0;
-	int i = 0;
 	int n = old_group->A_g->n;
-	/*
-	spmat* A1 = NULL;
-	spmat* A2 = NULL;
-	*/
 	Node* vertices1 = old_group->vertices;
 	Node* vertices2 = NULL;
 
 	/* Calculating new groups length */
-	for (i=0; i<n; i++){
-		if (s[i] == 1) {
-			n1 += 1;
-		}
-	}
+	n1 = calc_group_length(s, n);
 	n2 = n - n1;
-
 	/* Allocating new Groups*/
 	(*new_group1) = allocate_group(n1);
 	(*new_group2) = allocate_group(n2);
 
 	/* Dividing A */
 	divide_spmat(old_group->A_g, s, &((*new_group1)->A_g), &((*new_group2)->A_g));
-	/*
-	print_sparse_matrix(A1);
-	printf(" \n");
-	print_sparse_matrix(A2);*/
-	/*
-	(*new_group1)->A_g = A1;
-	(*new_group2)->A_g = A2;
-	*/
 
 	/* Dividing vertices */
 	vertices2 = divide_node_list(&vertices1, s, old_group->A_g->n);
@@ -239,6 +175,19 @@ void divide_group(Network* N, Group* old_group, double* s, Group** new_group1, G
 	old_group->vertices = NULL;
 	free_group(old_group);
 
+}
+
+/* Calculating new groups length */
+int calc_group_length(double* s, int n){
+	int i = 0;
+	int n1 = 0;
+
+	for (i=0; i<n; i++){
+		if (s[i] == 1) {
+			n1 += 1;
+		}
+	}
+	return n1;
 }
 
 void print_output_file(FILE* output_file){
@@ -264,28 +213,3 @@ void print_output_file(FILE* output_file){
 		printf(" \n");
 	}
 }
-
-void test_divide_group(){
-	char* path = "C:\\Users\\User\\Dropbox\\Project\\טסטרים\\מדידות זמנים\\tester 4 3 1 4 0\\tester_binary.input";
-	Network* net = NULL;
-	Group* group = NULL;
-	FILE* input = NULL;
-	Group* group1 = NULL;
-	Group* group2 = NULL;
-	double s[4] = {1.0, -1.0, 1.0, -1.0};
-
-	input = open_file(path, "rb");
-
-	create_network_and_first_group(input, &net, &group);
-	divide_group(net, group, s, &group1, &group2);
-	printf("group1: \n");
-	print_group(group1);
-	printf("group2: \n");
-	print_group(group2);
-}
-/*
-int main(){
-	test_divide_group();
-	return 0;
-}
-*/

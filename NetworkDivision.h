@@ -29,6 +29,12 @@ void calculate_s(double* eigen_vector, double* s, int n_g);
 /* Dividing group into two groups */
 void divide_group(Network* N, Group* old_group, double* s, Group** new_group1, Group** new_group2);
 
+/* Pushing groups received from division into O and P */
+void groups_into_O_P(Group** O, Group** P, Group** group1, Group** group2);
+
+/* Calculating new groups length */
+int calc_group_length(double* s, int n);
+
 /* Reads and prints output file containing division into clusters */
 void print_output_file(FILE* output_file);
 
