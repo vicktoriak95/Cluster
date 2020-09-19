@@ -6,6 +6,8 @@
  * - Group which represents a cluster of vertices, value is node pointer pointing on first vertex in cluster.
  * Group is used in O and P groups in main division algorithm (divide_net_to_clusters).
  *
+ * TODO: change description if needed
+ *
  * Functions: classic Node functions such as create node, push node, delete list, etc.
  *
  */
@@ -19,12 +21,11 @@ typedef struct _Node {
 
 }Node;
 
-/*list of lists*/
 typedef struct _LinkedGroup {
-	Node* value;
+	Node* vertices;
 	struct _LinkedGroup *next;
 
-}Group;
+}Old_Group;
 
 /* Creates new node(=vertex) with index x */
 Node* create_node(int x);
@@ -39,7 +40,7 @@ void delete_node_list(Node* head_ref, int n);
 /* Printing list */
 void print_node_list(Node* list);
 
-/* Iterating over node list g and returns k'th node value */
+/* Iterating over node list g and returns k'th node vertices */
 int get_node_value(Node* g, int k);
 
 /* Iterating over node list g and count the length of the list */
@@ -53,18 +54,18 @@ Node* node_list_from_vector(int* v, int n);
 void vector_from_list(int* vector, Node* g ,int n);
 
 /* Creates node list representing group */
-Group* create_group(Node* node);
+Old_Group* create_group(Node* node);
 
 /* Inserts new group into group list */
-void push_group(Group** head_ref, Node* new_node);
+void push_group(Old_Group** head_ref, Node* new_node);
 
 /* Deletes group */
-void delete_group(Group* head_ref, int n);
+void delete_group(Old_Group* head_ref, int n);
 
 /* Prints group */
-void print_group(Group* group);
+void print_group(Old_Group* group);
 
 /* Iterating over the group list and count the length of the list */
-int get_group_length(Group* group, int n);
+int get_group_length(Old_Group* group, int n);
 
 #endif /* NODEUTILS_H_ */

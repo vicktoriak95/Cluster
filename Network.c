@@ -55,8 +55,8 @@ Network* create_network(FILE* input){
 	return net;
 }
 
-void write_clusters_to_output(Group* O, FILE* f, int n){
-	Group* group_head = O;
+void write_clusters_to_output(Old_Group* O, FILE* f, int n){
+	Old_Group* group_head = O;
 	Node* node_head = NULL;
 	int group_length = 0;
 	int node_length = 0;
@@ -70,11 +70,11 @@ void write_clusters_to_output(Group* O, FILE* f, int n){
 	/* Iterating over O and writing clusters to output */
 	while (group_head != NULL){
 		infinite_loop_detection(outer_while_cnt, n);
-		node_length = get_node_length(group_head->value, n);
+		node_length = get_node_length(group_head->vertices, n);
 		int_fwrite(node_length, f);
 
 		/* Iterating over a cluster and writing vertices in it to output */
-		node_head = group_head->value;
+		node_head = group_head->vertices;
 		while (node_head != NULL){
 			infinite_loop_detection(inner_while_cnt, n);
 			int_fwrite(node_head->index, f);

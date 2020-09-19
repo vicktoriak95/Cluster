@@ -95,18 +95,18 @@ void vector_from_list(int* vector, Node* g ,int n){
 	}
 }
 
-Group* create_group(Node* node){
-	Group* group = NULL;
+Old_Group* create_group(Node* node){
+	Old_Group* group = NULL;
 
-	group = (Group*)allocate(sizeof(Group));
-	group->value = node;
+	group = (Old_Group*)allocate(sizeof(Old_Group));
+	group->vertices = node;
 	group->next = NULL;
 	return group;
 }
 
-void push_group(Group** head_ref, Node* new_node){
+void push_group(Old_Group** head_ref, Node* new_node){
 	/* Create new List */
-	Group* curr_group = create_group(new_node);
+	Old_Group* curr_group = create_group(new_node);
 
 	if ((*head_ref) == NULL) {
 		(*head_ref) = curr_group;
@@ -119,34 +119,34 @@ void push_group(Group** head_ref, Node* new_node){
 	}
 }
 
-void delete_group(Group* head_ref, int n){
+void delete_group(Old_Group* head_ref, int n){
 	int cnt = 0;
-	Group* current = head_ref;
-	Group* next = NULL;
+	Old_Group* current = head_ref;
+	Old_Group* next = NULL;
 
 	while (current != NULL){
 		infinite_loop_detection(cnt, n);
 		next = current->next;
-		delete_node_list(current->value, n);
+		delete_node_list(current->vertices, n);
 		free(current);
 		current = next;
 		cnt += 1;
 	}
 }
 
-void print_group(Group* group){
+void print_group(Old_Group* group){
 	if (group == NULL){
 		printf("NULL\n");
 	}
 	else {
-		print_node_list(group->value);
+		print_node_list(group->vertices);
 		printf("NULL\n");
 		print_node_list((Node*)(group->next));
 	}
 }
 
-int get_group_length(Group* group, int n){
-	Group* head = group;
+int get_group_length(Old_Group* group, int n){
+	Old_Group* head = group;
 	int length = 0;
 	int cnt = 0;
 

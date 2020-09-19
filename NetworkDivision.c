@@ -13,13 +13,13 @@
 
 void divide_net_to_clusters(FILE* input, FILE* output){
 	Network* net = NULL;
-	Group* P = NULL;
-	Group* O = NULL;
+	Old_Group* P = NULL;
+	Old_Group* O = NULL;
 	Node* g = NULL;
 	Node* g1 = NULL;
 	Node* g2 = NULL;
 	double* s = NULL;
-	Group* old_P = NULL;
+	Old_Group* old_P = NULL;
 	Node* head = NULL;
 	int i = 0;
 	int n_g = 0;
@@ -30,7 +30,7 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 	/* Read the input file into the net struct */
 	net = create_network(input);
 
-	/*  Create the group P with the first node */
+	/* Create the group P with the first node */
 	head = create_node(0);
 	P = create_group(head);
 	/* Create the other n-1 nodes and add them to the group P */
@@ -40,7 +40,7 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 	}
 
 	/* Calculating g length and row_sums out of the loop for norm */
-	g = P->value;
+	g = P->vertices;
 	n_g = get_node_length(g, net->n);
 	row_sums = allocate(n_g * sizeof(double));
 	B_row_sums(g, net, row_sums, n_g);
@@ -53,7 +53,7 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 		/* 2n chosen as an upper bound */
 		infinite_loop_detection(loop_cnt, 2 * net->n);
 		/* Pop g out of P */
-		g = P->value;
+		g = P->vertices;
 		old_P = P;
 		P = P->next;
 		free(old_P);
@@ -61,7 +61,6 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 		/* Calculating g length and row_sums */
 		if(loop_cnt != 0){
 			n_g = get_node_length(g, net->n);
-			row_sums = allocate(n_g * sizeof(double));
 			B_row_sums(g, net, row_sums, n_g);
 		}
 		s = (double*)allocate(n_g * sizeof(double));

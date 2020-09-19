@@ -66,6 +66,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 
 	free(unmoved);
 	free(indices);
+	free(A_sums);
 }
 
 void update_A_sums(double* A_sums, int k, int real_k, Network* N, double* s, Node* g){
