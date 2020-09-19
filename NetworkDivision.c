@@ -214,7 +214,7 @@ void divide_group(Network* N, Group* old_group, double* s, Group** new_group1, G
 	(*new_group2) = allocate_group(n2);
 
 	/* Dividing A */
-	divide_spmat(old_group->A_g, s, &A1, &A2, n1, n2);
+	divide_spmat(old_group->A_g, s, &A1, &A2);
 	/*
 	print_sparse_matrix(A1);
 	printf(" \n");
