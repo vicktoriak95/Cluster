@@ -9,7 +9,7 @@
 #include "LibFuncsHandler.h"
 
 #define DEBUG
-#define PRINT_RESULT
+/*#define PRINT_RESULT*/
 
 #ifdef DEBUG
 #include <time.h>
