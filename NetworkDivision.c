@@ -104,7 +104,7 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 		divide_group(net, group, s, &group1, &group2);
 		free(s);
 		/* If one of groups is empty, insert other into O, free empty group*/
-		if((group1->A_g->n == 0) || (group1->A_g->n == 0)){
+		if((group1->A_g->n == 0) || (group2->A_g->n == 0)){
 			if(group1->A_g->n == 0){
 				push_group(&O, group2);
 				free_group(group1);
