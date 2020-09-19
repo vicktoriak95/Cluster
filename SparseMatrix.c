@@ -112,61 +112,7 @@ void spmat_free(spmat* A){
 	free(A);
 }
 
-void spmat_mult(const spmat* A, const double *v, double *result, Node* g){
-	int i = 0;
-	int g_index = 0;
-	int mat_index = 0;
-	int cnt = 0;
-	int v_index = 0;
-	int result_index = 0;
-	double dot_product = 0;
-	Node_matrix* mat_col = NULL;
-	Node* g_rows = g;
-	Node* g_cols = g;
-
-	/* Iterating over A rows */
-	for (i = 0; i < A->n; i++){
-		/* If row is in g */
-		if ((g_rows != NULL) && (i == g_rows->index)){
-			dot_product = 0;
-			mat_col = ((Node_matrix** )A->private)[i];
-			g_cols = g;
-			cnt = 0;
-			v_index = 0;
-
-			/* Iterating over list of a row, multiplying only items in g*/
-			while ((mat_col != NULL) && (g_cols != NULL)){
-				/* Infinite loop Detection */
-				infinite_loop_detection(cnt, A->n);
-
-				/* Promoting pointers in g and in row */
-				g_index = g_cols->index;
-				mat_index = mat_col->col_index;
-				if (mat_index == g_index){
-					dot_product += (mat_col->value) * (v[v_index]);
-					g_cols = g_cols->next;
-					v_index += 1;
-					mat_col = (Node_matrix*)mat_col->next;
-				}
-				else if (mat_index > g_index){
-					g_cols = g_cols->next;
-					v_index += 1;
-				}
-				else {
-					mat_col = (Node_matrix*)mat_col->next;
-				}
-				cnt += 1;
-			}
-			/* Updating result vector */
-			result[result_index] = dot_product;
-			result_index += 1;
-			g_rows = g_rows->next;
-		}
-
-	}
-}
-
-void new_spmat_mult(const spmat* A, const double *v, double *result){
+void spmat_mult(const spmat* A, const double *v, double *result){
 	int i = 0;
 	Node_matrix* node = NULL;
 	double res = 0;

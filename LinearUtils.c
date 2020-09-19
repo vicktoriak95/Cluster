@@ -98,7 +98,7 @@ void Bhat_multiplication(Network* N, spmat* A, double* x, double* result, Node* 
 
 	/* Multiplying A*x, saving result in result vector */
 	/*spmat_mult(A, x, result, g);*/
-	new_spmat_mult(A, x, result);
+	spmat_mult(A, x, result);
 
 	/* Calculating needed sums for rest of the multiplication */
 	/* first_sum = sum(kj*xj) */

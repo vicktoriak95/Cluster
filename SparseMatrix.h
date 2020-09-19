@@ -53,10 +53,8 @@ int spmat_add_row_from_file(spmat* A ,FILE* input, int i);
  * Frees lists of all rows, array of rows and spmat itself */
 void spmat_free(spmat *A);
 
-/* Multiplies sub-matrix matrix A[g] by vector v, into result (result is pre-allocated) */
-void spmat_mult(const spmat* A, const double *v, double *result, Node* g);
 /* Multiplies matrix matrix A by vector v, into result (result is pre-allocated) */
-void new_spmat_mult(const spmat* A, const double *v, double *result);
+void spmat_mult(const spmat* A, const double *v, double *result);
 
 /* Sums row values of sub-matrix A[g], according to g values */
 int spmat_row_sum(spmat* A, int row_num, Node* g);

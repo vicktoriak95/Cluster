@@ -26,9 +26,6 @@ void modularity_maximization(Network* N, spmat* A, double* s, Node* g, int n_g, 
 	indices = (int*)allocate(n_g * sizeof(int));
 	A_sums = (double*)allocate(n_g * sizeof(double));
 
-	/* Initiating unmoved with g values */
-	vector_from_list(unmoved, g, n_g);
-
 	/* Calc Q_0*/
 	Q_0 = calc_Qk(N, A, s, g, n_g, row_sums);
 
@@ -41,7 +38,7 @@ void modularity_maximization(Network* N, spmat* A, double* s, Node* g, int n_g, 
 		 * There are at most (2 ** n_g) divisions */
 		infinite_loop_detection(loop_cnt, pow(2, power_of_2));
 
-		/* Initiating improve variabales */
+		/* Initiating improve variables */
 		max_improve = -HUGE_VAL;
 		max_improve_index = -1;
 
@@ -69,42 +66,7 @@ void modularity_maximization(Network* N, spmat* A, double* s, Node* g, int n_g, 
 	free(A_sums);
 }
 
-void update_A_sums(double* A_sums, int k, int real_k, Network* N, double* s, Node* g){
-	Node_matrix* row_head = NULL;
-	Node* g_head = g;
-	int cnt = 0;
-	int mat_col_index = 0;
-	int g_col_index = 0;
-	int vector_index = 0;
-	spmat* A = N->A;
-
-	row_head = ((Node_matrix** )A->private)[real_k];
-
-	/* Iterating over row, summing only entries in g */
-	while ((row_head != NULL) && (g_head != NULL)){
-		infinite_loop_detection(cnt, N->n);
-
-		/* Comparing indices and promoting g_head, mat_head respectively */
-		mat_col_index = row_head->col_index;
-		g_col_index = g_head->index;
-		if (mat_col_index == g_col_index){
-			A_sums[vector_index] -= 2 * row_head->value * s[k];
-			g_head = g_head->next;
-			row_head = (Node_matrix*)row_head->next;
-			vector_index += 1;
-		}
-		else if (mat_col_index > g_col_index){
-			g_head = g_head->next;
-			vector_index += 1;
-		}
-		else {
-			row_head = (Node_matrix*)row_head->next;
-		}
-		cnt += 1;
-	}
-}
-
-void update_A_sums_new(double* A_sums, int k, spmat* A, double* s){
+void update_A_sums(double* A_sums, int k, spmat* A, double* s){
 	Node_matrix* node = NULL;
 	int c = 0;
 
@@ -131,60 +93,6 @@ double calc_sk_aux_sum(Network* N, double* s, Node* g, int n_g){
 	return aux_sum;
 }
 
-double A_single_row_sum_by_vec(spmat* A, int mat_row_index, Node* g, double* vector){
-	Node_matrix* row_head = NULL;
-	Node* g_head = g;
-	int sum = 0;
-	int cnt = 0;
-	int mat_col_index = 0;
-	int g_col_index = 0;
-	int vector_index = 0;
-
-	row_head = ((Node_matrix** )A->private)[mat_row_index];
-
-	/* Iterating over row, summing only entries in g */
-	while ((row_head != NULL) && (g_head != NULL)){
-		infinite_loop_detection(cnt, A->n);
-
-		/* Comparing indices and promoting g_head, mat_head respectively */
-		mat_col_index = row_head->col_index;
-		g_col_index = g_head->index;
-		if (mat_col_index == g_col_index){
-			sum += row_head->value * vector[vector_index];
-			g_head = g_head->next;
-			row_head = (Node_matrix*)row_head->next;
-			vector_index += 1;
-		}
-		else if (mat_col_index > g_col_index){
-			g_head = g_head->next;
-			vector_index += 1;
-		}
-		else {
-			row_head = (Node_matrix*)row_head->next;
-		}
-		cnt += 1;
-	}
-	return sum;
-}
-
-void A_row_sums_by_vec(Node* g, Network* N, double* A_row_sums, int n_g, double* vector){
-	Node* g_row_head = g;
-	double row_sum = 0;
-	int mat_row_index = 0;
-	int i = 0;
-
-	/* Calculating sum for each row */
-	for(i=0; i<n_g; i++){
-		/* Find row index in A*/
-		mat_row_index = g_row_head->index;
-
-		row_sum = A_single_row_sum_by_vec(N->A, mat_row_index, g, vector);
-
-		A_row_sums[i] = row_sum;
-		g_row_head = g_row_head->next;
-	}
-}
-
 void flip_s(double* s, int* indices, int n_g, int max_improve_index){
 	int i = 0;
 	int k = 0;
@@ -206,7 +114,6 @@ void find_best_vertex_to_move(Network* N, Node* g, double* s, int n_g, int* unmo
 	for(k = 0; k < n_g; k++){
 		if(unmoved[k] != (-1)){
 			real_k = g_pointer->index;
-			/*real_k = get_node_value(g, k);*/
 			new_aux_sum = base_aux_sum - 2 * (s[k] * N->deg_vector[real_k]);
 			Q_diff = calc_Q_diff(s, k, real_k, N, A_sums[k], new_aux_sum);
 			if (Q_diff > *max_diff){
@@ -230,11 +137,8 @@ void find_best_improve(Network* N, spmat* A, Node* g, int n_g, double* A_sums, d
 	double curr_improve = 0;
 
 	/* Calculating Aux sums */
-	/* TODO: check if ok*/
-	new_spmat_mult(A, s, A_sums);
-	/*
-	 A_row_sums_by_vec(g, N, A_sums, n_g, s);*/
-	 base_aux_sum = calc_sk_aux_sum(N, s, g, n_g);
+	spmat_mult(A, s, A_sums);
+	base_aux_sum = calc_sk_aux_sum(N, s, g, n_g);
 
 	/* Initiating unmoved with g values */
 	vector_from_list(unmoved, g, n_g);
@@ -250,9 +154,7 @@ void find_best_improve(Network* N, spmat* A, Node* g, int n_g, double* A_sums, d
 		find_best_vertex_to_move(N, g, s, n_g, unmoved, base_aux_sum, A_sums, &max_diff, &max_diff_index, &real_max_diff_index, &Q_max, *Q_0);
 
 		/* Update A sums */
-		update_A_sums_new(A_sums, max_diff_index, A, s);
-		/*
-		update_A_sums(A_sums, max_diff_index, real_max_diff_index, N, s ,g);*/
+		update_A_sums(A_sums, max_diff_index, A, s);
 		base_aux_sum -= 2 * (s[max_diff_index] * N->deg_vector[real_max_diff_index]);
 
 		/* Move max_score_index to the other group */
@@ -270,7 +172,7 @@ void find_best_improve(Network* N, spmat* A, Node* g, int n_g, double* A_sums, d
 
 		/* Remove max_score_index from unmoved */
 		unmoved[max_diff_index] = -1;
-		*Q_0  = Q_max;
+		*Q_0 = Q_max;
 	}
 
 }
@@ -288,7 +190,6 @@ double calc_Qk(Network* N, spmat* A, double* s, Node* g, int n_g, double* row_su
 }
 
 double calc_Q_diff(double* s, int k, int real_k, Network* N, double A_sum, double aux_sum){
-
 	double res = 0;
 	double deg_k = (double)N->deg_vector[real_k];
 	double M = (double)N->M;

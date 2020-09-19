@@ -1,7 +1,7 @@
 /*
  * LibFuncsHandler.h
  *
- *  Functions handling errors: exiting and printing appropriate massage.
+ *  Functions handling errors: exiting and printing appropriate message.
  *
  */
 
