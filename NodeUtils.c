@@ -48,17 +48,7 @@ void print_node_list(Node* list){
 	}
 }
 
-int get_node_value(Node* g, int k){
-	Node* head = g;
-	int i = 0;
-
-	for (i = 0; i < k; i++){
-		head = head->next;
-	}
-	return head->index;
-}
-
-int get_node_length(Node* g, int n){
+int get_node_list_length(Node* g, int n){
 	Node* head = g;
 	int length = 0;
 	int cnt = 0;
@@ -136,25 +126,3 @@ Node* divide_node_list(Node** g1_p, double* s, int n_g){
        }
        return g2;
 }
-
-Old_Group* create_group(Node* node){
-	Old_Group* group = NULL;
-
-	group = (Old_Group*)allocate(sizeof(Old_Group));
-	group->vertices = node;
-	group->next = NULL;
-	return group;
-}
-
-/*
-void print_group(Old_Group* group){
-	if (group == NULL){
-		printf("NULL\n");
-	}
-	else {
-		print_node_list(group->vertices);
-		printf("NULL\n");
-		print_node_list((Node*)(group->next));
-	}
-}
-*/

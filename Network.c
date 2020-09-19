@@ -95,7 +95,7 @@ void write_clusters_to_output(Group* O, FILE* f, int n){
 	/* Iterating over O and writing clusters to output */
 	while (group_head != NULL){
 		infinite_loop_detection(outer_while_cnt, n);
-		node_length = get_node_length(group_head->vertices, n);
+		node_length = get_node_list_length(group_head->vertices, n);
 		int_fwrite(node_length, f);
 
 		/* Iterating over a cluster and writing vertices in it to output */
