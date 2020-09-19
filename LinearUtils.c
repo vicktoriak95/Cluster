@@ -165,6 +165,28 @@ double Bhat_norm(Network* N, Node* g, int n_g){
 	return norm;
 }
 
+double Bhat_norm_new(Network* N, Group* group){
+	Node* g_row_head = group->vertices;
+	double row_abs_sum = 0;
+	int real_mat_row_index = 0;
+	int i = 0;
+	double norm = -HUGE_VAL;
+
+	/* Calculating sum for each row */
+	for(i = 0; i < group->A_g->n; i++){
+		/* Find row index in A*/
+		real_mat_row_index = g_row_head->index;
+
+		row_abs_sum = B_row_sum_new(group, N, i, real_mat_row_index, 1);
+		if(row_abs_sum > norm){
+			norm = row_abs_sum;
+		}
+		g_row_head = g_row_head->next;
+	}
+	return norm;
+}
+
+
 double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, int n_g, Node* g, double* row_sums){
 	double numerator = 0;
 	double denominator = 0;

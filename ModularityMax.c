@@ -104,6 +104,22 @@ void update_A_sums(double* A_sums, int k, int real_k, Network* N, double* s, Nod
 	}
 }
 
+void update_A_sums_new(double* A_sums, int k, int real_k, Group* group, double* s){
+	int i = 0;
+	Node_matrix* node = NULL;
+	double res = 0;
+	int c = 0;
+	spmat* A = group->A_g;
+
+	node = ((Node_matrix**)(A->private))[k];
+	while (node != NULL){
+		infinite_loop_detection(c, A->n);
+		A_sums[node->col_index] -= 2 * s[k];
+		node = node->next;
+		c += 1;
+	}
+}
+
 double calc_sk_aux_sum(Network* N, double* s, Node* g, int n_g){
 	int i = 0;
 	double aux_sum = 0;
