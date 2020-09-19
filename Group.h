@@ -30,4 +30,12 @@ void free_group(Group* group);
 
 void print_group(Group* group);
 
+void push_group(Group** head_ref, Group* curr_group);
+
+Group* pop_group(Group** head_ref);
+
+void free_group_list(Group* head_ref, int n);
+
+int get_group_length(Group* group, int n);
+
 #endif /* GROUP_H_ */

@@ -10,7 +10,7 @@
 #include "LibFuncsHandler.h"
 #include "LinearUtils.h"
 
-double* power_iteration(Network* N, double norm, Node* g, int n_g, double* row_sums){
+double* power_iteration(Network* N, spmat* A, double norm, Node* g, int n_g, double* row_sums){
 	double* temp = NULL;
 	double* b_prev = NULL;
 	double* b_next = NULL;
@@ -27,7 +27,8 @@ double* power_iteration(Network* N, double norm, Node* g, int n_g, double* row_s
 	while(close_vectors(b_prev, b_next, n_g) != 0){
 		infinite_loop_detection(cnt, MAX_POWER_ITERATIONS);
 
-		Bhat_multiplication(N, b_prev, b_next, g, n_g, row_sums);
+		/*Bhat_multiplication(N, b_prev, b_next, g, n_g, row_sums);*/
+		Bhat_multiplication(N, A, b_prev, b_next, g, n_g, row_sums);
 
 		Bhat_shift(b_next, b_prev, norm, n_g);
 

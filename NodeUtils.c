@@ -146,35 +146,6 @@ Old_Group* create_group(Node* node){
 	return group;
 }
 
-void push_group(Old_Group** head_ref, Node* new_node){
-	/* Create new List */
-	Old_Group* curr_group = create_group(new_node);
-
-	if ((*head_ref) == NULL) {
-		(*head_ref) = curr_group;
-	}
-	else {
-		/* Make next of new list as head */
-		curr_group->next = (*head_ref);
-		/* Move the head to point to the new list*/
-		(*head_ref) = curr_group;
-	}
-}
-
-void delete_group(Old_Group* head_ref, int n){
-	int cnt = 0;
-	Old_Group* current = head_ref;
-	Old_Group* next = NULL;
-
-	while (current != NULL){
-		infinite_loop_detection(cnt, n);
-		next = current->next;
-		delete_node_list(current->vertices, n);
-		free(current);
-		current = next;
-		cnt += 1;
-	}
-}
 /*
 void print_group(Old_Group* group){
 	if (group == NULL){
@@ -187,17 +158,3 @@ void print_group(Old_Group* group){
 	}
 }
 */
-
-int get_group_length(Old_Group* group, int n){
-	Old_Group* head = group;
-	int length = 0;
-	int cnt = 0;
-
-	while (head != NULL){
-		infinite_loop_detection(cnt, n);
-		length += 1;
-		head = head->next;
-		cnt += 1;
-	}
-	return length;
-}

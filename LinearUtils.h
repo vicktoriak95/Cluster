@@ -36,7 +36,7 @@ double dot_product_auxiliary_sum(Network* N, double* x, Node* g, int n_g, int in
  * writes multiplication result to result vector.
  * Multiplication using only adjacency matrix A, and degree vector,
  * calculation is based on formulas that were derived from the B_hat[g]*x dot product */
-void Bhat_multiplication(Network* N, double* x, double* result, Node* g, int n_g, double* row_sums);
+void Bhat_multiplication(Network* N, spmat* A, double* x, double* result, Node* g, int n_g, double* row_sums);
 
 /* Multiplying all entries of a given vector by a scalar */
 void mult_vector_by_scalar(double* vector, double scalar, int length);
@@ -55,9 +55,12 @@ void unit_vector_j(double* v, int n, int j);
  */
 double Bhat_norm(Network* N, Node* g, int n_g);
 
+/* TODO */
+double Bhat_norm_new(Network* N, Group* group);
+
 /* Calculates the eigenvalue corresponding to largest eigen_vector.
  * Shifts result by norm. */
-double Bhat_largest_eigenvalue(Network* N, double norm, double* eigen_vector, int n_g, Node* g, double* row_sums);
+double Bhat_largest_eigenvalue(Network* N, spmat* A, double norm, double* eigen_vector, int n_g, Node* g, double* row_sums);
 
 /* Sums B[g] rows, i.e returns f_i^g = sum(A[g]_i,j - k_i*k_j/M) */
 double B_row_sum(spmat* A, int mat_row_index, Node* g, Network* N, int abs);

@@ -80,8 +80,8 @@ void create_network_and_first_group(FILE* input, Network** net, Group** group){
 
 }
 
-void write_clusters_to_output(Old_Group* O, FILE* f, int n){
-	Old_Group* group_head = O;
+void write_clusters_to_output(Group* O, FILE* f, int n){
+	Group* group_head = O;
 	Node* node_head = NULL;
 	int group_length = 0;
 	int node_length = 0;

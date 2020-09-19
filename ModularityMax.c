@@ -10,7 +10,7 @@
 #include "LibFuncsHandler.h"
 #include "LinearUtils.h"
 
-void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* row_sums){
+void modularity_maximization(Network* N, spmat* A, double* s, Node* g, int n_g, double* row_sums){
 	int loop_cnt = 0;
 	int power_of_2 = n_g;
 	int max_improve_index = 0;
@@ -30,7 +30,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 	vector_from_list(unmoved, g, n_g);
 
 	/* Calc Q_0*/
-	Q_0 = calc_Qk(N, s, g, n_g, row_sums);
+	Q_0 = calc_Qk(N, A, s, g, n_g, row_sums);
 
 	/* Keep improving while delta_Q > 0 */
 	do{
@@ -46,7 +46,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 		max_improve_index = -1;
 
 		/* Move n_g vertices and find best improve */
-		find_best_improve(N, g, n_g, A_sums, s, unmoved, &Q_0, indices, &max_improve, &max_improve_index);
+		find_best_improve(N, A, g, n_g, A_sums, s, unmoved, &Q_0, indices, &max_improve, &max_improve_index);
 
 		/* If the best separation occurs when all the vertices switched groups, then nothing actually changed */
 		if (max_improve_index == n_g - 1){
@@ -104,12 +104,9 @@ void update_A_sums(double* A_sums, int k, int real_k, Network* N, double* s, Nod
 	}
 }
 
-void update_A_sums_new(double* A_sums, int k, int real_k, Group* group, double* s){
-	int i = 0;
+void update_A_sums_new(double* A_sums, int k, int real_k, spmat* A, double* s){
 	Node_matrix* node = NULL;
-	double res = 0;
 	int c = 0;
-	spmat* A = group->A_g;
 
 	node = ((Node_matrix**)(A->private))[k];
 	while (node != NULL){
@@ -223,7 +220,7 @@ void find_best_vertex_to_move(Network* N, Node* g, double* s, int n_g, int* unmo
 	}
 }
 
-void find_best_improve(Network* N, Node* g, int n_g, double* A_sums, double* s, int* unmoved, double* Q_0, int* indices, double* max_improve, int* max_improve_index){
+void find_best_improve(Network* N, spmat* A, Node* g, int n_g, double* A_sums, double* s, int* unmoved, double* Q_0, int* indices, double* max_improve, int* max_improve_index){
 	double base_aux_sum = 0;
 	int i = 0;
 	int max_diff_index = -1;
@@ -233,7 +230,10 @@ void find_best_improve(Network* N, Node* g, int n_g, double* A_sums, double* s, 
 	double curr_improve = 0;
 
 	/* Calculating Aux sums */
-	 A_row_sums_by_vec(g, N, A_sums, n_g, s);
+	/* TODO: check if ok*/
+	new_spmat_mult(A, s, A_sums);
+	/*
+	 A_row_sums_by_vec(g, N, A_sums, n_g, s);*/
 	 base_aux_sum = calc_sk_aux_sum(N, s, g, n_g);
 
 	/* Initiating unmoved with g values */
@@ -250,7 +250,9 @@ void find_best_improve(Network* N, Node* g, int n_g, double* A_sums, double* s, 
 		find_best_vertex_to_move(N, g, s, n_g, unmoved, base_aux_sum, A_sums, &max_diff, &max_diff_index, &real_max_diff_index, &Q_max, *Q_0);
 
 		/* Update A sums */
-		update_A_sums(A_sums, max_diff_index, real_max_diff_index, N, s ,g);
+		update_A_sums_new(A_sums, max_diff_index, real_max_diff_index, A, s);
+		/*
+		update_A_sums(A_sums, max_diff_index, real_max_diff_index, N, s ,g);*/
 		base_aux_sum -= 2 * (s[max_diff_index] * N->deg_vector[real_max_diff_index]);
 
 		/* Move max_score_index to the other group */
@@ -273,12 +275,12 @@ void find_best_improve(Network* N, Node* g, int n_g, double* A_sums, double* s, 
 
 }
 
-double calc_Qk(Network* N, double* s, Node* g, int n_g, double* row_sums){
+double calc_Qk(Network* N, spmat* A, double* s, Node* g, int n_g, double* row_sums){
 	double res = 0;
 	double* result = NULL;
 
 	result = (double*)allocate(n_g * sizeof(double));
-	Bhat_multiplication(N, s, result, g, n_g, row_sums);
+	Bhat_multiplication(N, A, s, result, g, n_g, row_sums);
 	res = dot_product(s, result, n_g);
 	free(result);
 

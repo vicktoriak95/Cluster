@@ -40,6 +40,54 @@ void free_group(Group* group){
 	free(group);
 }
 
+void push_group(Group** head_ref, Group* curr_group){
+	if ((*head_ref) == NULL) {
+		(*head_ref) = curr_group;
+	}
+	else {
+		/* Make next of new list as head */
+		curr_group->next = (*head_ref);
+		/* Move the head to point to the new list*/
+		(*head_ref) = curr_group;
+	}
+}
+
+Group* pop_group(Group** head_ref){
+	Group* group = NULL;
+
+	group = (*head_ref);
+	(*head_ref) = (*head_ref)->next;
+	return group;
+}
+
+int get_group_length(Group* group, int n){
+	Group* head = group;
+	int length = 0;
+	int cnt = 0;
+
+	while (head != NULL){
+		infinite_loop_detection(cnt, n);
+		length += 1;
+		head = head->next;
+		cnt += 1;
+	}
+	return length;
+}
+
+void free_group_list(Group* head_ref, int n){
+	int cnt = 0;
+	Group* current = head_ref;
+	Group* next = NULL;
+
+	while (current != NULL){
+		infinite_loop_detection(cnt, n);
+		next = current->next;
+		free_group(current);
+		current = next;
+		cnt += 1;
+	}
+}
+
 void print_group(Group* group){
 	printf("n is: %d \n", group->A_g->n);
 	printf("A_g is: \n");

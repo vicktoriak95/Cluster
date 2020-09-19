@@ -15,7 +15,7 @@
 
 /* Receives network N, s which represents division, and g the group we dividing.
  * Improving modularity of division, updating s to match best division found */
-void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* row_sums);
+void modularity_maximization(Network* N, spmat* A, double* s, Node* g, int n_g, double* row_sums);
 
 /* Calculating difference in Q after moving vertex.
  * Calculation is based on formulas that were derived from (s^t * B * s - d^t * B * s)
@@ -23,7 +23,7 @@ void modularity_maximization(Network* N, double* s, Node* g, int n_g, double* ro
 double calc_Q_diff(double* s, int k, int real_k, Network* N, double A_sum, double aux_sum);
 
 /* TODO */
-void update_A_sums(double* A_sums, int k, int real_k, Network* N, double* s, Node* g);
+void update_A_sums_new(double* A_sums, int k, int real_k, spmat* A, double* s);
 
 /* TODO */
 double calc_sk_aux_sum(Network* N, double* s, Node* g, int n_g);
@@ -43,10 +43,10 @@ void find_best_vertex_to_move(Network* N, Node* g, double* s, int n_g, int* unmo
 		double base_aux_sum, double* A_sums, double* max_diff, int* max_diff_index, int* real_max_diff_index, double* Q_max, double Q_0);
 
 /*TODO*/
-void find_best_improve(Network* N, Node* g, int n_g, double* A_sums, double* s, int* unmoved,
-		double* Q_0, int* indices, double* max_improve, int* max_improve_index);
+void find_best_improve(Network* N, spmat* A, Node* g, int n_g, double* A_sums,
+		double* s, int* unmoved, double* Q_0, int* indices, double* max_improve, int* max_improve_index);
 
 /* Calculates Q by formula: s^t * B_hat[g] * s */
-double calc_Qk(Network* N, double* s, Node* g, int n_g, double* row_sums);
+double calc_Qk(Network* N, spmat* A, double* s, Node* g, int n_g, double* row_sums);
 
 #endif /* MODULARITYMAX_H_ */
