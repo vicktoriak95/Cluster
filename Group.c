@@ -49,12 +49,20 @@ void initiate_group(Group* group, spmat* A, Node* g){
 void divide_group(Network* N, Group* old_group, double* s, Group** new_group1, Group** new_group2){
 	int n1 = 0;
 	int n2 = 0;
+	int i = 0;
+	int n = old_group->A_g->n;
 	spmat* A1 = NULL;
 	spmat* A2 = NULL;
 	Node* vertices1 = old_group->vertices;
 	Node* vertices2 = NULL;
 
-	/* Calculating new group length */
+	/* Calculating new groups length */
+	for (i=0; i<n; i++){
+		if (s[i] == 1) {
+			n1 += 1;
+		}
+	}
+	n2 = n - n1;
 
 	/* Allocating new Groups*/
 	(*new_group1) = allocate_group(n1);
@@ -62,7 +70,7 @@ void divide_group(Network* N, Group* old_group, double* s, Group** new_group1, G
 
 	/* Dividing A */
 	/*
-	divide_spmat(old_group->A_g, s, &A1, &A2);*/
+	divide_spmat(old_group->A_g, s, &A1, &A2, n1, n2);*/
 
 	/* Dividing vertices */
 	vertices2 = divide_node_list(&vertices1, s, old_group->A_g->n);
