@@ -230,3 +230,90 @@ void print_node_matrix_list(spmat* sp_mat, int i){
 		}
 	}
 }
+
+void divide_spmat(spmat* A, double* s, spmat** A1, spmat** A2){
+	int A1_n = 0;
+	int A2_n = 0;
+	int i = 0;
+	int old_row = 0;
+	int old_col = 0;
+	int new_col = 0;
+	int new_row = 0;
+	double* new_col_index = NULL;
+	int A1_col = 0;
+	int A2_col = 0;
+	Node_matrix* old_node = NULL;
+	Node_matrix* new_node = NULL;
+	Node_matrix* tail = NULL;
+
+
+	/* Calc the size of the new spmats */
+	A1_n = 0;
+	for (i=0; i<A->n; i++){
+		if (s[i] == 1) {
+			A1_n += 1;
+		}
+	}
+	A2_n = A->n - A1_n;
+
+	/* Allocate the new spmats */
+	(*A1) = spmat_allocate(A1_n);
+	(*A2) = spmat_allocate(A2_n);
+
+	/* Calc the new_col_index. */
+	new_col_index = (double*)allocate(A->n);
+	A1_col = 0;
+	A2_col = 0;
+	for (i=0; i<A->n; i++){
+		if (s[i] == 1){
+			new_col_index[i] = A1_col;
+			A1_col += 1;
+		}
+		else {
+			new_col_index[i] = A2_col;
+			A2_col += 1;
+		}
+	}
+
+	/* Iterate over the spmat and fill the new spmats */
+	/* Iterate over the spmat rows */
+	for (old_row=0; old_row<A->n; old_row++){
+		/* head points to the last node in the row of the new spmat we are currently filling */
+		new_row = new_col_index[old_row];
+		if (s[old_row] == 1){
+			tail = ((Node_matrix**)((*A1)->private))[new_row];
+		}
+		else {
+			tail = ((Node_matrix**)((*A2)->private))[new_row];
+		}
+
+		old_node = ((Node_matrix**)(A->private))[old_row];
+		/* Iterate over the spmat cols */
+		while (old_node != NULL){
+			old_col = old_node->col_index;
+			/* If the old_node represents an edge inside one of the new spmats */
+			if (s[old_row] == s[old_col]){
+				new_col = new_col_index[old_col];
+				new_node =  nodemat_create_node(ENTRY_VAL, new_col);
+				if (tail == NULL){
+					if (s[old_row] == 1){
+						((Node_matrix**)((*A1)->private))[new_row] = new_node;
+					}
+					else {
+						((Node_matrix**)((*A2)->private))[new_row] = new_node;
+					}
+				}
+				else {
+					tail->next = new_node;
+				}
+				tail = new_node;
+			}
+			old_node = old_node->next;
+		}
+	}
+
+	/* Free the old spmat and the new_col_index*/
+	free(new_col_index);
+	spmat_free(A);
+
+}
