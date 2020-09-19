@@ -11,15 +11,10 @@
 
 Network* allocate_network(int n){
 	Network* net = NULL;
-	spmat* A = NULL;
 	int* deg_vector = NULL;
 
 	/* Allocate the network */
 	net = (Network*)allocate(sizeof(Network));
-
-	/* Allocate the adjacency matrix */
-	A = spmat_allocate(n);
-	net->A = A;
 
 	/* Allocate the degrees vector */
 	deg_vector = (int*)allocate(sizeof(int) * n);
@@ -107,15 +102,13 @@ void write_clusters_to_output(Group* O, FILE* f, int n){
 }
 
 void free_network(Network* net){
-	spmat_free(net->A);
 	free(net->deg_vector);
 	free(net);
 }
 
-Network* network_from_args(spmat* matrix, int* deg_vector, int n, int M){
+Network* network_from_args(int* deg_vector, int n, int M){
 	Network* net = NULL;
 	net = allocate_network(n);
-	net->A = matrix;
 	net->deg_vector = deg_vector;
 	net->n = n;
 	net->M = M;

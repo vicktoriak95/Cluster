@@ -1,8 +1,8 @@
 /*
  * Network.h
  *
- *	Defines Strcut Network which contains all information about given network:
- *	adjacency matrix, degree vector, sum of degrees and number of vertices.
+ *	Defines Strcut Network which contains information about given network:
+ *	degree vector, sum of degrees and number of vertices.
  *
  *	Functions working with networks: allocating and freeing network,
  *	creation of network from file and from args and writing clusters to output.
@@ -17,9 +17,6 @@
 #include "Group.h"
 
 typedef struct _network{
-
-	/* Adjacency matrix */
-	spmat* A;
 
 	/* Degrees vector */
 	int* deg_vector;
@@ -45,6 +42,6 @@ void write_clusters_to_output(Group* O, FILE* f, int n);
 void free_network(Network* net);
 
 /* Creates network from args */
-Network* network_from_args(spmat* matrix, int* deg_vector, int n, int M);
+Network* network_from_args(int* deg_vector, int n, int M);
 
 #endif /* NETWORK_H_ */

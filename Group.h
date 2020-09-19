@@ -3,6 +3,10 @@
  *
  * Definition of GROUP Struct which represents Group in network.
  * Group is a potential cluster, and is being divided in net into cluster algorithm.
+ * Members:
+ * vertices: Node list representing vertices in group.
+ * A_g : Sub-matrix of Adjacency matrix according to group.
+ * row_sums: auxiliary sums used in multiplication.
  *
  * Functions: Allocating, freeing and creating groups, and classic node-like funcs like push and pop
  *

@@ -16,6 +16,8 @@ double* power_iteration(Network* N, spmat* A, double norm, Node* g, int n_g, dou
 	double* b_next = NULL;
 	double vector_norm = 0;
 	int cnt = 0;
+	int n = N->n;
+	int max_iterations = 0.5 * (n * n) + 1000 * n + 300000;
 
 	/* Initiating b_prev to be random b_0, b_next to be random too */
 	b_prev = (double*)allocate(n_g * sizeof(double));
@@ -25,7 +27,7 @@ double* power_iteration(Network* N, spmat* A, double norm, Node* g, int n_g, dou
 
 	/* While vectors diff bigger than epsilon */
 	while(close_vectors(b_prev, b_next, n_g) != 0){
-		infinite_loop_detection(cnt, MAX_POWER_ITERATIONS);
+		infinite_loop_detection(cnt, max_iterations);
 
 		/*Bhat_multiplication(N, b_prev, b_next, g, n_g, row_sums);*/
 		Bhat_multiplication(N, A, b_prev, b_next, g, n_g, row_sums);

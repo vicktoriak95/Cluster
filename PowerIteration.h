@@ -7,7 +7,6 @@
 
 #ifndef POWERITERATION_H_
 #define POWERITERATION_H_
-#define MAX_POWER_ITERATIONS 10000000
 
 #include <time.h>
 
