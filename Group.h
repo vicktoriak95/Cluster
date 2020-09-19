@@ -29,11 +29,8 @@ Group* allocate_group(int n_g);
 /* Free all group resorces */
 void free_group(Group* group);
 
-/* Creating first group */
-void create_first_group();
-
 /* Initiating group from params */
-void initiate_group(Group* group, spmat* A, double* row_sums, Node* g);
+void initiate_group(Group* group, spmat* A, Node* g);
 
 /* Dividing group into two groups */
 void divide_group();

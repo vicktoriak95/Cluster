@@ -13,6 +13,7 @@
 
 void divide_net_to_clusters(FILE* input, FILE* output){
 	Network* net = NULL;
+	Group* group = NULL;
 	Old_Group* P = NULL;
 	Old_Group* O = NULL;
 	Node* g = NULL;
@@ -20,30 +21,38 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 	Node* g2 = NULL;
 	double* s = NULL;
 	Old_Group* old_P = NULL;
+	/*
 	Node* head = NULL;
 	int i = 0;
+	*/
 	int n_g = 0;
 	int loop_cnt = 0;
 	double* row_sums = NULL;
 	double B_norm = 0;
 
 	/* Read the input file into the net struct */
-	net = create_network(input);
+	create_network_and_first_group(input, &net, &group);
 
 	/* Create the group P with the first node */
+	/*
 	head = create_node(0);
 	P = create_group(head);
+	*/
 	/* Create the other n-1 nodes and add them to the group P */
+	/*
 	for (i = 1; i < net->n; i ++){
 		head->next = create_node(i);
 		head = head->next;
 	}
+	*/
 
 	/* Calculating g length and row_sums out of the loop for norm */
+	/*
 	g = P->vertices;
 	n_g = get_node_length(g, net->n);
 	row_sums = allocate(n_g * sizeof(double));
 	B_row_sums(g, net, row_sums, n_g);
+	*/
 
 	/* Calculating Norm  of matrix to be used for the whole run*/
 	B_norm = Bhat_norm(net, g, n_g);
@@ -72,7 +81,7 @@ void divide_net_to_clusters(FILE* input, FILE* output){
 		modularity_maximization(net, s, g, n_g, row_sums);
 
 		g1 = g;
-		g2 = divide_group(&g1, s, n_g);
+		g2 = divide_node_list(&g1, s, n_g);
 		free(s);
 
 		/* One of the groups is empty */
@@ -159,48 +168,6 @@ void calculate_s(double* eigen_vector, double* s, int n_g){
 			s[i] = -1;
 		}
 	}
-}
-
-Node* divide_group(Node** g1_p, double* s, int n_g){
-	Node* g2 = NULL;
-	Node* g1_head = *g1_p;
-	Node* g1_head_prev = NULL;
-	Node* g2_head = g2;
-	Node* to_be_g2_head = NULL;
-	int i = 0;
-
-	/* Iterating over s */
-	for (i = 0; i < n_g; i ++){
-		/* If we do not move the node from g1 */
-		if (s[i] > 0){
-			g1_head_prev = g1_head;
-			g1_head = g1_head->next;
-		}
-		/* If we move the node to g2 */
-		else {
-			to_be_g2_head = g1_head;
-			/* If we are moving first node from g1 */
-			if (g1_head_prev == NULL) {
-				*g1_p = g1_head->next;
-				g1_head = g1_head->next;
-			}
-			else {
-				g1_head_prev->next = g1_head->next;
-				g1_head = g1_head_prev->next;
-			}
-			/* If we are moving first node to g_2 */
-			if (g2_head == NULL){
-				g2 = to_be_g2_head;
-				g2_head = to_be_g2_head;
-			}
-			else {
-				g2_head->next = to_be_g2_head;
-				g2_head = g2_head->next;
-			}
-			g2_head->next = NULL;
-		}
-	}
-	return g2;
 }
 
 void print_output_file(FILE* output_file){

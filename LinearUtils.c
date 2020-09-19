@@ -32,6 +32,15 @@ void print_vector(double* vector, int vector_size){
 	printf("\n");
 }
 
+void print_int_vector(int* vector, int vector_size){
+	int i = 0;
+
+	for (i = 0; i < vector_size; i++){
+		printf("%d ", vector[i]);
+	}
+	printf("\n");
+}
+
 double abs_sum_of_double_vector(double* vec, int length){
 	int i = 0;
 	double sum = 0;

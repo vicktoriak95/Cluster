@@ -19,6 +19,9 @@ double dot_product(double* vector1, double* vector2, int vector_size);
 /* Prints vector */
 void print_vector(double* vector, int vector_size);
 
+/* Prints int vector */
+void print_int_vector(int* vector, int vector_size);
+
 /* Sum all entries of a given double vector */
 double abs_sum_of_double_vector(double* vec, int length);
 
