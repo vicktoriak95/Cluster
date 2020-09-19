@@ -96,45 +96,45 @@ void vector_from_list(int* vector, Node* g ,int n){
 }
 
 Node* divide_node_list(Node** g1_p, double* s, int n_g){
-	Node* g2 = NULL;
-	Node* g1_head = *g1_p;
-	Node* g1_head_prev = NULL;
-	Node* g2_head = g2;
-	Node* to_be_g2_head = NULL;
-	int i = 0;
+       Node* g2 = NULL;
+       Node* g1_head = *g1_p;
+       Node* g1_head_prev = NULL;
+       Node* g2_head = g2;
+       Node* to_be_g2_head = NULL;
+       int i = 0;
 
-	/* Iterating over s */
-	for (i = 0; i < n_g; i ++){
-		/* If we do not move the node from g1 */
-		if (s[i] > 0){
-			g1_head_prev = g1_head;
-			g1_head = g1_head->next;
-		}
-		/* If we move the node to g2 */
-		else {
-			to_be_g2_head = g1_head;
-			/* If we are moving first node from g1 */
-			if (g1_head_prev == NULL) {
-				*g1_p = g1_head->next;
-				g1_head = g1_head->next;
-			}
-			else {
-				g1_head_prev->next = g1_head->next;
-				g1_head = g1_head_prev->next;
-			}
-			/* If we are moving first node to g_2 */
-			if (g2_head == NULL){
-				g2 = to_be_g2_head;
-				g2_head = to_be_g2_head;
-			}
-			else {
-				g2_head->next = to_be_g2_head;
-				g2_head = g2_head->next;
-			}
-			g2_head->next = NULL;
-		}
-	}
-	return g2;
+       /* Iterating over s */
+       for (i = 0; i < n_g; i ++){
+               /* If we do not move the node from g1 */
+               if (s[i] > 0){
+                       g1_head_prev = g1_head;
+                       g1_head = g1_head->next;
+               }
+               /* If we move the node to g2 */
+               else {
+                       to_be_g2_head = g1_head;
+                       /* If we are moving first node from g1 */
+                       if (g1_head_prev == NULL) {
+                               *g1_p = g1_head->next;
+                               g1_head = g1_head->next;
+                       }
+                       else {
+                               g1_head_prev->next = g1_head->next;
+                               g1_head = g1_head_prev->next;
+                       }
+                       /* If we are moving first node to g_2 */
+                       if (g2_head == NULL){
+                               g2 = to_be_g2_head;
+                               g2_head = to_be_g2_head;
+                       }
+                       else {
+                               g2_head->next = to_be_g2_head;
+                               g2_head = g2_head->next;
+                       }
+                       g2_head->next = NULL;
+               }
+       }
+       return g2;
 }
 
 Old_Group* create_group(Node* node){
@@ -175,7 +175,7 @@ void delete_group(Old_Group* head_ref, int n){
 		cnt += 1;
 	}
 }
-
+/*
 void print_group(Old_Group* group){
 	if (group == NULL){
 		printf("NULL\n");
@@ -186,6 +186,7 @@ void print_group(Old_Group* group){
 		print_node_list((Node*)(group->next));
 	}
 }
+*/
 
 int get_group_length(Old_Group* group, int n){
 	Old_Group* head = group;

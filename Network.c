@@ -139,7 +139,7 @@ void test_create_net_first_group(){
 
 	create_network_and_first_group(input, &net, &group);
 	printf("n is: %d \n", net->n);
-	printf("n is: %d \n", group->n_g);
+	printf("n is: %d \n", group->A_g->n);
 	printf("# Network vals: # \n");
 	printf("deg vector: \n");
 	print_int_vector(net->deg_vector, net->n);
@@ -150,13 +150,8 @@ void test_create_net_first_group(){
 	printf("nodes list is: \n");
 	print_node_list(group->vertices);
 	printf("row sums are: \n");
-	print_vector(group->row_sums, group->n_g);
+	print_vector(group->row_sums, group->A_g->n);
 	free_network(net);
 	free_group(group);
 	printf("Vicki is the best");
-}
-
-int main(){
-	test_create_net_first_group();
-	return 0;
 }

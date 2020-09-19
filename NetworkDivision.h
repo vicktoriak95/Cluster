@@ -26,6 +26,9 @@ void devide_into_two(Network* N, Node* g, double* s, int n_g, double B_norm, dou
 /* Calculating vector s matching to given eigen-vector */
 void calculate_s(double* eigen_vector, double* s, int n_g);
 
+/* Dividing group into two groups */
+void divide_group(Network* N, Group* old_group, double* s, Group** new_group1, Group** new_group2);
+
 /* Reads and prints output file containing division into clusters */
 void print_output_file(FILE* output_file);
 

@@ -65,4 +65,10 @@ double B_row_sum(spmat* A, int mat_row_index, Node* g, Network* N, int abs);
 /* TODO */
 void B_row_sums(Node* g, Network* N, double* row_sums, int n_g);
 
+/* TODO */
+void B_row_sums_new(Group* group, Network* N);
+
+/* TODO */
+double B_row_sum_new(Group* group, Network* N, int mat_row_index, int real_mat_row_index, int abs);
+
 #endif /* LINEARUTILS_H_ */

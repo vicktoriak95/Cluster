@@ -170,6 +170,51 @@ void calculate_s(double* eigen_vector, double* s, int n_g){
 	}
 }
 
+void divide_group(Network* N, Group* old_group, double* s, Group** new_group1, Group** new_group2){
+	int n1 = 0;
+	int n2 = 0;
+	int i = 0;
+	int n = old_group->A_g->n;
+	spmat* A1 = NULL;
+	spmat* A2 = NULL;
+	Node* vertices1 = old_group->vertices;
+	Node* vertices2 = NULL;
+
+	/* Calculating new groups length */
+	for (i=0; i<n; i++){
+		if (s[i] == 1) {
+			n1 += 1;
+		}
+	}
+	n2 = n - n1;
+
+	/* Allocating new Groups*/
+	(*new_group1) = allocate_group(n1);
+	(*new_group2) = allocate_group(n2);
+
+	/* Dividing A */
+	divide_spmat(old_group->A_g, s, &A1, &A2, n1, n2);
+	print_sparse_matrix(A1);
+	printf(" \n");
+	print_sparse_matrix(A2);
+	(*new_group1)->A_g = A1;
+	(*new_group2)->A_g = A2;
+
+	/* Dividing vertices */
+	vertices2 = divide_node_list(&vertices1, s, old_group->A_g->n);
+	(*new_group1)->vertices = vertices1;
+	(*new_group2)->vertices = vertices2;
+
+	/* Calculate A_1 row_sums */
+	B_row_sums_new((*new_group1), N);
+	/* Calculate A_2 row_sums */
+	B_row_sums_new((*new_group2), N);
+
+	old_group->vertices = NULL;
+	free_group(old_group);
+
+}
+
 void print_output_file(FILE* output_file){
 	int num_of_groups = -1;
 	int i = -1;
@@ -193,3 +238,28 @@ void print_output_file(FILE* output_file){
 		printf(" \n");
 	}
 }
+
+void test_divide_group(){
+	char* path = "C:\\Users\\User\\Dropbox\\Project\\טסטרים\\מדידות זמנים\\tester 4 3 1 4 0\\tester_binary.input";
+	Network* net = NULL;
+	Group* group = NULL;
+	FILE* input = NULL;
+	Group* group1 = NULL;
+	Group* group2 = NULL;
+	double s[4] = {1.0, -1.0, 1.0, -1.0};
+
+	input = open_file(path, "rb");
+
+	create_network_and_first_group(input, &net, &group);
+	divide_group(net, group, s, &group1, &group2);
+	printf("group1: \n");
+	print_group(group1);
+	printf("group2: \n");
+	print_group(group2);
+}
+/*
+int main(){
+	test_divide_group();
+	return 0;
+}
+*/

@@ -10,6 +10,7 @@
 #include "SparseMatrix.h"
 #include "LibFuncsHandler.h"
 #include "LinearUtils.h"
+#include "Group.h"
 
 double dot_product(double* vector1, double* vector2, int vector_size){
 	double sum = 0;
@@ -243,6 +244,39 @@ double B_row_sum(spmat* A, int mat_row_index, Node* g, Network* N, int abs){
 	return row_sum;
 }
 
+double B_row_sum_new(Group* group, Network* N, int mat_row_index, int real_mat_row_index, int abs){
+	int j = 0;
+	Node_matrix* row_head = NULL;
+	Node* vertices_head = group->vertices;
+	double sum = 0;
+	spmat* A = group->A_g;
+	int* deg_vector = N->deg_vector;
+	int M = N->M;
+	double kikj_M = 0;
+	int val = 0;
+
+	row_head = ((Node_matrix** )A->private)[mat_row_index];
+	for(j = 0; j < A->n; j++){
+		kikj_M = ((double)deg_vector[vertices_head->index] * deg_vector[real_mat_row_index]) / M;
+		/* If entry is not zero*/
+		if((row_head != NULL) && (j == row_head->col_index)){
+			val = 1;
+		}
+		else{
+			val = 0;
+		}
+		if(abs == 0){
+			sum += val - kikj_M;
+		}
+		else{
+			sum += fabs(val - kikj_M);
+		}
+		vertices_head = vertices_head->next;
+	}
+	return sum;
+}
+
+
 void B_row_sums(Node* g, Network* N, double* row_sums, int n_g){
 	Node* g_row_head = g;
 	double row_sum = 0;
@@ -255,6 +289,25 @@ void B_row_sums(Node* g, Network* N, double* row_sums, int n_g){
 		mat_row_index = g_row_head->index;
 
 		row_sum = B_row_sum(N->A, mat_row_index, g, N, 0);
+
+		row_sums[i] = row_sum;
+		g_row_head = g_row_head->next;
+	}
+}
+
+void B_row_sums_new(Group* group, Network* N){
+	Node* g_row_head = group->vertices;
+	double* row_sums = group->row_sums;
+	double row_sum = 0;
+	int real_mat_row_index = 0;
+	int i = 0;
+
+	/* Calculating sum for each row */
+	for(i=0; i<group->A_g->n; i++){
+		/* Find row index in A*/
+		real_mat_row_index = g_row_head->index;
+
+		row_sum = B_row_sum_new(group, N, i, real_mat_row_index, 0);
 
 		row_sums[i] = row_sum;
 		g_row_head = g_row_head->next;

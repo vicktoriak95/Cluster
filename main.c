@@ -15,7 +15,7 @@
 #include <time.h>
 #endif
 
-int main2(int argc, char* argv[]){
+int main(int argc, char* argv[]){
 	FILE* input = NULL;
 	FILE* output = NULL;
 	char* input_file_path = NULL;

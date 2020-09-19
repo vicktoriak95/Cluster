@@ -5,8 +5,8 @@
 #include "Group.h"
 #include <stdlib.h>
 #include "LibFuncsHandler.h"
-#include "Network.h"
 #include "LinearUtils.h"
+#include "SparseMatrix.h"
 
 Group* allocate_group(int n_g){
 	Group* group = NULL;
@@ -18,7 +18,6 @@ Group* allocate_group(int n_g){
 
 	/* Initiating vertices */
 	group->vertices = NULL;
-	group->n_g = n_g;
 
 	/* Initiating A_g and A_sums */
 	group->A_g = spmat_allocate(n_g);
@@ -37,52 +36,16 @@ Group* allocate_group(int n_g){
 void free_group(Group* group){
 	spmat_free(group->A_g);
 	free(group->row_sums);
-	delete_node_list(group->vertices, group->n_g);
+	delete_node_list(group->vertices, group->A_g->n);
 	free(group);
 }
 
-void initiate_group(Group* group, spmat* A, Node* g){
-	group->A_g = A;
-	group->vertices = g;
-}
-
-void divide_group(Network* N, Group* old_group, double* s, Group** new_group1, Group** new_group2){
-	int n1 = 0;
-	int n2 = 0;
-	int i = 0;
-	int n = old_group->A_g->n;
-	spmat* A1 = NULL;
-	spmat* A2 = NULL;
-	Node* vertices1 = old_group->vertices;
-	Node* vertices2 = NULL;
-
-	/* Calculating new groups length */
-	for (i=0; i<n; i++){
-		if (s[i] == 1) {
-			n1 += 1;
-		}
-	}
-	n2 = n - n1;
-
-	/* Allocating new Groups*/
-	(*new_group1) = allocate_group(n1);
-	(*new_group2) = allocate_group(n2);
-
-	/* Dividing A */
-	/*
-	divide_spmat(old_group->A_g, s, &A1, &A2, n1, n2);*/
-
-	/* Dividing vertices */
-	vertices2 = divide_node_list(&vertices1, s, old_group->A_g->n);
-
-	/* Calculate A_1 row_sums */
-	B_row_sums(vertices1, N, (*new_group1)->row_sums, (*new_group1)->A_g->n);
-	/* Calculate A_2 row_sums */
-	B_row_sums(vertices2, N, (*new_group2)->row_sums, (*new_group2)->A_g->n);
-
-	initiate_group((*new_group1), A1, vertices1);
-	initiate_group((*new_group2), A2, vertices2);
-
-	free_group(old_group);
-
+void print_group(Group* group){
+	printf("n is: %d \n", group->A_g->n);
+	printf("A_g is: \n");
+	print_sparse_matrix(group->A_g);
+	printf("nodes list is: \n");
+	print_node_list(group->vertices);
+	printf("row sums are: \n");
+	print_vector(group->row_sums, group->A_g->n);
 }

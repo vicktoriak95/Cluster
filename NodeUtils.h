@@ -67,7 +67,9 @@ void push_group(Old_Group** head_ref, Node* new_node);
 void delete_group(Old_Group* head_ref, int n);
 
 /* Prints group */
+/*
 void print_group(Old_Group* group);
+*/
 
 /* Iterating over the group list and count the length of the list */
 int get_group_length(Old_Group* group, int n);
