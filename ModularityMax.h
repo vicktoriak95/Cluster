@@ -23,7 +23,7 @@ void modularity_maximization(Network* N, spmat* A, double* s, Node* g, int n_g, 
 double calc_Q_diff(double* s, int k, int real_k, Network* N, double A_sum, double aux_sum);
 
 /* TODO */
-void update_A_sums_new(double* A_sums, int k, int real_k, spmat* A, double* s);
+void update_A_sums_new(double* A_sums, int k, spmat* A, double* s);
 
 /* TODO */
 double calc_sk_aux_sum(Network* N, double* s, Node* g, int n_g);

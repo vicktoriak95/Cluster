@@ -104,7 +104,7 @@ void update_A_sums(double* A_sums, int k, int real_k, Network* N, double* s, Nod
 	}
 }
 
-void update_A_sums_new(double* A_sums, int k, int real_k, spmat* A, double* s){
+void update_A_sums_new(double* A_sums, int k, spmat* A, double* s){
 	Node_matrix* node = NULL;
 	int c = 0;
 
@@ -250,7 +250,7 @@ void find_best_improve(Network* N, spmat* A, Node* g, int n_g, double* A_sums, d
 		find_best_vertex_to_move(N, g, s, n_g, unmoved, base_aux_sum, A_sums, &max_diff, &max_diff_index, &real_max_diff_index, &Q_max, *Q_0);
 
 		/* Update A sums */
-		update_A_sums_new(A_sums, max_diff_index, real_max_diff_index, A, s);
+		update_A_sums_new(A_sums, max_diff_index, A, s);
 		/*
 		update_A_sums(A_sums, max_diff_index, real_max_diff_index, N, s ,g);*/
 		base_aux_sum -= 2 * (s[max_diff_index] * N->deg_vector[real_max_diff_index]);
