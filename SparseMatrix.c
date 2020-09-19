@@ -166,6 +166,23 @@ void spmat_mult(const spmat* A, const double *v, double *result, Node* g){
 	}
 }
 
+void new_spmat_mult(const spmat* A, const double *v, double *result){
+	int i = 0;
+	Node_matrix* node = NULL;
+	double res = 0;
+
+	/* Iterate over A rows */
+	for (i=0; i<A->n; i++){
+		node = ((Node_matrix**)(A->private))[i];
+		res = 0;
+		/* Iterate over all nnz entries in A[i] */
+		while (node != NULL){
+			res += node->value * v[node->col_index];
+		}
+		result[i] = res;
+	}
+}
+
 int spmat_row_sum(spmat* A, int row_num, Node* g){
 	Node_matrix* row_head = NULL;
 	Node* g_head = g;
