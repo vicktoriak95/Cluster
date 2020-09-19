@@ -1,7 +1,10 @@
 /*
  * Group.h
  *
- * TODO: add documentation
+ * Definition of GROUP Struct which represents Group in network.
+ * Group is a potential cluster, and is being divided in net into cluster algorithm.
+ *
+ * Functions: Allocating, freeing and creating groups, and classic node-like funcs like push and pop
  *
  */
 
@@ -10,7 +13,6 @@
 #include "SparseMatrix.h"
 #include "NodeUtils.h"
 
-/* TODO */
 typedef struct _Group {
 	/* Linked list of vertices in group */
 	Node* vertices;
@@ -25,17 +27,22 @@ typedef struct _Group {
 /* Allocating group */
 Group* allocate_group(int n_g);
 
-/* Free all group resorces */
+/* Free all group resources */
 void free_group(Group* group);
 
+/* Print group */
 void print_group(Group* group);
 
+/* Push group curr_group to the top of a list heaf_ref pointing on*/
 void push_group(Group** head_ref, Group* curr_group);
 
+/* Pop group from a list head_ref pointing on */
 Group* pop_group(Group** head_ref);
 
+/* Frees a group list */
 void free_group_list(Group* head_ref, int n);
 
+/* Calculates group list length */
 int get_group_length(Group* group, int n);
 
 #endif /* GROUP_H_ */

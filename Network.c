@@ -64,15 +64,9 @@ void create_network_and_first_group(FILE* input, Network** net, Group** group){
 	/* Add Node list g to group */
 	(*group)->vertices = g_head;
 
-	/* Calculating row_sums for group */
-	/*
-	B_row_sums((*group)->vertices, *net, (*group)->row_sums, (*group)->n_g);
-	*/
 	/* Calculate the sum of all degrees in network */
 	(*net)->M = M;
-	/*
-	(*net)->M = sum_of_integer_vector((*net)->deg_vector, net->n);
-	*/
+
 	if ((*net)->M == 0){
 		printf("M = 0, invalid graph");
 		exit(EXIT_FAILURE);
@@ -129,29 +123,4 @@ Network* network_from_args(spmat* matrix, int* deg_vector, int n, int M){
 	return net;
 }
 
-void test_create_net_first_group(){
-	char* path = "C:\\Users\\User\\Dropbox\\Project\\טסטרים\\מדידות זמנים\\tester 4 3 1 4 0\\tester_binary.input";
-	Network* net = NULL;
-	Group* group = NULL;
-	FILE* input = NULL;
 
-	input = open_file(path, "rb");
-
-	create_network_and_first_group(input, &net, &group);
-	printf("n is: %d \n", net->n);
-	printf("n is: %d \n", group->A_g->n);
-	printf("# Network vals: # \n");
-	printf("deg vector: \n");
-	print_int_vector(net->deg_vector, net->n);
-	printf("M is: %d \n", net->M);
-	printf("# Group vals: # \n");
-	printf("A_g is: \n");
-	print_sparse_matrix(group->A_g);
-	printf("nodes list is: \n");
-	print_node_list(group->vertices);
-	printf("row sums are: \n");
-	print_vector(group->row_sums, group->A_g->n);
-	free_network(net);
-	free_group(group);
-	printf("Vicki is the best");
-}
