@@ -8,7 +8,7 @@
 #include "NetworkDivision.h"
 #include "LibFuncsHandler.h"
 
-#define DEBUG
+/*#define DEBUG*/
 /*#define PRINT_RESULT*/
 
 #ifdef DEBUG
